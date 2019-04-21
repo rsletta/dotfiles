@@ -10,6 +10,7 @@ for file in ~/.{aliases}; do
 done;
 unset file;
 
+#Source NVM path if present
 if [ -d "~/.nvm"  ]; then
   source .nvm_path;
 fi
