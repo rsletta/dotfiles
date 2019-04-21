@@ -18,8 +18,8 @@ brew upgrade
 BREW_PREFIX=$(brew --prefix)
 
 # Install Bash 4.
-brew install bash
-brew install bash-completion2
+brew install bash \
+             bash-completion2
 
 # Switch to using brew-installed bash as default shell
 if ! fgrep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
@@ -28,25 +28,27 @@ if ! fgrep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
 fi;
 
 # Install formulaes
-brew install git 
-brew install nvm
-brew install tree
-brew install neovim
+brew install git \
+             nvm \
+             tree \
+             ranger \
+             neovim
+
 if [ -d "~/.nvm"  ]; then
     echo "~/.nvm exists"
 else 
     mkdir ~/.nvm
 fi
-brew install ranger
+
 
 
 # Install casks
-brew cask install iterm2 
-brew cask install visual-studio-code
-brew cask install tomighty 
-brew cask install handbrake 
-brew cask install spectacle 
-brew cask install obs
+brew cask install iterm2 \
+                  visual-studio-code \
+                  tomighty \
+                  handbrake \
+                  spectacle \
+                  obs
 
 # Install quickLook plugins
 brew cask install qlcolorcode \
@@ -60,12 +62,12 @@ brew cask install qlcolorcode \
                   suspicious-package \
                   quicklookase \
                   qlvideo
-                  
+
 #Install fonts
 brew tap homebrew/cask-fonts
 
 # Install Fira Code
-brew cash install font-fira-code
+brew cask install font-fira-code
 
 # Remove outdated versions from the cellar.
 brew cleanup
