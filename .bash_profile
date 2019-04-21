@@ -1,93 +1,28 @@
-#############
-## ALIASES ##
-#############
-
 # enable the git bash completion commands
 source ~/.git-completion.bash
 source /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh
 
+# Load the shell dotfiles, and then some:
+# * ~/.path can be used to extend `$PATH`.
+# * ~/.extra can be used for other settings you don’t want to commit.
+for file in ~/.{aliases}; do
+	[ -r "$file" ] && [ -f "$file" ] && source "$file";
+done;
+unset file;
+
+if [ -d "~/.nvm"  ]; then
+  source .nvm_path;
+fi
+
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
 
-# Folder traversal
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias .....='cd ../../../..'
-alias home='cd ~/'
-
-# ls alias for color-mode
-alias lh='ls -lhaG'
-alias ls='ls -GFh'
-
-# refresh shell
-alias reload='source ~/.bash_profile'
-
-# enable git unstaged indicators - set to a non-empty value
-GIT_PS1_SHOWDIRTYSTATE="."
-
-# enable showing of untracked files - set to a non-empty value
-GIT_PS1_SHOWUNTRACKEDFILES="."
-
-# enable stash checking - set to a non-empty value
-GIT_PS1_SHOWSTASHSTATE="."
-
-# enable showing of HEAD vs its upstream
-GIT_PS1_SHOWUPSTREAM="auto"
-
-
-# git commamands simplified
-alias gst='git status'
-alias gco='git checkout'
-alias gci='git commit'
-alias grb='git rebase'
-alias gbr='git branch'
-alias gad='git add -A'
-alias gpl='git pull'
-alias gpu='git push'
-alias glg='git log --date-order --all --graph --format="%C(green)%h%Creset %C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset%s"'
-alias glg2='git log --date-order --all --graph --name-status --format="%C(green)%H%Creset %C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset%s"'
-
-
-###############
-## SHORTHAND ##
-###############
-
-repos() {
-	cd ~/repositories/$1
-}
-
-?() {
-echo "****************************************"
-echo "*             Shortcuts                *"
-echo "*--------------------------------------*"
-echo "* repos -> move to repositories folder *"
-echo "* home -> move to user home            *"
-echo "* lh -> ls -lhaG                       *"
-echo "*--------------------------------------*"
-echo "*             Folder nav               *"
-echo "*--------------------------------------*"
-echo "* .. -> cd ..                          *"
-echo "* ... -> cd ../..                      *"
-echo "* .... -> cd ../../..                  *"
-echo "* ..... -> cd ../../../..              *"
-echo "*--------------------------------------*"
-echo "*             Git cmd                  *"
-echo "*--------------------------------------*"
-echo "* gst -> git status                    *"
-echo "* gco -> git checkout                  *"
-echo "* gci -> git commit                    *"
-echo "* gbr -> git branch                    *"
-echo "* gad -> git add -A                    *"
-echo "* gpl -> git pull                      *"
-echo "* gpu -> git push                      *"
-echo "* gpu -> git push                      *"
-echo "* gpu -> git push                      *"
-echo "* grb -> git rebase                    *"
-echo "* glg -> git log                       *"
-echo "* glg2 -> git log2                     *"
-echo "****************************************"
-}
+# Add tab completion for many Bash commands
+if which brew &> /dev/null && [ -f "$(brew --prefix)/share/bash-completion/bash_completion" ]; then
+	source "$(brew --prefix)/share/bash-completion/bash_completion";
+elif [ -f /etc/bash_completion ]; then
+	source /etc/bash_completion;
+fi;
 
 #############
 ## ENV VAR ##
