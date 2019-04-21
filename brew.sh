@@ -34,13 +34,16 @@ brew install git \
              ranger \
              neovim
 
+# Install latest node.js LTS
 if [ -d "~/.nvm"  ]; then
     echo "~/.nvm exists"
+    source ~/.bash_profile
+    nvm install --lts
 else 
     mkdir ~/.nvm
+    source ~/.bash_profile
+    nvm install --lts   
 fi
-
-
 
 # Install casks
 brew cask install iterm2 \
