@@ -10,7 +10,7 @@ for file in ~/.{aliases}; do
 done;
 unset file;
 
-# nvm path
+# nvm path - will be added below this, when Homebrew installs NVM
 
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
