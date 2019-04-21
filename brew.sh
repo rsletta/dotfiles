@@ -48,6 +48,19 @@ brew cask install handbrake
 brew cask install spectacle 
 brew cask install obs
 
+# Install quickLook plugins
+brew cask install qlcolorcode \
+                  qlstephen \
+                  qlmarkdown \
+                  quicklook-json \
+                  quicklook-csv \
+                  qlimagesize \
+                  betterzipql \
+                  webpquicklook \
+                  suspicious-package \
+                  quicklookase \
+                  qlvideo
+                  
 #Install fonts
 brew tap homebrew/cask-fonts
 
