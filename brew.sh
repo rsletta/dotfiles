@@ -54,6 +54,9 @@ fi
 # Install casks
 brew cask install iterm2 \
                   visual-studio-code \
+                  brave-browser \
+                  firefox \
+                  google-chrome \
                   tomighty \
                   handbrake \
                   spectacle \
