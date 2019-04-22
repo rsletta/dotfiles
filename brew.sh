@@ -40,17 +40,9 @@ brew install git \
 # Setup NVM and install latest node.js LTS
 if [ -d "~/.nvm"  ]; then
     echo "~/.nvm exists"
-    sed -i "" -e "/# nvm path/ a\ 
-              source ~/.nvm_path" .bash_profile
-    ln -sf "$PWD"/.nvm_path ~/.nvm_path
-    source ~/.bash_profile
     nvm install --lts
 else 
     mkdir ~/.nvm
-    sed -i "" -e "/# nvm path/ a\ 
-              source ~/.nvm_path" .bash_profile
-    ln -sf "$PWD"/.nvm_path ~/.nvm_path
-    source ~/.bash_profile
     nvm install --lts   
 fi
 
