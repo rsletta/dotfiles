@@ -5,7 +5,8 @@ source /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.extra can be used for other settings you don’t want to commit.
-for file in ~/.{aliases}; do
+for file in ~/.aliases; do
+echo $file
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
