@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
-# Install Homebrew
-if [ $1 != "--brew-exist" ]; then
-echo "Installing Homebrew first"
+# Install Homebrew?
+read -p "Install Homebrew first? [y/n] " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+ echo "Installing Homebrew first"
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
@@ -69,7 +72,6 @@ brew cask install qlcolorcode \
                   quicklook-json \
                   quicklook-csv \
                   qlimagesize \
-                  betterzipql \
                   webpquicklook \
                   suspicious-package \
                   quicklookase \
