@@ -4,22 +4,40 @@ cd "$(dirname "${BASH_SOURCE}")";
 
 git pull origin master;
 
-function doIt() {
+function symlink() {
     # symlink dotfiles
     ln -sf "$PWD"/.bash_profile ~/.bash_profile
     ln -sf "$PWD"/.bashrc ~/.bashrc
     ln -sf "$PWD"/.git-completion.bash ~/.git-completion.bash
 	ln -sf "$PWD"/.aliases ~/.aliases
 	source ~/.bash_profile;
+	
+	# Bootstrap environment
+	read -p "Bootstrap environment? (y/n) " -n 1;
+	echo "";
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		bootstrap;
+	fi;
+}
+
+function bootstrap() {
+	if [ "`uname`" == "Darwin"] then
+		# Bootstrap macOS
+		sh macOS.sh
+	elif [ "`uname`" == "Linux" ] then
+		# Bootstrap Ubuntu
+		sh Ubuntu.sh
+	fi
 }
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
-	doIt;
+	symlink;
 else
 	read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1;
 	echo "";
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
-		doIt;
+		symlink;
 	fi;
 fi;
-unset doIt;
+unset symlink;
+unset bootstrap;
