@@ -10,6 +10,7 @@ function doIt() {
     ln -sf "$PWD"/.bashrc ~/.bashrc
     ln -sf "$PWD"/.git-completion.bash ~/.git-completion.bash
 	ln -sf "$PWD"/.aliases ~/.aliases
+	ln -sf "$PWD"/.functions ~/.functions
 	source ~/.bash_profile;
 	
 	# Bootstrap environment

@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############
+## SHORTHAND ##
+###############
+
+repos() {
+	cd ~/repositories/$1
+}
+
+helpme() {
+	echo "****************************************"
+	echo "*             Shortcuts                *"
+	echo "*--------------------------------------*"
+	echo "* repos -> move to repositories folder *"
+	echo "* home -> move to user home            *"
+	echo "* lh -> ls -lhaG                       *"
+	echo "*--------------------------------------*"
+	echo "*             Folder nav               *"
+	echo "*--------------------------------------*"
+	echo "* .. -> cd ..                          *"
+	echo "* ... -> cd ../..                      *"
+	echo "* .... -> cd ../../..                  *"
+	echo "* ..... -> cd ../../../..              *"
+	echo "*--------------------------------------*"
+	echo "*             Git cmd                  *"
+	echo "*--------------------------------------*"
+	echo "* gst -> git status                    *"
+	echo "* gco -> git checkout                  *"
+	echo "* gci -> git commit                    *"
+	echo "* gbr -> git branch                    *"
+	echo "* gad -> git add -A                    *"
+	echo "* gpl -> git pull                      *"
+	echo "* gpu -> git push                      *"
+	echo "* gpu -> git push                      *"
+	echo "* gpu -> git push                      *"
+	echo "* grb -> git rebase                    *"
+	echo "* glg -> git log                       *"
+	echo "* glg2 -> git log2                     *"
+	echo "****************************************"
+}
