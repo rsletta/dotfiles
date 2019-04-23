@@ -18,10 +18,10 @@ function doIt() {
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		if [[ "$OSTYPE" == "darwin"* ]]; then
 			# Bootstrap macOS
-			sh macOS.sh;
+			bash macOS.sh;
 		elif [[ "$OSTYPE" == "linux-gnu" ]]; then
 			# Bootstrap Ubuntu
-			sh Ubuntu.sh;
+			bash Ubuntu.sh;
 		fi
 	fi;
 }
