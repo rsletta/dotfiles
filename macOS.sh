@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Bootstrap macOS environment
+
 # Install Homebrew?
 read -p "Install Homebrew first? [y/n] " -n 1 -r
 echo    # (optional) move to a new line
