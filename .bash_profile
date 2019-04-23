@@ -1,6 +1,8 @@
 # enable the git bash completion commands
 source ~/.git-completion.bash
-source /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  source /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh
+fi
 
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
