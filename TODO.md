@@ -4,3 +4,4 @@
 * TMUX config
 * VIM config
 * VS Code config
+* Linux base environment setup
