@@ -5,3 +5,7 @@
 # Update system
 sudo apt update
 sudo apt upgrade
+
+# Install software
+sudo apt install neovim \
+                 tmux
