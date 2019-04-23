@@ -68,7 +68,6 @@ brew cask install qlcolorcode \
                   qlimagesize \
                   webpquicklook \
                   suspicious-package \
-                  quicklookase \
                   qlvideo
 
 #Install fonts
