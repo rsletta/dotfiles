@@ -37,6 +37,7 @@ brew install git \
              nvm \
              tree \
              ranger \
+             tmux \
              neovim
 
 # Setup NVM and install latest node.js LTS
