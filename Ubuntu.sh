@@ -32,6 +32,9 @@ export NVM_DIR="$HOME/.nvm" && (
 # Reload config
 source ~/.bashrc;
 
+# Install latest nodeJS LTS
+nvm install --lts
+
 # Add SAP NPM registry
 npm config set @sap:registry https://npm.sap.com
 
