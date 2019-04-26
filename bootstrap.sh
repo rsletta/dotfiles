@@ -11,7 +11,15 @@ function doIt() {
     ln -sf "$PWD"/.git-completion.bash ~/.git-completion.bash
 	ln -sf "$PWD"/.aliases ~/.aliases
 	ln -sf "$PWD"/.functions ~/.functions
-	source ~/.bash_profile;
+	
+	# Reload config
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+		source ~/.bash_profile;
+	elif [[ "$OSTYPE" == "linux-gnu" ]]; then
+		# Bootstrap Ubuntu
+		source ~/.bashrc;
+	fi
+	
 	
 	# Bootstrap environment
 	read -p "Bootstrap environment? (y/n) " -n 1;
