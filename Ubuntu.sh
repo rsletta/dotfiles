@@ -7,5 +7,6 @@ sudo apt update
 sudo apt upgrade
 
 # Install software
-sudo apt install neovim \
-                 tmux
+sudo apt install -y neovim \
+                    tmux \
+                    mosh
