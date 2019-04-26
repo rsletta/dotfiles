@@ -58,7 +58,8 @@ brew cask install iterm2 \
                   tomighty \
                   handbrake \
                   spectacle \
-                  obs
+                  obs \
+                  slack
 
 # Install quickLook plugins
 brew cask install qlcolorcode \
