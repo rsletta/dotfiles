@@ -11,6 +11,7 @@ function doIt() {
     ln -sf "$PWD"/.git-completion.bash ~/.git-completion.bash
 	ln -sf "$PWD"/.aliases ~/.aliases
 	ln -sf "$PWD"/.functions ~/.functions
+	ln -sf "$PWD"/.nvm_path ~/.nvm_path
 	
 	# Reload config
 	if [[ "$OSTYPE" == "darwin"* ]]; then
