@@ -13,7 +13,7 @@ done;
 unset file;
 
 # Source NVM path if installed
-if [ -d "~/.nvm"  ]; then
+if [ -d ~/.nvm  ]; then
   source ~/.nvm_path
 fi
 
