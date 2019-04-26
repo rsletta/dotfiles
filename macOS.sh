@@ -19,19 +19,6 @@ brew update
 echo "Upgrade any already-installed formulae."
 brew upgrade
 
-# Save Homebrew’s installed location.
-BREW_PREFIX=$(brew --prefix)
-
-# Install Bash 4.
-brew install bash \
-             bash-completion2
-
-# Switch to using brew-installed bash as default shell
-if ! fgrep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
-  echo "${BREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells;
-  chsh -s "${BREW_PREFIX}/bin/bash";
-fi;
-
 # Install formulaes
 brew install git \
              nvm \
@@ -80,3 +67,26 @@ brew cask install font-fira-code
 
 # Remove outdated versions from the cellar.
 brew cleanup
+
+# Reload .bash_profile / .bashrc
+reload
+
+# Install global nodeJS tools
+npm install -g nativescript yo eslint @ui5/cli @angular/cli @sap/cds @sap/generator-cds
+
+# Config Visual Studio Code user settings
+ln -sf "$PWD"/configs/vscode/settings.json $HOME/Library/Application Support/Code/User/settings.json
+
+# Install Visual Studio Code extensions
+code --install-extension johnpapa.angular-essentials
+code --install-extension alexcvzz.vscode-sqlite  
+code --install-extension christian-kohler.npm-intellisense 
+code --install-extension dbaeumer.vscode-eslint
+code --install-extension DotJoshJohnson.xml
+code --install-extension eamodio.gitlens
+code --install-extension HookyQR.beautify
+code --install-extension PeterJausovec.vscode-docker
+code --install-extension SAPSE.vsc-extension-mdk
+code --install-extension Telerik.nativescript
+code --install-extension tsvetan-ganev.nativescript-xml-snippets
+code --install-extension zhouronghui.propertylist
