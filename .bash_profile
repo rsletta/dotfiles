@@ -17,6 +17,12 @@ if [ -d "~/.nvm"  ]; then
   source ~/.nvm_path
 fi
 
+# Add Visual Studio Code to path, if present
+if [ -d "/Applications/Visual Studio Code.app/Contents/Resources/app/bin" ]; then
+ export PATH="\$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin";
+fi
+
+
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
 
