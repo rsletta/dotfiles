@@ -4,7 +4,7 @@
 
 # Update system
 sudo apt update
-sudo apt upgrade
+sudo apt upgrade -y
 
 # Install software
 sudo apt install -y neovim \
