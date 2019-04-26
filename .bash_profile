@@ -18,10 +18,15 @@ if [ -d ~/.nvm  ]; then
 fi
 
 # Add Visual Studio Code to path, if present
-#if [ -d "/Applications/Visual Studio Code.app/Contents/Resources/app/bin" ]; then
- #export PATH="\$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin";
-#fi
+if [ -d "/Applications/Visual Studio Code.app/Contents/Resources/app/bin" ]; then
+ export PATH="$PATH:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin";
+fi
 
+###-tns-completion-start-###
+if [ -f /Users/rsletta/.tnsrc ]; then 
+    source /Users/rsletta/.tnsrc 
+fi
+###-tns-completion-end-###
 
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
