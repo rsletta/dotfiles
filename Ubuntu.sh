@@ -30,7 +30,7 @@ export NVM_DIR="$HOME/.nvm" && (
 ) && \. "$NVM_DIR/nvm.sh"
 
 # Reload config
-reload
+source ~/.bashrc;
 
 # Add SAP NPM registry
 npm config set @sap:registry https://npm.sap.com
