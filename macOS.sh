@@ -39,6 +39,10 @@ fi
 # Set tmux config
 ln -sf "$PWD"/configs/.tmux.conf ~/.tmux.conf
 
+# Set vim config
+ln -sf "$PWD"/configs/.vimrc ~/.vimrc
+ln -sf "$PWD"/configs/nvim ~/.config/nvim
+
 # Install casks
 brew cask install iterm2 \
                   visual-studio-code \

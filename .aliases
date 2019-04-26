@@ -16,6 +16,10 @@ alias ls='ls -GFh'
 # load tmux
 alias t='tmux'
 
+# open neovim
+alias v='nvim'
+alias vim='nvim'
+
 # enable git unstaged indicators - set to a non-empty value
 GIT_PS1_SHOWDIRTYSTATE="."
 
