@@ -36,6 +36,9 @@ else
     nvm install --lts   
 fi
 
+# Set tmux config
+ln -sf "$PWD"/configs/.tmux.conf ~/.tmux.conf
+
 # Install casks
 brew cask install iterm2 \
                   visual-studio-code \
@@ -70,6 +73,9 @@ brew cleanup
 
 # Reload .bash_profile / .bashrc
 reload
+
+# Add SAP NPM registry
+npm config set @sap:registry https://npm.sap.com
 
 # Install global nodeJS tools
 npm install -g nativescript yo eslint @ui5/cli @angular/cli @sap/cds @sap/generator-cds
