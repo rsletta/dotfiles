@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+## COMMON ##
+
 # Folder traversal
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -10,9 +12,6 @@ alias home='cd ~/'
 # ls alias for color-mode
 alias lh='ls -lhaG'
 alias ls='ls -GFh'
-
-# refresh shell
-alias reload='source ~/.bash_profile'
 
 # load tmux
 alias t='tmux'
@@ -41,3 +40,13 @@ alias gpl='git pull'
 alias gpu='git push'
 alias glg='git log --date-order --all --graph --format="%C(green)%h%Creset %C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset%s"'
 alias glg2='git log --date-order --all --graph --name-status --format="%C(green)%H%Creset %C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset%s"'
+
+
+## OS SPECIFIC ##
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # refresh shell
+    alias reload='source ~/.bash_profile'
+elif [[ "$OSTYPE" == "linux-gnu" ]]; then
+    # refresh shell
+    alias reload='source ~/.bashrc'
+fi
