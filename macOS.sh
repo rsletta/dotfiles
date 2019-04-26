@@ -28,7 +28,7 @@ brew install git \
              neovim
 
 # Setup NVM and install latest node.js LTS
-if [ -d "~/.nvm"  ]; then
+if [ -d ~/.nvm  ]; then
     echo "~/.nvm exists"
     nvm install --lts
 else 
