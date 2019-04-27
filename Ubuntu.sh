@@ -16,7 +16,7 @@ ln -sf "$PWD"/configs/.tmux.conf ~/.tmux.conf
 
 # Set vim config
 ln -sf "$PWD"/configs/.vimrc ~/.vimrc
-if [ ! -d ~/.config]; then
+if [ ! -d ~/.config ]; then
  mkdir ~/.config
 fi
 ln -sf "$PWD"/configs/nvim ~/.config/nvim                    
