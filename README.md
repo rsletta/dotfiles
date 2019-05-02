@@ -3,8 +3,14 @@
 ## Setup
 My setup support macOS & Ubuntu.
 Copy the following command, replace <DIRECTORY_NAME>, and run.
+
+macOS:
 ```bash 
-git clone https://github.com/rsletta/dotfiles.git <DIRECTORY_NAME> && cd <DIRECTORY_NAME> && ./bootstrap.sh
+git clone https://github.com/rsletta/dotfiles.git <DIRECTORY_NAME> && cd <DIRECTORY_NAME> && ./bootstrap.sh && source ~/.bash_profile
+```
+Ubuntu:
+```bash 
+git clone https://github.com/rsletta/dotfiles.git <DIRECTORY_NAME> && cd <DIRECTORY_NAME> && ./bootstrap.sh && source ~/.bashrc
 ```
 
 ## Inspirations
