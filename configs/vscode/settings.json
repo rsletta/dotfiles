@@ -58,5 +58,6 @@
         "editor.defaultFormatter": "vscode.typescript-language-features"
     },
     "window.zoomLevel": 0,
-    "editor.wordWrap": "wordWrapColumn"
+    "editor.wordWrap": "wordWrapColumn",
+    "git.confirmSync": false
 }
