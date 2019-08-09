@@ -85,7 +85,7 @@ npm config set @sap:registry https://npm.sap.com
 npm install -g typescript nativescript yo eslint @ui5/cli @angular/cli @sap/cds @sap/generator-cds
 
 # Config Visual Studio Code user settings
-ln -sf "$PWD"/configs/vscode/settings.json $HOME/Library/Application Support/Code/User/settings.json
+ln -sf "$PWD"/configs/vscode/settings.json $HOME/Library/Application\ Support/Code/User/settings.json
 
 # Install Visual Studio Code extensions
 code --install-extension johnpapa.angular-essentials
