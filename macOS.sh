@@ -27,6 +27,8 @@ brew install git \
              tmux \
              neovim
 
+source ~/.bash_profile
+
 # Setup NVM and install latest node.js LTS
 if [ -d ~/.nvm  ]; then
     echo "~/.nvm exists"
@@ -47,7 +49,6 @@ ln -sf "$PWD"/configs/nvim ~/.config/nvim
 brew cask install iterm2 \
                   visual-studio-code \
                   brave-browser \
-                  firefox \
                   google-chrome \
                   tomighty \
                   handbrake \
@@ -76,7 +77,7 @@ brew cask install font-fira-code
 brew cleanup
 
 # Reload .bash_profile / .bashrc
-reload
+source ~/.bash_profile
 
 # Add SAP NPM registry
 npm config set @sap:registry https://npm.sap.com
