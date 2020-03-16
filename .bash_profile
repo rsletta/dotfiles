@@ -28,7 +28,7 @@ if [ -f /Users/rsletta/.tnsrc ]; then
 fi
 ###-tns-completion-end-###
 
-export LC_ALL=no_NO.UTF-8
+export LC_ALL=
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
 
