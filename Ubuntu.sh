@@ -39,4 +39,4 @@ nvm install --lts
 npm config set @sap:registry https://npm.sap.com
 
 # Install global nodeJS tools
-npm install -g typescript yo eslint @ui5/cli @angular/cli @sap/cds @sap/generator-cds
+npm install -g typescript yo eslint @ui5/cli @angular/cli @sap/cds-dk @sap/generator-cds
