@@ -13,7 +13,8 @@ brew install bash \
              ranger \
              tmux \
              neovim \
-             figlet
+             fzf \
+             figlet 
 
 # Install nvm using git 
 git clone https://github.com/nvm-sh/nvm.git ~/.nvm
