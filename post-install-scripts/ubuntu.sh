@@ -9,6 +9,14 @@ sudo apt install -y git \
                     fzf \
                     figlet
 
+# Symlink Neovim config
+if [ ! -d $HOME/.config ]; then
+  echo Creating .config directory
+  mkdir $HOME/.config
+fi
+echo Adding new Neovim config directory symlink
+ln -s -f -F -h "$dotfiles/nvim" "$HOME/.config/nvim"
+
 # Install nvm using git 
 git clone https://github.com/nvm-sh/nvm.git ~/.nvm
 cd ~/.nvm
