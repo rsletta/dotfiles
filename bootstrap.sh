@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
+# Print figlet of section headers
+heading () {
+  figlet $@
+}
+
 # Symlink dotfiles
+heading symbolic links
 ln -sf "$PWD"/bash_profile ~/.bash_profile
 ln -sf "$PWD"/bashrc ~/.bashrc
-ln -sf "$PWD"/git-completion.bash ~/.git-completion.sh
-ln -sf "$PWD"/git-completion.bash ~/.git-completion.sh
+
+echo Symlinking done
