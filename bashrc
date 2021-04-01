@@ -1,4 +1,7 @@
 # Load git completion and git prompt
+source ~/.dotfiles/git/git-completion.sh
+source ~/.dotfiles/git/git-prompt.sh
+
 # Check for post install config profile
 if [ -f ~/.profile ]; then
   source ~/.profile
