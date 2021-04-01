@@ -9,7 +9,7 @@ heading () {
 # Symlink dotfiles
 heading symbolic links
 # Files
-for i in bash_profile bashrc; do
+for i in bash_profile bashrc gitconfig; do
   echo $i
   ln -s -f "$dotfiles/$i" "$HOME/.$i"
 done
