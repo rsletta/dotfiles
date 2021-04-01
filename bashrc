@@ -6,8 +6,8 @@ case $- in
 esac
 
 # Check for post install config profile
-if [ -f ~/.profile ]; then
-  source ~/.profile
+if [ -f ~/.extrasrc ]; then
+  source ~/.extrasrc
 fi
 
 # Load configs
