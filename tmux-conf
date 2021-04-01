@@ -1,0 +1,57 @@
+# set bash as your default Tmux shell
+set-option -g default-shell /bin/bash
+
+# improve colors
+set -g default-terminal 'screen-256color'
+
+# Change prefix key to C-a, easier to type, same to "screen"
+unbind C-b
+set -g prefix C-a
+
+# Set parent terminal title to reflect current window in tmux session 
+set -g set-titles on
+set -g set-titles-string "#I:#W"
+
+# start window numbers at 1 to match keyboard order with tmux window order
+set -g base-index 1
+set-window-option -g pane-base-index 1
+
+# renumber windows sequentially after closing any of them
+set -g renumber-windows on
+
+# remove administrative debris (session name, hostname, time) in status bar
+set -g status-left ''
+set -g status-right ''
+
+# increase scrollback lines
+set -g history-limit 10000
+
+# act lie vim
+setw -g mode-keys vi
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+bind-key -r C-h select-window -t :-
+bind-key -r C-l select-window -t :+
+
+set -g prefix2 C-s
+
+# split panes using | and -
+bind | split-window -h
+bind - split-window -v
+unbind '"'
+unbind %
+
+# quick pane cycling
+unbind ^A
+bind ^A select-pane -t :.+
+
+# don't suspend-client
+unbind-key C-z
+
+# Reload tmux configuration 
+bind C-r source-file ~/.tmux.conf \; display "Config reloaded"
+
+# Local config
+if-shell "[ -f ~/.tmux.conf.local ]" 'source ~/.tmux.conf.local'k

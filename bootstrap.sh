@@ -9,7 +9,7 @@ heading () {
 # Symlink dotfiles
 heading symbolic links
 # Files
-for i in bash_profile bashrc gitconfig vimrc; do
+for i in bash_profile bashrc gitconfig vimrc tmux.conf; do
   # Add new symlink
   echo Adding new $HOME/.$i
   ln -s -f -F "$dotfiles/$i" "$HOME/.$i"
