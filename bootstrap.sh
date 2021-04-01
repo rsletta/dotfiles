@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+dotfiles="$HOME/.dotfiles"
 
 # Print figlet of section headers
 heading () {
@@ -7,7 +8,14 @@ heading () {
 
 # Symlink dotfiles
 heading symbolic links
-ln -sf "$PWD"/bash_profile ~/.bash_profile
-ln -sf "$PWD"/bashrc ~/.bashrc
+# Files
+for i in bash_profile bashrc; do
+  echo $i
+  ln -s -f "$dotfiles/$i" "$HOME/.$i"
+done
+
+# Directories
+ln -s -f "$dotfiles/bashrc.d" "$HOME/.bashrc.d"
 
 echo Symlinking done
+
