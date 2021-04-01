@@ -1,1 +1,0 @@
-/Users/rsletta/.dotfiles/bashrc.d
