@@ -5,32 +5,21 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-" - Avoid using standard Vim directory names like 'plugin'
-call plug#begin('~/.vim/plugged')
+"call plug#begin('~/.vim/plugged')
 
-"  You will load your plugin here
-"  Make sure you use single quotes
-" Initialize plugin system
-
-call plug#end()
-
+"call plug#end()
 
 set nocompatible
 syntax on
 filetype plugin indent on
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Key mappings
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let mapleader = ','
+let mapleader = 's'
 
-" Turn of arrow keys in normal mode
 noremap <Up> <Nop>
 noremap <Down> <Nop>
 noremap <Left> <Nop>
 noremap <Right> <Nop>
 
-" Turn of arrow keys in insert mode
 inoremap <Up> <Nop>
 inoremap <Down> <Nop>
 inoremap <Left> <Nop>
