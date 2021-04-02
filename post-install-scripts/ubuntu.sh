@@ -18,6 +18,9 @@ fi
 echo Adding new Neovim config directory symlink
 ln -s -f -F -h "$dotfiles/nvim" "$HOME/.config/nvim"
 
+# Fetch Tmux plugin manager tpm
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 # Install nvm using git
 git clone https://github.com/nvm-sh/nvm.git ~/.nvm
 cd ~/.nvm
