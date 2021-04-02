@@ -5,10 +5,11 @@ set-option -g default-shell /bin/bash
 set -g default-terminal 'screen-256color'
 
 # Change prefix key to C-a, easier to type, same to "screen"
-unbind C-b
-set -g prefix C-a
+set -g prefix C-space
+unbind-key C-b
+bind-key C-space send-prefix
 
-# Set parent terminal title to reflect current window in tmux session 
+# Set parent terminal title to reflect current window in tmux session
 set -g set-titles on
 set -g set-titles-string "#I:#W"
 
@@ -50,8 +51,16 @@ bind ^A select-pane -t :.+
 # don't suspend-client
 unbind-key C-z
 
-# Reload tmux configuration 
+# Reload tmux configuration
 bind C-r source-file ~/.tmux.conf \; display "Config reloaded"
 
 # Local config
 if-shell "[ -f ~/.tmux.conf.local ]" 'source ~/.tmux.conf.local'k
+
+# Plugin config - keep at bottom of .tmux.conf
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'arcticicestudio/nord-tmux'
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'
