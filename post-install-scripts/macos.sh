@@ -8,6 +8,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Install applications
 brew install bash \
+             coreutils \
              git \
              tree \
              ranger \
@@ -27,6 +28,9 @@ ln -s -f -F -h "$dotfiles/nvim" "$HOME/.config/nvim"
 
 # Fetch Tmux plugin manager tpm
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+# Fetch Nord dircolors
+curl https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors > ~/.dir_colors
 
 # Install nvm using git
 git clone https://github.com/nvm-sh/nvm.git ~/.nvm
