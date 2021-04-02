@@ -13,7 +13,8 @@ export GIT_PS1_SHOWUPSTREAM='auto'
 ### Prompt ###
 export LC_ALL=
 export CLICOLOR=1
-export LSCOLORS=GxFxCxDxBxegedabagaced
+# Set LS_COLORS with dir colors(Nord)
+test -r "~/.dir_colors" && eval $(dircolors ~/.dir_colors)
 
 __prompt_command() {
   local BLACK="\[\033[0;30m\]"
