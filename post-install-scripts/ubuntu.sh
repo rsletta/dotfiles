@@ -6,6 +6,7 @@ sudo apt install -y git \
                     ranger \
                     tmux \
                     neovim \
+                    kitty \
                     fzf \
                     jq \
                     figlet
