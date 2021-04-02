@@ -5,13 +5,21 @@ This setup is geared towards usage in macOS and Ubuntu. macOS terminal client of
 
 At the moment, I'm trying out the theme [Nord](https://www.nordtheme.com).
 ## Dependencies
+Most dependencies are handled by configurations and the post-install scripts.
 * [Nord theme for iTerm 2](https://github.com/arcticicestudio/nord-iterm2)
-
 ## Inspirations
 DJ Adams, all the way! [His dotfiles](https://github.com/qmacro/dotfiles).
 
 ### *bashrc.d*
 I noticed DJ had split his bashrc into smaller scripts, and dynamically load them from bashrc.d. That is a great way to prevent bashrc to grow infinitely. I'm on board with it. 😃
+
+## References (in no particular order)
+* [Nord Theme](https://www.nordtheme.com)
+  * [Nord Vim](https://www.nordtheme.com/ports/vim)
+  * [Nord VS Code](https://www.nordtheme.com/ports/visual-studio-code)
+  * [Nord iTerm 2](https://github.com/arcticicestudio/nord-iterm2)
+  * [Nord Tmux](https://www.nordtheme.com/docs/ports/tmux/installation)
+* [Tmux plugin manager - tpm](https://github.com/tmux-plugins/tpm)
 
 ### Old setup based on
 * Nathaniel Landaus blogpost ["My Mac OSX bash profile"](https://natelandau.com/my-mac-osx-bash_profile/).
