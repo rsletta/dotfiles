@@ -16,6 +16,6 @@ for i in bash_profile bashrc gitconfig vimrc tmux.conf; do
 done
 
 # Directories
-ln -s -f -F -h "$dotfiles/bashrc.d" "$HOME/.bashrc.d"
+ln -s -f -F "$dotfiles/bashrc.d" "$HOME/.bashrc.d"
 
 echo Symlinking done
