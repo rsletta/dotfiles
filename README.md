@@ -24,6 +24,7 @@ I noticed DJ had split his bashrc into smaller scripts, and dynamically load the
   * [Nord VS Code](https://www.nordtheme.com/ports/visual-studio-code)
   * [Nord iTerm 2](https://github.com/arcticicestudio/nord-iterm2)
   * [Nord Tmux](https://www.nordtheme.com/docs/ports/tmux/installation)
+  * [Nord dircolors](https://www.nordtheme.com/ports/dircolors)
   * [Nord Blink Shell](https://github.com/hwyncho/Nord-Blink)
   * [Nord Kitty](https://github.com/connorholyday/nord-kitty)
 * [Tmux plugin manager - tpm](https://github.com/tmux-plugins/tpm)
