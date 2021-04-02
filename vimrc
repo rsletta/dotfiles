@@ -15,6 +15,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'airblade/vim-gitgutter'
 Plug 'bfrg/vim-jq'
+Plug 'arcticicestudio/nord-vim'
 call plug#end()
 
 nnoremap <SPACE> <Nop>
@@ -23,6 +24,7 @@ let mapleader = " "
 set nocompatible
 syntax on
 filetype plugin indent on
+colorscheme nord
 
 " Disables automatic commenting on newline
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -71,6 +73,7 @@ let g:limelight_conceal_ctermfg = 240
 
 " Use lightline with gitbranch
 let g:lightline = {
+      \ 'colorscheme': 'nord',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
