@@ -7,9 +7,11 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias home='cd ~/'
 
-# ls alias for color-mode
-alias lh='ls -lhaG'
-alias ls='ls -GFh'
+# ls alias with color-mode
+alias lh='ls -lha --color=auto'
+alias ls='ls -Fh --color=auto'
+alias l.='ls -d .* --color=auto'
+
 
 # load tmux
 alias t='tmux'
