@@ -1,12 +1,13 @@
 # My personal dot file repository
 This is rebooted with a clean slate. Let's see where we end up.
 
-This setup is geared towards usage in macOS and Ubuntu. macOS terminal client of choice is [iTerm 2](https://iterm2.com). Ubuntu on Windows 10 runs through [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10), with [Microsoft Terminal](https://github.com/Microsoft/Terminal).
+This setup is geared towards usage in macOS and Ubuntu. macOS terminal client of choice is [iTerm 2](https://iterm2.com). Ubuntu on Windows 10 runs through [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10), with [Microsoft Terminal](https://github.com/Microsoft/Terminal). On iOS I use [Blink Shell](https://blink.sh).
 
 At the moment, I'm trying out the theme [Nord](https://www.nordtheme.com).
 ## Dependencies
 Most dependencies are handled by configurations and the post-install scripts.
 * [Nord theme for iTerm 2](https://github.com/arcticicestudio/nord-iterm2)
+* [Nord theme for Blink Shell](https://github.com/hwyncho/Nord-Blink)
 ## Inspirations
 DJ Adams, all the way! [His dotfiles](https://github.com/qmacro/dotfiles).
 
@@ -19,6 +20,7 @@ I noticed DJ had split his bashrc into smaller scripts, and dynamically load the
   * [Nord VS Code](https://www.nordtheme.com/ports/visual-studio-code)
   * [Nord iTerm 2](https://github.com/arcticicestudio/nord-iterm2)
   * [Nord Tmux](https://www.nordtheme.com/docs/ports/tmux/installation)
+  * [Nord Blink Shell](https://github.com/hwyncho/Nord-Blink)
 * [Tmux plugin manager - tpm](https://github.com/tmux-plugins/tpm)
 
 ### Old setup based on
