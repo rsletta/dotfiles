@@ -30,7 +30,10 @@ ln -s -f -F -h "$dotfiles/nvim" "$HOME/.config/nvim"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # Fetch Nord dircolors
-curl https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors > ~/.dir_colors
+curl -o ~/.dir_colors https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors
+
+# Fetch Nord kitty extension
+curl -o ~/.config/kitty/nord.conf https://raw.githubusercontent.com/connorholyday/nord-kitty/master/nord.conf
 
 # Install nvm using git
 git clone https://github.com/nvm-sh/nvm.git ~/.nvm
