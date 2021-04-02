@@ -34,7 +34,7 @@ __prompt_command() {
   local WHITEBOLD="\[\033[1;37m\]"
   local RESETCOLOR="\[\e[00m\]"
 
-  export PS1="\n$RED\u $PURPLE@ $GREEN\w $RESETCOLOR$GREENBOLD\$(git branch 2> /dev/null)\n $BLUE[\#] → $RESETCOLOR"
+  export PS1="$BLUE[\#]$RESETCOLOR $RED\u $PURPLE@ $GREEN\w $RESETCOLOR$GREENBOLD\$(git branch 2> /dev/null) → $RESETCOLOR"
   export PS2=" | → $RESETCOLOR"
 }
 
