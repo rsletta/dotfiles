@@ -7,6 +7,7 @@ sudo apt install -y git \
                     tmux \
                     neovim \
                     kitty \
+                    newsboat \
                     fzf \
                     jq \
                     figlet
