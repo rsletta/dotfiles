@@ -72,7 +72,7 @@ autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 
 " Coc config
-let g:coc_node_path = '/Users/rsletta/.nvm/versions/node/v14.16.0/bin/node'
+let g:coc_node_path = $NODE_PATH
 
 " Color name (:help cterm-colors) or ANSI code
 let g:limelight_conceal_ctermfg = 'gray'
