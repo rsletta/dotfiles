@@ -16,6 +16,7 @@ Plug 'tpope/vim-surround'
 Plug 'airblade/vim-gitgutter'
 Plug 'bfrg/vim-jq'
 Plug 'arcticicestudio/nord-vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 nnoremap <SPACE> <Nop>
@@ -32,6 +33,8 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " Remove all trailing whitespace on save
 autocmd BufWritePre * %s/\s\+$//e
 
+" Get correct comment highlighting in json
+autocmd FileType json syntax match Comment +\/\/.\+$+
 " Check leading whitespace
 set listchars=tab:▸·,eol:¬
 nnoremap <silent> <leader>l :set list!<cr>
@@ -44,6 +47,7 @@ set shiftwidth=2
 set number relativenumber
 set splitbelow splitright
 set linebreak
+set noshowmode
 
 " See https://github.com/neovim/neovim/issues/5559#issuecomment-258143499
 let g:is_bash = 1
@@ -67,6 +71,9 @@ nnoremap <leader>r :so $MYVIMRC<cr>
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 
+" Coc config
+let g:coc_node_path = '/Users/rsletta/.nvm/versions/node/v14.16.0/bin/node'
+
 " Color name (:help cterm-colors) or ANSI code
 let g:limelight_conceal_ctermfg = 'gray'
 let g:limelight_conceal_ctermfg = 240
@@ -79,6 +86,6 @@ let g:lightline = {
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
       \ },
       \ 'component_function': {
-      \   'gitbranch': 'gitbranch#name'
+      \   'gitbranch': 'FugitiveHead'
       \ },
       \ }
