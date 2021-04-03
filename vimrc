@@ -17,6 +17,9 @@ Plug 'airblade/vim-gitgutter'
 Plug 'bfrg/vim-jq'
 Plug 'arcticicestudio/nord-vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'bfrg/vim-jq'
 call plug#end()
 
 nnoremap <SPACE> <Nop>
@@ -66,6 +69,19 @@ inoremap <Right> <Nop>
 nnoremap <leader>w :w<cr>
 nnoremap <leader>q :q<cr>
 nnoremap <leader>r :so $MYVIMRC<cr>
+
+" Git stuff
+nnoremap <leader>gs :Gstatus<cr>
+nnoremap <leader>g  :G<cr>
+nnoremap <leader>gb :Gblame<cr>
+nnoremap <leader>gd :Gvdiffsplit<cr>
+
+" Bind Ctrl-P to use fzf 'Files' command now
+nnoremap <c-p> :Files<cr>
+
+" Improve search UI
+set hlsearch incsearch
+nnoremap <leader>h :set hls!<cr>
 
 " Integrate Limelight with Goyo
 autocmd! User GoyoEnter Limelight
