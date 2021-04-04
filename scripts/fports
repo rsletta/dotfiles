@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Split first arg into array of ports
+# Here comma is our delimiter value
+IFS="," read -a portarray <<< $1
+
+for port in ${portarray[@]}
+do
+  portstring+="-L ${port}:localhost:${port} "
+done
+# Forward ports from args
+echo "Forwarding ${1} from ${2}."
+echo "Press Ctrl+C to close the connection."
+ssh -N ${portstring} $2
