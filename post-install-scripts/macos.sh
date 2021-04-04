@@ -11,6 +11,7 @@ brew install bash \
              coreutils \
              git \
              tree \
+             gh \
              ranger \
              tmux \
              neovim \
