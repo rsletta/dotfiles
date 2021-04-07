@@ -28,7 +28,11 @@ let mapleader = " "
 set nocompatible
 syntax on
 filetype plugin indent on
+
+" Nord theme config
 colorscheme nord
+let g:nord_cursor_line_number_background = 1
+let g:nord_italic_comments = 1
 
 " Disables automatic commenting on newline
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
