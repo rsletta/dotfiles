@@ -5,8 +5,9 @@ export GIT_PS1_SHOWCOLORHINTS='y'
 export GIT_PS1_SHOWDIRTYSTATE='y'
 export GIT_PS1_SHOWUNTRACKEDFILES='y'
 export GIT_PS1_SHOWSTASHSTATE="y"
-export GIT_PS1_DESCRIBE_STYLE='contains'
+export GIT_PS1_DESCRIBE_STYLE='describe'
 export GIT_PS1_SHOWUPSTREAM='auto'
+export GIT_PS1_STATESEPARATOR='|'
 
 . "$HOME/.dotfiles/git/git-prompt.sh"
 
@@ -35,7 +36,8 @@ __prompt_command() {
   local WHITEBOLD="\[\033[1;37m\]"
   local RESETCOLOR="\[\e[00m\]"
 
-  export PS1="$BLUE[\#]$RESETCOLOR $RED\u $PURPLE@ $GREEN\w $RESETCOLOR$GREENBOLD\$(git branch 2> /dev/null) → $RESETCOLOR"
+  export PS1="$YELLOW[\#]$RESETCOLOR $BLUE\u$PURPLE@$CYAN\h: $GREEN\w$RESETCOLOR$(__git_ps1 "(%s)")\n$GREEN → $RESETCOLOR"
+
   export PS2=" | → $RESETCOLOR"
 }
 
