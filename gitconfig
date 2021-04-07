@@ -3,3 +3,5 @@
 	email = rsletta@gmail.com
 [pull]
 	rebase = false
+[color]
+	ui = auto
