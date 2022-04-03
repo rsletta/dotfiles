@@ -9,7 +9,7 @@ export GIT_PS1_DESCRIBE_STYLE='describe'
 export GIT_PS1_SHOWUPSTREAM='auto'
 export GIT_PS1_STATESEPARATOR='|'
 
-. "$HOME/.dotfiles/git/git-prompt.sh"
+. "$HOME/.git-completion/git-prompt.sh"
 
 ### Prompt ###
 export LC_ALL=
