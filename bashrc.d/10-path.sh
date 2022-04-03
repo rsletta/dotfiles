@@ -1,4 +1,6 @@
 export PATH=$PATH:$HOME/.dotfiles/scripts
+eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv) 
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH
+  eval $(/bin/brew shellenv)
 fi
