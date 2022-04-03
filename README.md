@@ -14,8 +14,8 @@ At the moment, I'm evaluating [Gruvbox](https://github.com/morhetz/gruvbox) as m
 * [Vivid](https://github.com/sharkdp/vivid)
 * [Homebrew](https://brew.sh/)
 ## Inspirations
-DJ Adams, all the way! - [His dotfiles](https://github.com/qmacro/dotfiles).
-ThePrimeagen - [His dotfiles](https://github.com/ThePrimeagen/.dotfiles)
+* DJ Adams, all the way! - [His dotfiles](https://github.com/qmacro/dotfiles).
+* ThePrimeagen - [His dotfiles](https://github.com/ThePrimeagen/.dotfiles)
 
 ### *bashrc.d*
 I noticed DJ had split his bashrc into smaller scripts, and dynamically load them from bashrc.d. That is a great way to prevent bashrc to grow infinitely. I'm on board with it. 😃
