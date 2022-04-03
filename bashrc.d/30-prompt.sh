@@ -14,8 +14,8 @@ export GIT_PS1_STATESEPARATOR='|'
 ### Prompt ###
 export LC_ALL=
 export CLICOLOR=1
-# Set LS_COLORS with dir colors(Nord)
-test -r "~/.dir_colors" && eval $(dircolors ~/.dir_colors)
+# Set colors with vivid
+export LS_COLORS=$(vivid generate gruvbox-dark)
 
 __prompt_command() {
   local BLACK="\[\033[0;30m\]"
