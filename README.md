@@ -11,8 +11,8 @@ On iOS I use [Blink Shell](https://blink.sh).
 
 At the moment, I'm evaluating [Gruvbox](https://github.com/morhetz/gruvbox) as my color scheme. I used to use [Nord](https://www.nordtheme.com/), but my eyes are not what they used to, and I needed something new and contrasty.
 ## Dependencies
-[Vivid](https://github.com/sharkdp/vivid)
-[Homebrew](https://brew.sh/)
+* [Vivid](https://github.com/sharkdp/vivid)
+* [Homebrew](https://brew.sh/)
 ## Inspirations
 DJ Adams, all the way! - [His dotfiles](https://github.com/qmacro/dotfiles).
 ThePrimeagen - [His dotfiles](https://github.com/ThePrimeagen/.dotfiles)
