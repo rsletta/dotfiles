@@ -17,4 +17,4 @@ export CLICOLOR=1
 # Set colors with vivid
 export LS_COLORS=$(vivid generate gruvbox-dark)
 
-eval "$(oh-my-posh prompt init bash --config "~/.ohmynord.omp.json")" && clear
+eval "$(oh-my-posh prompt init bash --config "~/.ohmygruvbox.omp.json")" && clear
