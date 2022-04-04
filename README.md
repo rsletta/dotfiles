@@ -18,6 +18,7 @@ At the moment, I'm evaluating [Gruvbox](https://github.com/morhetz/gruvbox) as m
 - [Oh My Posh](https://ohmyposh.dev/)
 - [Vivid](https://github.com/sharkdp/vivid)
 - [Caskaydia Cove Nerd Font](https://www.nerdfonts.com/)
+- [GNU Stow](https://www.gnu.org/software/stow/)
 
 ## Inspirations
 
