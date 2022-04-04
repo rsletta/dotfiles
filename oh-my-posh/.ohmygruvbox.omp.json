@@ -2,53 +2,50 @@
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
   "blocks": [
     {
-      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "style": "diamond",
-          "type": "path",
           "background": "#458588",
           "foreground": "#ebdbb2",
           "leading_diamond": "\ue0b6",
-          "trailing_diamond": "\ue0b0",
           "properties": {
             "folder_separator_icon": " \ue0b1 ",
             "home_icon": "~",
-            "style": "folder",
-            "template": " \uf74a  {{ .Path }} "
-          }
+            "style": "folder"
+          },
+          "style": "diamond",
+          "template": " \uf74a  {{ .Path }} ",
+          "trailing_diamond": "\ue0b0",
+          "type": "path"
         },
         {
           "background": "#689d6a",
           "foreground": "#ebdbb2",
           "powerline_symbol": "\ue0b0",
           "properties": {
-            "fetch_version": true,
-            "template": " \uf898 {{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }} "
+            "fetch_version": true
           },
           "style": "powerline",
+          "template": " \uf898 {{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }} ",
           "type": "node"
         },
         {
-          "type": "dotnet",
-          "style": "powerline",
-          "powerline_symbol": "\uE0B0",
-          "foreground": "#ebdbb2",
           "background": "#83a598",
-          "properties": {
-            "template": "   {{ .Full }} "
-          }
+          "foreground": "#ebdbb2",
+          "powerline_symbol": "\ue0b0",
+          "style": "powerline",
+          "template": "  \ue70c {{ .Full }} ",
+          "type": "dotnet"
         },
         {
           "background": "#ebdbb2",
           "foreground": "#689d6a",
           "powerline_symbol": "\ue0b0",
           "properties": {
-            "fetch_version": true,
-            "template": " \ue626 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} "
+            "fetch_version": true
           },
           "style": "powerline",
+          "template": " \ue626 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ",
           "type": "go"
         },
         {
@@ -57,10 +54,10 @@
           "powerline_symbol": "\ue0b0",
           "properties": {
             "display_mode": "files",
-            "fetch_virtual_env": false,
-            "template": " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} "
+            "fetch_virtual_env": false
           },
           "style": "powerline",
+          "template": " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ",
           "type": "python"
         },
         {
@@ -69,10 +66,10 @@
           "powerline_symbol": "\ue0b0",
           "properties": {
             "display_mode": "files",
-            "fetch_version": true,
-            "template": " \ue791 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} "
+            "fetch_version": true
           },
           "style": "powerline",
+          "template": " \ue791 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ",
           "type": "ruby"
         },
         {
@@ -81,10 +78,10 @@
           "powerline_symbol": "\ue0b0",
           "properties": {
             "display_mode": "files",
-            "fetch_version": false,
-            "template": " \uf0e7{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} "
+            "fetch_version": false
           },
           "style": "powerline",
+          "template": " \uf0e7{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ",
           "type": "azfunc"
         },
         {
@@ -95,20 +92,18 @@
           "foreground": "#ebdbb2",
           "powerline_symbol": "\ue0b0",
           "properties": {
-            "display_default": false,
-            "template": " \ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} "
+            "display_default": false
           },
           "style": "powerline",
+          "template": " \ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} ",
           "type": "aws"
         },
         {
           "background": "#ebdbb2",
           "foreground": "#cc241d",
           "powerline_symbol": "\ue0b0",
-          "properties": {
-            "template": " \uf0ad "
-          },
           "style": "powerline",
+          "template": " \uf0ad ",
           "type": "root"
         },
         {
@@ -126,32 +121,32 @@
             "branch_max_length": 25,
             "fetch_stash_count": true,
             "fetch_status": true,
-            "fetch_upstream_icon": true,
-            "template": " {{ .UpstreamIcon }}{{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uf692 {{ .StashCount }}{{ end }} "
+            "fetch_upstream_icon": true
           },
           "style": "powerline",
+          "template": " {{ .UpstreamIcon }}{{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uf692 {{ .StashCount }}{{ end }} ",
           "trailing_diamond": "\ue0b4",
           "type": "git"
         },
         {
           "background": "#689d6a",
-          "background_templates": ["{{ if gt .Code 0 }}#fb4934{{ end }}"],
+          "background_templates": [
+            "{{ if gt .Code 0 }}#fb4934{{ end }}"
+          ],
           "foreground": "#ebdbb2",
+          "powerline_symbol": "\ue0b0",
           "properties": {
-            "always_enabled": true,
-            "template": " \ue23a "
+            "always_enabled": true
           },
           "style": "powerline",
-          "powerline_symbol": "",
-          "invert_powerline": false,
+          "template": " \ue23a ",
           "type": "exit"
         }
-      ]
+      ],
+      "type": "prompt"
     }
   ],
-  "console_title": true,
-  "console_title_style": "template",
   "console_title_template": "{{ .Shell }} in {{ .Folder }}",
   "final_space": true,
-  "version": 1
+  "version": 2
 }
