@@ -20,6 +20,10 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 # Install linuxbrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+# Add Oh My Posh
+brew tap jandedobbeleer/oh-my-posh
+
 # Install newer version of Neovim, than the one from apt, and vivid.
 brew install neovim \
-             vivid
+             vivid \
+             oh-my-posh

@@ -5,6 +5,8 @@
 
 eval $(/bin/brew shellenv)
 
+brew tap jandedobbeleer/oh-my-posh
+
 # Install applications
 brew install bash \
              coreutils \
@@ -17,7 +19,8 @@ brew install bash \
              fzf \
              jq \
              figlet \
-             vivid
+             vivid \
+             oh-my-posh
 
 # Fetch Tmux plugin manager tpm
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
