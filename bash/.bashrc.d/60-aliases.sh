@@ -7,6 +7,7 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias home='cd ~/'
 alias dot='cd ~/.dotfiles'
+alias vault='cd ~/vault'
 
 # ls alias with color-mode
 alias lh='ls -lha --color=auto'
