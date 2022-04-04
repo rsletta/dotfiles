@@ -26,4 +26,5 @@ brew tap jandedobbeleer/oh-my-posh
 # Install newer version of Neovim, than the one from apt, and vivid.
 brew install neovim \
              vivid \
-             oh-my-posh
+             oh-my-posh \
+             git
