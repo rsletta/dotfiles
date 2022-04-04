@@ -14,9 +14,10 @@ At the moment, I'm evaluating [Gruvbox](https://github.com/morhetz/gruvbox) as m
 
 ## Dependencies
 
-- [Vivid](https://github.com/sharkdp/vivid)
 - [Homebrew](https://brew.sh/)
 - [Oh My Posh](https://ohmyposh.dev/)
+- [Vivid](https://github.com/sharkdp/vivid)
+- [Caskaydia Cove Nerd Font](https://www.nerdfonts.com/)
 
 ## Inspirations
 
