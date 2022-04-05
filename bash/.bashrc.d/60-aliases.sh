@@ -5,7 +5,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
-alias home='cd ~/'
+alias '~'='cd ~/'
 alias dot='cd ~/.dotfiles'
 alias vault='cd ~/vault'
 
