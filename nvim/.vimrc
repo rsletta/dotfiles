@@ -8,12 +8,11 @@ endif
 call plug#begin('~/.vim/plugged')
 Plug 'mhinz/vim-startify'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'itchyny/lightline.vim'
-Plug 'itchyny/vim-gitbranch'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'bfrg/vim-jq'
 Plug 'morhetz/gruvbox'
@@ -53,6 +52,7 @@ nnoremap <silent> <leader>l :set list!<cr>
 
 set background=dark
 set encoding=utf-8
+set colorcolumn=80
 set ts=4
 set sts=4
 set expandtab
@@ -82,10 +82,11 @@ nnoremap <leader>q :q<cr>
 nnoremap <leader>r :so $MYVIMRC<cr>
 
 " Git stuff
-nnoremap <leader>gs :Git<cr>
-nnoremap <leader>g  :G<cr>
+nnoremap <leader>gs :G<cr>
 nnoremap <leader>gb :Gblame<cr>
 nnoremap <leader>gd :Gvdiffsplit<cr>
+nnoremap <leader>gj :diffget //3<CR>
+nnoremap <leader>gf :diffget //2<CR>
 
 " Bind Ctrl-P to use fzf 'Files' command now
 nnoremap <c-p> :Files<cr>
@@ -107,18 +108,6 @@ let g:coc_node_path = $NODE_PATH
 " Color name (:help cterm-colors) or ANSI code
 let g:limelight_conceal_ctermfg = 'gray'
 let g:limelight_conceal_ctermfg = 240
-
-" Use lightline with gitbranch
-let g:lightline = {
-      \ 'colorscheme': 'gruvbox',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'FugitiveHead'
-      \ },
-      \ }
 
 " vim-markdown
 let g:vim_markdown_folding_disabled = 1
