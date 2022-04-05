@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+FILENAME=$(date "+%Y-%m-%d").md
+FILEPATH="$HOME/vault/DailyNotes/$FILENAME"
+
+createDaily() {
+  cat > $FILEPATH << EOF
+# Daily Note: $(date "+%A %d. %B %Y")
+## Goals
+[ ]
+
+## Tasks
+[ ]
+
+## Reflections
+-
+
+## Accomplishments
+-
+
+## Miscellaneous
+-
+
+EOF
+
+}
+
+if [ -f $FILEPATH ]; then
+  $EDITOR $FILEPATH
+else
+  # Create new daily note
+  createDaily
+  $EDITOR $FILEPATH
+fi

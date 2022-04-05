@@ -9,6 +9,9 @@ alias home='cd ~/'
 alias dot='cd ~/.dotfiles'
 alias vault='cd ~/vault'
 
+# Notes
+alias dn='dailyNote'
+
 # ls alias with color-mode
 alias lh='ls -lha --color=auto'
 alias ls='ls -Fh --color=auto'
