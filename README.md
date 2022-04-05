@@ -2,7 +2,7 @@
 
 This is the 2022 reboot of my dotfiles. Let's see where we end up.
 
-The core principal behind this is to make it as platform independent as possible, with minimal configuration of the terminal application, to provide similar experience disregarding driving os.
+The core principle behind this is to make it as platform independent as possible, with minimal configuration of the terminal application, to provide similar experience disregarding driving os.
 
 I'm trying out using GNU Stow to manage my dotfiles, rather than using my hackety hacks bootstrapping scripts. This will probably be a bumpy ride, but isn't that part of what makes this fun?
 
@@ -12,14 +12,24 @@ On iOS I use [Blink Shell](https://blink.sh).
 
 At the moment, I'm evaluating [Gruvbox](https://github.com/morhetz/gruvbox) as my color scheme. I used to use [Nord](https://www.nordtheme.com/), but my eyes are not what they used to, and I needed something new and contrasty.
 
+## Install Scripts
+Use the install scripts to install dependencies, to prepare a new system before using dotfiles. _Prompt will break if Oh My Posh is not present_. Config of fallback prompt is in the backlog. 🤓
+
+## Scripts
+
+The scripts folder si where I keep my small utility scripts, for day to day tasks.
+
+- fports - Opens ssh connetion to remote system, and forwards port from remote to localhost.
+- dailyNote - Looks for daily note in vault. If it exists, it opens in $EDITOR(AKA Neovim). If it's not present, a new note for today is created from template, before opening it in $EDITOR.
+
 ## Dependencies
 
 - [Homebrew](https://brew.sh/)
 - [Oh My Posh](https://ohmyposh.dev/)
 - [Vivid](https://github.com/sharkdp/vivid)
-- [Caskaydia Cove Nerd Font](https://www.nerdfonts.com/)
+- [Fira Code Nerd Font](https://www.nerdfonts.com/)
 - [GNU Stow](https://www.gnu.org/software/stow/)
-
+- [Node.js](https://nodejs.org/en/) - Not installed by install scripts. I use [NVM](https://github.com/nvm-sh/nvm) as version manager at the moment. I am considering switching to [Fast Node Manager(fnm)](https://github.com/Schniz/fnm), but haven't commited yet.
 ## Inspirations
 
 - DJ Adams, all the way! - [His dotfiles](https://github.com/qmacro/dotfiles).
