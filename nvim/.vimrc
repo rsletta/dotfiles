@@ -34,6 +34,9 @@ filetype plugin indent on
 " Set color scheme
 colorscheme gruvbox
 
+" Ignore files in search
+set wildignore+=**/node_modules/*
+set wildignore+=**/.git/*
 " Treesitter
 lua require'nvim-treesitter.configs'.setup { highlight = { enable = true }, incremental_selection = { enable = true }, textobjects = { enable = true }}
 
@@ -62,7 +65,8 @@ set splitbelow splitright
 set linebreak
 set noshowmode
 set clipboard=unnamedplus
-
+set scrolloff=10
+set noswapfile
 " See https://github.com/neovim/neovim/issues/5559#issuecomment-258143499
 let g:is_bash = 1
 
