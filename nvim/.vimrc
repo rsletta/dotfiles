@@ -16,7 +16,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'bfrg/vim-jq'
 Plug 'morhetz/gruvbox'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'bfrg/vim-jq'
@@ -67,6 +66,7 @@ set noshowmode
 set clipboard=unnamedplus
 set scrolloff=10
 set noswapfile
+
 " See https://github.com/neovim/neovim/issues/5559#issuecomment-258143499
 let g:is_bash = 1
 
@@ -105,9 +105,6 @@ autocmd FileType markdown let g:auto_save = 0
 " Integrate Limelight with Goyo
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
-
-" Coc config
-let g:coc_node_path = $NODE_PATH
 
 " Color name (:help cterm-colors) or ANSI code
 let g:limelight_conceal_ctermfg = 'gray'
