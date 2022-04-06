@@ -20,7 +20,8 @@ brew install bash \
              jq \
              figlet \
              vivid \
-             oh-my-posh
+             oh-my-posh \
+             ripgrep
 
 # Fetch Tmux plugin manager tpm
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm

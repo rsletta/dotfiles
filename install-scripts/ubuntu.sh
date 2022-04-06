@@ -27,4 +27,5 @@ brew tap jandedobbeleer/oh-my-posh
 brew install neovim \
              vivid \
              oh-my-posh \
-             git
+             git \
+             ripgrep
