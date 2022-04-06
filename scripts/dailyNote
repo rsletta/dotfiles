@@ -5,11 +5,12 @@ FILEPATH="$HOME/vault/DailyNotes/$FILENAME"
 createDaily() {
   cat > $FILEPATH << EOF
 # Daily Note: $(date "+%A %d. %B %Y")
+
 ## Goals
-[ ]
+- [ ]
 
 ## Tasks
-[ ]
+- [ ]
 
 ## Reflections
 -
