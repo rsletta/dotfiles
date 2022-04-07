@@ -63,9 +63,23 @@ set number relativenumber
 set splitbelow splitright
 set linebreak
 set noshowmode
-set clipboard=unnamedplus
 set scrolloff=10
 set noswapfile
+
+" Unified clipboard WSL2
+set clipboard+=unnamedplus
+let g:clipboard = {
+          \   'name': 'win32yank-wsl',
+          \   'copy': {
+          \      '+': '/usr/local/bin/win32yank.exe -i --crlf',
+          \      '*': '/usr/local/bin/win32yank.exe -i --crlf',
+          \    },
+          \   'paste': {
+          \      '+': '/usr/local/bin/win32yank.exe -o --lf',
+          \      '*': '/usr/local/bin/win32yank.exe -o --lf',
+          \   },
+          \   'cache_enabled': 0,
+          \ }
 
 " See https://github.com/neovim/neovim/issues/5559#issuecomment-258143499
 let g:is_bash = 1
