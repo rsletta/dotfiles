@@ -6,21 +6,32 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
+" Visuals
 Plug 'mhinz/vim-startify'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
-Plug 'bfrg/vim-jq'
 Plug 'morhetz/gruvbox'
-Plug 'bfrg/vim-jq'
+
+" Telescope stuff
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-file-browser.nvim'
+
+" Treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" Writing & Markdown
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 Plug 'preservim/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+" Tools
+Plug 'tpope/vim-surround'
+Plug 'bfrg/vim-jq'
+
+" Git
+Plug 'tpope/vim-fugitive'
 call plug#end()
 
 nnoremap <SPACE> <Nop>
@@ -38,6 +49,21 @@ set wildignore+=**/node_modules/*
 set wildignore+=**/.git/*
 " Treesitter
 lua require'nvim-treesitter.configs'.setup { highlight = { enable = true }, incremental_selection = { enable = true }, textobjects = { enable = true }}
+
+" Telescope config
+" Find files using Telescope command-line sugar.
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+nnoremap <leader>fw <cmd>Telescope find_files cwd=~/vault<cr>
+
+lua << EOF
+require('telescope').setup{
+
+}
+require("telescope").load_extension "file_browser"
+EOF
 
 " Disables automatic commenting on newline
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -105,20 +131,6 @@ nnoremap <leader>gb :Gblame<cr>
 nnoremap <leader>gd :Gvdiffsplit<cr>
 nnoremap <leader>gj :diffget //3<CR>
 nnoremap <leader>gf :diffget //2<CR>
-
-" Telescope config
-" Find files using Telescope command-line sugar.
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
-nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-nnoremap <leader>fw <cmd>Telescope find_files cwd=~/vault<cr>
-
-lua << EOF
-require('telescope').setup{
-
-}
-EOF
 
 " Improve search UI
 set hlsearch incsearch
