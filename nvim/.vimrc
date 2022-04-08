@@ -44,6 +44,9 @@ filetype plugin indent on
 " Set color scheme
 colorscheme gruvbox
 
+" Load personal lua config
+lua require('rsletta')
+
 " Ignore files in search
 set wildignore+=**/node_modules/*
 set wildignore+=**/.git/*
@@ -58,12 +61,6 @@ nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <leader>fw <cmd>Telescope find_files cwd=~/vault<cr>
 
-lua << EOF
-require('telescope').setup{
-
-}
-require("telescope").load_extension "file_browser"
-EOF
 
 " Disables automatic commenting on newline
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
