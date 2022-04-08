@@ -12,6 +12,9 @@ alias vault='cd ~/vault'
 # Notes
 alias dn='dailyNote'
 
+# Serve directory with http
+alias sd='python3 -m http.server'
+
 # ls alias with color-mode
 alias lh='ls -lha --color=auto'
 alias ls='ls -Fh --color=auto'
