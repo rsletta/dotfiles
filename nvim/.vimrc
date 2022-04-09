@@ -11,6 +11,7 @@ Plug 'mhinz/vim-startify'
 Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'morhetz/gruvbox'
+Plug 'kyazdani42/nvim-web-devicons'
 
 " Telescope stuff
 Plug 'nvim-lua/plenary.nvim'
@@ -41,7 +42,7 @@ set nocompatible
 syntax on
 filetype plugin indent on
 
-" Set color scheme
+" Color scheme config
 colorscheme gruvbox
 
 " Load personal lua config
