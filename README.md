@@ -30,6 +30,36 @@ The scripts folder si where I keep my small utility scripts, for day to day task
 - [Fira Code Nerd Font](https://www.nerdfonts.com/)
 - [GNU Stow](https://www.gnu.org/software/stow/)
 - [Node.js](https://nodejs.org/en/) - Not installed by install scripts. I use [NVM](https://github.com/nvm-sh/nvm) as version manager at the moment. I am considering switching to [Fast Node Manager(fnm)](https://github.com/Schniz/fnm), but haven't commited yet.
+
+## Neovim plugins
+### Visuals
+- [mhinz/vim-startify](https://github.com/mhinz/vim-startify)
+- [vim-airline/vim-airline](https://github.com/vim-airline/vim-airline)
+- [airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter)
+- [morhetz/gruvbox](https://github.com/morhetz/gruvbox)
+- [kyazdani42/nvim-web-devicons](https://github.com/kyazdani42/nvim-web-devicons)
+
+### Telescope stuff
+- [nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
+- [nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
+- [nvim-telescope/telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim)
+
+### Treesitter
+- [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
+
+### Writing & Markdown
+- [junegunn/goyo.vim](https://github.com/junegunn/goyo.vim)
+- [junegunn/limelight.vim](https://github.com/junegunn/limelight.vim)
+- [preservim/vim-markdown](https://github.com/preservim/vim-markdown)
+- [iamcco/markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim)
+
+### Tools
+- [tpope/vim-surround](https://github.com/tpope/vim-surround])
+- [bfrg/vim-jq](https://github.com/bfrg/vim-jq)
+
+### Git
+- [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive])
+
 ## Inspirations
 
 - DJ Adams, all the way! - [His dotfiles](https://github.com/qmacro/dotfiles).
