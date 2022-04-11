@@ -89,6 +89,7 @@ set linebreak
 set noshowmode
 set scrolloff=10
 set noswapfile
+set signcolumn=yes
 
 " Unified clipboard WSL2
 set clipboard+=unnamedplus
