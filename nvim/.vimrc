@@ -17,6 +17,7 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-file-browser.nvim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 " Treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -61,7 +62,7 @@ nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <leader>fw <cmd>Telescope find_files cwd=~/vault<cr>
-
+nnoremap <leader>fzb :Telescope current_buffer_fuzzy_find sorting_strategy=ascending prompt_position=top <cr>
 
 " Disables automatic commenting on newline
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -73,6 +74,7 @@ autocmd BufWritePre * %s/\s\+$//e
 autocmd FileType json syntax match Comment +\/\/.\+$+
 
 " Check leading whitespace
+let g:gruvbox_baby_telescope_theme = 1
 set listchars=tab:▸·,eol:¬
 nnoremap <silent> <leader>l :set list!<cr>
 
