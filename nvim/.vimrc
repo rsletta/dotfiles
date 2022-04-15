@@ -22,6 +22,9 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 " Treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
+" LSP
+Plug 'neovim/nvim-lspconfig'
+
 " Writing & Markdown
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
@@ -63,6 +66,11 @@ nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <leader>fw <cmd>Telescope find_files cwd=~/vault<cr>
 nnoremap <leader>fzb :Telescope current_buffer_fuzzy_find sorting_strategy=ascending prompt_position=top <cr>
+
+" Quick buffer navigation
+nnoremap <leader>bn :bnext<cr>
+nnoremap <leader>bp :bprevious<cr>
+nnoremap <leader>bs :buffers<cr>:buffer<space>
 
 " Disables automatic commenting on newline
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -127,11 +135,11 @@ nnoremap <leader>q :q<cr>
 nnoremap <leader>r :so $MYVIMRC<cr>
 
 " Git stuff
-nnoremap <leader>gs :G<cr>
-nnoremap <leader>gb :Gblame<cr>
-nnoremap <leader>gd :Gvdiffsplit<cr>
-nnoremap <leader>gj :diffget //3<CR>
-nnoremap <leader>gf :diffget //2<CR>
+nnoremap <leader>gis :G<cr>
+nnoremap <leader>gib :Gblame<cr>
+nnoremap <leader>gid :Gvdiffsplit<cr>
+nnoremap <leader>gij :diffget //3<CR>
+nnoremap <leader>gif :diffget //2<CR>
 
 " Improve search UI
 set hlsearch incsearch
