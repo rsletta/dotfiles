@@ -95,7 +95,7 @@ set expandtab
 set shiftwidth=2
 set number relativenumber
 set splitbelow splitright
-set linebreak
+set wrap linebreak nolist
 set noshowmode
 set scrolloff=10
 set noswapfile
