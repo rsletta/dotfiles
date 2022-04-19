@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-FILENAME=$(date "+%Y-%m-%d").md
+
+declare location="${0%/*}"
+
+source "$location/lib/yyyymmdd"
+
+FILENAME=$(yyyymmdd).md
 FILEPATH="$WRITING_PATH/DailyNotes/$FILENAME"
 
 createDaily() {
