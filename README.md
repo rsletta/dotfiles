@@ -23,6 +23,7 @@ _./_
 - fports - Opens ssh connetion to remote system, and forwards port from remote to localhost.
 - dailyNote - Looks for daily note in vault. If it exists, it opens in $EDITOR(AKA Neovim). If it's not present, a new note for today is created from template, before opening it in $EDITOR.
 - quickReadNote -Use `fzf` to select daily note, and display it using `bat`.
+- newTmuxSession - Creates a new tmux session from current directory, with provided name, or attach/switch to existing session if present.
 
 _./lib_:
 - slugify - Takes in a string, and transforms it into a slug. [DJ Adams](https://github.com/qmacro/dotfiles/blob/main/scripts/lib/slugify)
