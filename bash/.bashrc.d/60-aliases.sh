@@ -11,6 +11,7 @@ alias vault='cd ~/vault'
 
 # Notes
 alias dn='dailyNote'
+alias qrn='quickReadNote'
 
 # Serve directory with http
 alias sd='python3 -m http.server'
