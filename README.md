@@ -17,13 +17,14 @@ Use the install scripts to install dependencies, to prepare a new system before 
 
 ## Scripts
 
-The scripts folder si where I keep my small utility scripts, for day to day tasks.
+The scripts folder is where I keep my small utility scripts, for day to day tasks.
 
+_./_
 - fports - Opens ssh connetion to remote system, and forwards port from remote to localhost.
 - dailyNote - Looks for daily note in vault. If it exists, it opens in $EDITOR(AKA Neovim). If it's not present, a new note for today is created from template, before opening it in $EDITOR.
 - quickReadNote -Use `fzf` to select daily note, and display it using `bat`.
 
-__lib__:
+_./lib_:
 - slugify - Takes in a string, and transforms it into a slug. [DJ Adams](https://github.com/qmacro/dotfiles/blob/main/scripts/lib/slugify)
 - yyyymmdd - Returns correctly formated date. [DJ Adams](https://github.com/qmacro/dotfiles/blob/main/scripts/lib/yyyymmdd)
 
