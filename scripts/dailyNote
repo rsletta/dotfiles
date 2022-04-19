@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 FILENAME=$(date "+%Y-%m-%d").md
-FILEPATH="$HOME/vault/DailyNotes/$FILENAME"
+FILEPATH="$WRITING_PATH/DailyNotes/$FILENAME"
 
 createDaily() {
   cat > "$FILEPATH" << EOF
 # Daily Note: $(date "+%A %d. %B %Y")
 
 ## Goals
-- 
+-
 
 ## Tasks
 - [ ]
