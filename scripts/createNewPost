@@ -7,9 +7,6 @@ declare bloghome=$BLOG_PATH
 declare windowname="New blog post"
 declare location="${0%/*}"
 
-echo $bloghome
-echo $location
-
 source "$location/lib/slugify"
 source "$location/lib/yyyymmdd"
 
