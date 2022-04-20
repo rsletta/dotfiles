@@ -39,6 +39,15 @@ _./lib_:
 - [Node.js](https://nodejs.org/en/) - Not installed by install scripts. I use [NVM](https://github.com/nvm-sh/nvm) as version manager at the moment. I am considering switching to [Fast Node Manager(fnm)](https://github.com/Schniz/fnm), but haven't commited yet.
 - [asciinema](https://asciinema.org/)
 
+### Language Servers
+[Available language servers](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md)
+- [TypeScript/JavaScript](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#tsserver) - ```bash npm install -g typescript typescript-language-server ```
+- [JSON](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jsonls) - ```bash npm i -g vscode-langservers-extracted ```
+- [HTML](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#html) - ```bash npm i -g vscode-langservers-extracted ```
+- [CSS](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#cssls) - ```bash npm i -g vscode-langservers-extracted ```
+- [Vue.js](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#vuels) - ```bash npm install -g vls ```
+- [bash](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#bashls) - ```bash npm i -g bash-language-server ```
+
 ## Neovim plugins
 ### Visuals
 - [mhinz/vim-startify](https://github.com/mhinz/vim-startify)
@@ -52,6 +61,9 @@ _./lib_:
 - [nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 - [nvim-telescope/telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim)
 - [Plug 'nvim-telescope/telescope-fzf-native.nvim](https://github.com/nvim-telescope/telescope-fzf-native.nvim)
+
+### Language Server Protocol
+- [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
 
 ### Treesitter
 - [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
