@@ -83,8 +83,8 @@ I noticed DJ had split his bashrc into smaller scripts, and dynamically load the
 Contains system specific configuration, like NVM, FNM, etc. This file is not tracked, and needs to be maintained at system level.
 
 Exports:
-- BLOG_PATH=<path to rikosjett.com>
-- WRITING_PATH=<path to writing vault>
+- BLOG_PATH=\<path to rikosjett.com\>
+- WRITING_PATH=\<path to writing vault\>
 
 ## References (in no particular order)
 
