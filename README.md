@@ -37,6 +37,7 @@ _./lib_:
 - [Fira Code Nerd Font](https://www.nerdfonts.com/)
 - [GNU Stow](https://www.gnu.org/software/stow/)
 - [Node.js](https://nodejs.org/en/) - Not installed by install scripts. I use [NVM](https://github.com/nvm-sh/nvm) as version manager at the moment. I am considering switching to [Fast Node Manager(fnm)](https://github.com/Schniz/fnm), but haven't commited yet.
+- [asciinema](https://asciinema.org/)
 
 ## Neovim plugins
 ### Visuals

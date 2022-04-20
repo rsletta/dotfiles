@@ -29,6 +29,9 @@ alias t='tmux'
 alias v='nvim'
 alias vim='nvim'
 
+# Asciinema
+alias rec='asciinema rec'
+
 ## OS SPECIFIC ##
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # refresh shell
