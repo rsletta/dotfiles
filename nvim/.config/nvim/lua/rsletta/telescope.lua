@@ -1,6 +1,3 @@
--- Personal Neovim config
-require('lsp_config')
-
 -- Telescope setup
 local action_set = require('telescope.actions.set')
 require('telescope').setup{
