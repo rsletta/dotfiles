@@ -70,11 +70,11 @@ _./lib_:
 - [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 
 ### Autocompletion
-[hrsh7th/nvim-cmp]
-[hrsh7th/cmp-nvim-lsp]
-[L3MON4D3/LuaSnip]
-[saadparwaiz1/cmp_luasnip]
-[onsails/lspkind-nvim]
+- [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
+- [hrsh7th/cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp)
+- [L3MON4D3/LuaSnip](https://github.com/L3MON4D3/LuaSnip)
+- [saadparwaiz1/cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip)
+- [onsails/lspkind-nvim](https://github.com/onsails/lspkind-nvim)
 
 ### Writing & Markdown
 - [junegunn/goyo.vim](https://github.com/junegunn/goyo.vim)
