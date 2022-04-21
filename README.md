@@ -41,12 +41,12 @@ _./lib_:
 
 ### Language Servers
 [Available language servers](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md)
-- [TypeScript/JavaScript](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#tsserver) - ```bash npm install -g typescript typescript-language-server ```
-- [JSON](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jsonls) - ```bash npm i -g vscode-langservers-extracted ```
-- [HTML](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#html) - ```bash npm i -g vscode-langservers-extracted ```
-- [CSS](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#cssls) - ```bash npm i -g vscode-langservers-extracted ```
-- [Vue.js](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#vuels) - ```bash npm install -g vls ```
-- [bash](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#bashls) - ```bash npm i -g bash-language-server ```
+- [TypeScript/JavaScript](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#tsserver) - ```$ npm install -g typescript typescript-language-server ```
+- [JSON](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jsonls) - ```npm i -g vscode-langservers-extracted ```
+- [HTML](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#html) - ```npm i -g vscode-langservers-extracted ```
+- [CSS](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#cssls) - ```npm i -g vscode-langservers-extracted ```
+- [Vue.js](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#vuels) - ```npm install -g vls ```
+- [bash](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#bashls) - ```npm i -g bash-language-server ```
 
 ## Neovim plugins
 ### Visuals
