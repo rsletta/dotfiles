@@ -47,6 +47,7 @@ _./lib_:
 - [CSS](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#cssls) - ```npm i -g vscode-langservers-extracted ```
 - [Vue.js](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#vuels) - ```npm install -g vls ```
 - [bash](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#bashls) - ```npm i -g bash-language-server ```
+- [eslint](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#eslint) - ```npm i -g vscode-langservers-extracted```
 
 ## Neovim plugins
 ### Visuals
@@ -67,6 +68,13 @@ _./lib_:
 
 ### Treesitter
 - [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
+
+### Autocompletion
+[hrsh7th/nvim-cmp]
+[hrsh7th/cmp-nvim-lsp]
+[L3MON4D3/LuaSnip]
+[saadparwaiz1/cmp_luasnip]
+[onsails/lspkind-nvim]
 
 ### Writing & Markdown
 - [junegunn/goyo.vim](https://github.com/junegunn/goyo.vim)

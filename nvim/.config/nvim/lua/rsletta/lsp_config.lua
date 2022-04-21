@@ -10,7 +10,8 @@ local servers = {
   "html",
   "cssls",
   "vuels",
-  "bashls"
+  "bashls",
+  "eslint"
 }
 
 -- Better autocompletion experience
