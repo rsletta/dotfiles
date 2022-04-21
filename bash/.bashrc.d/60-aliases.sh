@@ -21,13 +21,10 @@ alias lh='ls -lha --color=auto'
 alias ls='ls -Fh --color=auto'
 alias l.='ls -d .* --color=auto'
 
-
-# load tmux
-alias t='tmux'
-
-# open neovim
-alias v='nvim'
+# the great switch
 alias vim='nvim'
+alias vi='nvim'
+alias cat='bat'
 
 # Asciinema
 alias rec='asciinema rec'
