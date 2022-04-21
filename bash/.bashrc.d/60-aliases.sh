@@ -9,6 +9,11 @@ alias '~'='cd ~/'
 alias dot='cd ~/.dotfiles'
 alias vault='cd ~/vault'
 
+# Git
+alias gs='git status'
+alias gc='git commit'
+alias gd='git diff'
+
 # Notes
 alias dn='dailyNote'
 alias qrn='quickReadNote'
