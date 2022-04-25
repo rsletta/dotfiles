@@ -100,11 +100,12 @@ set expandtab
 set shiftwidth=2
 set number relativenumber
 set splitbelow splitright
-set wrap linebreak nolist
 set noshowmode
 set scrolloff=10
 set noswapfile
 set signcolumn=yes
+" Soft wrap lines. Keeps indentation of parent. Does not split words.
+set wrap linebreak nolist breakindent formatoptions=1 lbr
 
 " Unified clipboard WSL2
 set clipboard+=unnamedplus
