@@ -95,47 +95,35 @@ for _, ls in ipairs(servers) do
   }
 end
 
--- TypeScript / JavaScript
-nvim_lsp.tsserver.setup{
-  on_attach = function()
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, {buffer=0})
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, {buffer=0})
-  end,
-}
-
--- JSON
-require'lspconfig'.jsonls.setup{
-  on_attach = function()
-    print('JSON ls attached')
-  end,
-}
-
--- HTML
-require'lspconfig'.html.setup{
-  on_attach = function()
-    print('html ls attached')
-  end,
-}
-
--- CSS
-require'lspconfig'.cssls.setup{
-  on_attach = function()
-    print('cssls attached')
-  end,
-}
-
--- Vue.js
-require'lspconfig'.vuels.setup{
-  on_attach = function()
-    print('Vuels attached')
-  end,
-}
-
--- bash
-require'lspconfig'.bashls.setup{
-  on_attach = function()
-    print('bashls attached')
-  end,
-}
-
-
+-- Lua setup, because it's special
+local runtime_path = vim.split(package.path, ";")
+table.insert(runtime_path, "lua/?.lua")
+table.insert(runtime_path, "lua/?/init.lua")
+nvim_lsp.sumneko_lua.setup(
+  {
+    capabilities = nvim_cmp_capabilities,
+    on_attach = on_attach,
+    settings = {
+      Lua = {
+        runtime = {
+          -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+          version = "LuaJIT",
+          -- Setup your lua path
+          path = runtime_path
+        },
+        diagnostics = {
+          -- Get the language server to recognize the `vim` global
+          globals = {"vim"}
+        },
+        workspace = {
+          -- Make the server aware of Neovim runtime files
+          library = vim.api.nvim_get_runtime_file("", true)
+        },
+        -- Do not send telemetry data containing a randomized but unique identifier
+        telemetry = {
+          enable = false
+        }
+      }
+    }
+  }
+)
