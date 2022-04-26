@@ -55,6 +55,9 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+    { name = 'treesitter' },
+    { name = 'emoji' },
+    { name = 'npm', keyword_length = 4 }
   },
 }
 

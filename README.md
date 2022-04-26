@@ -72,15 +72,19 @@ _./lib_:
 ### Autocompletion
 - [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 - [hrsh7th/cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp)
+- [hrsh7th/cmp-emoji](https://github.com/hrsh7th/cmp-emoji)
 - [L3MON4D3/LuaSnip](https://github.com/L3MON4D3/LuaSnip)
 - [saadparwaiz1/cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip)
 - [onsails/lspkind-nvim](https://github.com/onsails/lspkind-nvim)
+- [ray-x/cmp-treesitter](https://github.com/ray-x/cmp-treesitter)
+- [David-Kunz/cmp-npm](https://github.com/David-Kunz/cmp-npm)
 
 ### Writing & Markdown
 - [junegunn/goyo.vim](https://github.com/junegunn/goyo.vim)
 - [junegunn/limelight.vim](https://github.com/junegunn/limelight.vim)
 - [preservim/vim-markdown](https://github.com/preservim/vim-markdown)
 - [iamcco/markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim)
+- [godlygeek/tabular](https://github.com/godlygeek/tabular)
 
 ### Tools
 - [tpope/vim-surround](https://github.com/tpope/vim-surround])

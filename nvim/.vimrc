@@ -28,15 +28,19 @@ Plug 'neovim/nvim-lspconfig'
 " Autocompletion
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-emoji'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'onsails/lspkind-nvim'
+Plug 'ray-x/cmp-treesitter'
+Plug 'David-Kunz/cmp-npm'
 
 " Writing & Markdown
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'preservim/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'godlygeek/tabular'
 
 " Tools
 Plug 'tpope/vim-surround'
@@ -65,12 +69,13 @@ set wildignore+=**/.git/*
 
 " Telescope config
 " Find files using Telescope command-line sugar.
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fx <cmd>Telescope file_browser<cr>
+nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <leader>fw <cmd>Telescope find_files cwd=~/vault<cr>
-nnoremap <leader>fzb :Telescope current_buffer_fuzzy_find sorting_strategy=ascending prompt_position=top <cr>
+nnoremap <leader>fzb <cmd>Telescope current_buffer_fuzzy_find sorting_strategy=ascending prompt_position=top <cr>
 
 " Quick buffer navigation
 nnoremap <leader>bn :bnext<cr>
