@@ -40,7 +40,7 @@ _./lib_:
 - [asciinema](https://asciinema.org/)
 
 ## Oh My Posh Theme
-I run a minimal theme I've called "[Oh My Gruvbox](./oh-my-posh)", inspired by several of the [existing minimal themes](https://ohmyposh.dev/docs/themes). It is a work in progress, with color palette from [morhetz/gruvbox](https://github.com/morhetz/gruvbox).
+I run a minimalistic theme(that requires Nerd Fonts) I've called "[Oh My Gruvbox](./oh-my-posh)", inspired by several of the [existing minimal themes](https://ohmyposh.dev/docs/themes). It is a work in progress, with color palette from [morhetz/gruvbox](https://github.com/morhetz/gruvbox).
 ![Demo from node.js directory](./ohmygruvbox-nodejs.png)
 ![Demo from .Net directory](./ohmygruvbox-dotnet.png)
 
