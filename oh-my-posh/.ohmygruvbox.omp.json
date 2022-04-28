@@ -10,7 +10,7 @@
             "style": "full"
           },
           "style": "plain",
-          "template": "<#83a598>\u250f </><#ffaf00>{{ .Path }}</> ",
+          "template": "<#83a598>\u250f </><#ffaf00>{{ .Path }} </>",
           "type": "path"
         },
         {
@@ -20,14 +20,14 @@
             "fetch_version": true
           },
           "style": "plain",
-          "template": " \uf898 {{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }} ",
+          "template": "\uf898 {{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }}",
           "type": "node"
         },
         {
           "foreground": "#83a598",
           "powerline_symbol": "\ue0b0",
           "style": "plain",
-          "template": "  \ue70c {{ .Full }} ",
+          "template": " \ue70c {{ .Full }} ",
           "type": "dotnet"
         },
         {
@@ -37,7 +37,7 @@
             "fetch_version": true
           },
           "style": "plain",
-          "template": " \ue626 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ",
+          "template": "\ue626 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}",
           "type": "go"
         },
         {
@@ -48,7 +48,7 @@
             "fetch_virtual_env": false
           },
           "style": "plain",
-          "template": " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ",
+          "template": "\ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}",
           "type": "python"
         },
         {
@@ -59,7 +59,7 @@
             "fetch_version": true
           },
           "style": "plain",
-          "template": " \ue791 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ",
+          "template": "\ue791 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}",
           "type": "ruby"
         },
         {
@@ -70,7 +70,7 @@
             "fetch_version": false
           },
           "style": "plain",
-          "template": " \uf0e7{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ",
+          "template": "\uf0e7  {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ",
           "type": "azfunc"
         },
         {
@@ -83,10 +83,16 @@
           "properties": {
             "display_default": false
           },
-          "style": "powerline",
-          "template": " \ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} ",
+          "style": "plain",
+          "template": "\ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} ",
           "type": "aws"
-        },
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "right",
+      "segments": [
         {
           "foreground": "#b8bb26",
           "foreground_templates": [
@@ -102,20 +108,9 @@
             "fetch_upstream_icon": true
           },
           "style": "plain",
-          "template": " <#83a598>[</>{{ .UpstreamIcon }}{{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uf692 {{ .StashCount }}{{ end }}<#83a598>]</> ",
+          "template": " <#83a598>[</>{{ .UpstreamIcon }}{{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uf692 {{ .StashCount }}{{ end }}<#83a598>]</>",
           "trailing_diamond": "\ue0b4",
           "type": "git"
-        },
-        {
-          "foreground": "#8ec07c",
-          "foreground_templates": ["{{ if gt .Code 0 }}#fb4934{{ end }}"],
-          "powerline_symbol": "\ue0b0",
-          "properties": {
-            "always_enabled": true
-          },
-          "style": "plain",
-          "template": " \ue23a ",
-          "type": "exit"
         }
       ],
       "type": "prompt"
@@ -132,9 +127,13 @@
         },
         {
           "foreground": "#83a598",
+          "foreground_templates": ["{{ if gt .Code 0 }}#fb4934{{ end }}"],
           "style": "plain",
-          "template": "\u2516#",
-          "type": "text"
+          "properties": {
+            "always_enabled": true
+          },
+          "template": "<#83a598>\u2516</>#",
+          "type": "exit"
         }
       ],
       "type": "prompt"
