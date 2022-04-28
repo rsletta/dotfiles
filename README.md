@@ -39,6 +39,11 @@ _./lib_:
 - [Node.js](https://nodejs.org/en/) - Not installed by install scripts. I use [NVM](https://github.com/nvm-sh/nvm) as version manager at the moment. I am considering switching to [Fast Node Manager(fnm)](https://github.com/Schniz/fnm), but haven't commited yet.
 - [asciinema](https://asciinema.org/)
 
+## Oh My Posh Theme
+I run a minimal theme I've called "[Oh My Gruvbox](./oh-my-posh)", inspired by several of the [existing minimal themes](https://ohmyposh.dev/docs/themes). It is a work in progress, with color palette from [morhetz/gruvbox](https://github.com/morhetz/gruvbox).
+![Demo from node.js directory](./ohmygruvbox-nodejs.png)
+![Demo from .Net directory](./ohmygruvbox-dotnet.png)
+
 ### Language Servers
 [Available language servers](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md)
 - [TypeScript/JavaScript](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#tsserver) - ```$ npm install -g typescript typescript-language-server ```
