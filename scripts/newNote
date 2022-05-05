@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# Generate new note.
+# Arguments:
+# "title for note"
+declare inbox=$WRITING_PATH/Inbox
+declare windowname="New note"
+declare location="${0%/*}"
+
+source "$location/lib/slugify"
+source "$location/lib/yyyymmdd"
+
+set -euo pipefail
+shopt -s extglob
+
+# exit with argument as error message
+die() { echo "$1" && exit 1; }
+
+create_file() {
+  local filename=$1
+  local title=$2
+
+  # create new from template
+  cat << EO_TEMPLATE > "$filename"
+# $title
+Date: $(yyyymmdd)
+EO_TEMPLATE
+}
+
+generate_filename() {
+  local title=$1
+
+  echo "$inbox/$(yyyymmdd)-$(slugify "$title").md"
+}
+
+main() {
+  local title filename
+
+  #Abort if tmux isn't running
+  [[ -n $TMUX ]] || die "tmux isn't running"
+
+  # Abort if no title is provided
+  : "${1:?Specify a note title}"
+
+  filename="$(generate_filename "$1")"
+
+  # Create the blog post if it does not already exist
+  [[ ! -f "$filename" ]] && create_file "$filename" "$@"
+
+  # TODO: fix new tmux window in current session
+  # Opens new draft in neovim
+  cd "$inbox"
+  nvim "$filename"
+}
+
+main "$@"

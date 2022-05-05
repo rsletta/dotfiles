@@ -17,6 +17,7 @@ alias gd='git diff'
 # Notes
 alias dn='dailyNote'
 alias qrn='quickReadNote'
+alias nn='newNote'
 
 # Serve directory with http
 alias sd='python3 -m http.server'
