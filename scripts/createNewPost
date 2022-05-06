@@ -10,7 +10,7 @@ declare location="${0%/*}"
 source "$location/lib/slugify"
 source "$location/lib/yyyymmdd"
 
-set -euo pipefail
+set -eo pipefail
 shopt -s extglob
 
 # exit with argument as error message
