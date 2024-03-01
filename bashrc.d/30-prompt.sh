@@ -36,7 +36,7 @@ __prompt_command() {
   local WHITEBOLD="\[\033[1;37m\]"
   local RESETCOLOR="\[\e[00m\]"
 
-  export PS1="$YELLOW[\#]$RESETCOLOR $BLUE\u$PURPLE@$CYAN\h: $GREEN\w$RESETCOLOR$(__git_ps1 "(%s)")\n$GREEN → $RESETCOLOR"
+  export PS1="$YELLOW[\#]$RESETCOLOR - $RED('$(arch)')$RESETCOLOR $BLUE\u$PURPLE@$CYAN\h: $GREEN\w$RESETCOLOR$(__git_ps1 "(%s)")\n$GREEN → $RESETCOLOR"
 
   export PS2=" | → $RESETCOLOR"
 }
