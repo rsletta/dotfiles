@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# Generate new blog post draft.
+# Arguments:
+# "title for post" tag1 tag2 tag3 tag4 etc
+declare bloghome=$BLOG_PATH
+declare windowname="New blog post"
+declare location="${0%/*}"
+
+source "$location/lib/slugify"
+source "$location/lib/yyyymmdd"
+
+set -eo pipefail
+shopt -s extglob
+
+# exit with argument as error message
+die() { echo "$1" && exit 1; }
+
+create_file() {
+  local filename=$1
+  local title=$2
+  # remove first two arguments from list, to leave only tags
+  shift
+  shift
+  local tags=("$@")
+
+  # create new from template
+  cat << EO_TEMPLATE > "$filename"
+---
+title: $title
+date: $(yyyymmdd)
+draft: true
+EO_TEMPLATE
+
+# Add tags if present
+  if [[ "${#tags[@]}" -gt 0 ]]; then
+    echo "tags:" >> "$filename"
+    for tag in "${tags[@]}"; do
+      echo "  - $tag" >> "$filename"
+    done
+  fi
+# End front matter
+echo "---" >> "$filename"
+
+}
+
+generate_filename() {
+  local title=$1
+
+  echo "$bloghome/content/post/$(yyyymmdd)-$(slugify "$title").md"
+}
+
+main() {
+  local title filename
+
+  #Abort if tmux isn't running
+  [[ -n $TMUX ]] || die "tmux isn't running"
+
+  # Abort if no title is provided
+  : "${1:?Specify blog post title}"
+
+  filename="$(generate_filename "$1")"
+
+  # Create the blog post if it does not already exist
+  [[ ! -f "$filename" ]] && create_file "$filename" "$@"
+
+  # TODO: fix new tmux window in current session
+  # Opens new draft in neovim
+  cd "$bloghome"
+  nvim "$filename"
+}
+
+main "$@"

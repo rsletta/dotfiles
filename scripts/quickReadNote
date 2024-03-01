@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Use fzf and bat to quick read daily note
+clear
+bat $WRITING_PATH/DailyNotes/$(ls $WRITING_PATH/DailyNotes | fzf)
