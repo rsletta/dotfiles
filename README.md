@@ -1,19 +1,15 @@
 # My personal dot file repository
 
-This is the 2022 reboot of my dotfiles. Let's see where we end up.
+It's that time again, and this is the Late 2024 reboot of my dotfiles. Let's see where we end up this time.
 
-The core principle behind this is to make it as platform independent as possible, with minimal configuration of the terminal application, to provide similar experience disregarding driving os.
+The core principle behind this was to make it as platform independent as possible, with minimal configuration of the terminal application, to provide similar experience disregarding driving os. I have since realized that this was over complicating things, and this time around I will start by tearing it all down, and build it up again, with a focus on macOS which is my primary development environment. While is still use Linux on all servers, I do see that the need for an overly complex setup is not there. To serve the needs there, I will rather look into a more minimal setup that I can pull in there when needed.
 
-I'm trying out using GNU Stow to manage my dotfiles, rather than using my hackety hacks bootstrapping scripts. This will probably be a bumpy ride, but isn't that part of what makes this fun?
+While I still want to try out using GNU Stow to manage my dotfiles, rather than using my hackety hacks bootstrapping scripts, I will start by manually sourcing stuff in. This will probably be a bumpy ride, but isn't that part of what makes this fun?
 
-macOS terminal client of choice is [iTerm 2](https://iterm2.com).
-Ubuntu on Windows 10 runs through [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10), with [Microsoft Terminal](https://github.com/Microsoft/Terminal).
-On iOS I use [Blink Shell](https://blink.sh).
+macOS terminal client of choice is still [iTerm 2](https://iterm2.com).
+On iOS I use [Blink Shell](https://blink.sh), when ssh'ing into the Linux servers.
 
-At the moment, I'm evaluating [Gruvbox](https://github.com/morhetz/gruvbox) as my color scheme. I used to use [Nord](https://www.nordtheme.com/), but my eyes are not what they used to, and I needed something new and contrasty.
-
-## Install Scripts
-Use the install scripts to install dependencies, to prepare a new system before using dotfiles. _Prompt will break if Oh My Posh is not present_. Config of fallback prompt is in the backlog. 🤓
+At the moment, I have reset all colors to defaults, until I land on something I have been using [Gruvbox](https://github.com/morhetz/gruvbox) as my color scheme for some time. I've also used to use [Nord](https://www.nordtheme.com/), but my eyes are not what they used to, and I needed something new and contrasty. I had a quick look at [catppucin](https://catppuccin.com), and while it looks nice, I couldn't quite get the right feel for it. I might revisit it later, but I still search for the a color scheme that both looks good, and is easy on the eyes contrast wise.
 
 ## Scripts
 
@@ -30,19 +26,15 @@ _./lib_:
 - yyyymmdd - Returns correctly formated date. [DJ Adams](https://github.com/qmacro/dotfiles/blob/main/scripts/lib/yyyymmdd)
 
 ## Dependencies
-
 - [Homebrew](https://brew.sh/)
 - [Oh My Posh](https://ohmyposh.dev/)
-- [Vivid](https://github.com/sharkdp/vivid)
-- [Fira Code Nerd Font](https://www.nerdfonts.com/)
-- [GNU Stow](https://www.gnu.org/software/stow/)
-- [Node.js](https://nodejs.org/en/) - Not installed by install scripts. I use [NVM](https://github.com/nvm-sh/nvm) as version manager at the moment. I am considering switching to [Fast Node Manager(fnm)](https://github.com/Schniz/fnm), but haven't commited yet.
-- [asciinema](https://asciinema.org/)
 
 ## Oh My Posh Theme
-I run a minimalistic theme(that requires Nerd Fonts) I've called "[Oh My Gruvbox](./oh-my-posh)", inspired by several of the [existing minimal themes](https://ohmyposh.dev/docs/themes). It is a work in progress, with color palette from [morhetz/gruvbox](https://github.com/morhetz/gruvbox).
+I used to run a minimalistic theme(that requires Nerd Fonts) I've called "[Oh My Gruvbox](./oh-my-posh)", inspired by several of the [existing minimal themes](https://ohmyposh.dev/docs/themes). It was a work in progress, with color palette from [morhetz/gruvbox](https://github.com/morhetz/gruvbox).
 ![Demo from node.js directory](./ohmygruvbox-nodejs.png)
 ![Demo from .Net directory](./ohmygruvbox-dotnet.png)
+
+I have not landed on a new one yet, so I'll keep this for reference for now.
 
 ### Language Servers
 [Available language servers](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md)
@@ -105,7 +97,7 @@ I run a minimalistic theme(that requires Nerd Fonts) I've called "[Oh My Gruvbox
 
 ### _bashrc.d_
 
-I noticed DJ had split his bashrc into smaller scripts, and dynamically load them from bashrc.d. That is a great way to prevent bashrc to grow infinitely. I'm on board with it. 😃
+I noticed DJ had split his bashrc into smaller scripts, and dynamically load them from bashrc.d. That is a great way to prevent bashrc to grow infinitely. I'm on board with it.  😃
 
 ### _.extrasrc_
 

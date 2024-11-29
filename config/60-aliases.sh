@@ -35,16 +35,10 @@ alias cat='bat'
 # Asciinema
 alias rec='asciinema rec'
 
-## OS SPECIFIC ##
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    # refresh shell
-    alias reload='source ~/.bash_profile'
-elif [[ "$OSTYPE" == "linux-gnu" ]]; then
-    # refresh shell
-    alias reload='source ~/.bashrc'
-fi
+# refresh shell
+alias reload='source ~/.zshrc'
 
-# Some arch hacks
+# Some arch hacks to force arm64 or x86_64
 alias arm="env /usr/bin/arch -arm64 /bin/bash --login"
 alias intel="env /usr/bin/arch -x86_64 /bin/bash --login"
 

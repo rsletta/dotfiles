@@ -1,9 +1,0 @@
-[user]
-	name = Ronnie André Bjørvik Sletta
-	email = rsletta@gmail.com
-[pull]
-	rebase = false
-[color]
-	ui = auto
-[init]
-	defaultBranch = main
