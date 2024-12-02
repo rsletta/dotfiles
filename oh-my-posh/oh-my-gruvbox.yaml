@@ -1,0 +1,100 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
+
+console_title_template: "{{ .Folder }}"
+blocks:
+- type: prompt
+  alignment: left
+  segments:
+  - template: "{{ if .WSL }}WSL at{{ end }} {{.Icon}} "
+    foreground: "#ffffff"
+    background: "#3A3A3A"
+    type: os
+    style: powerline
+  - properties:
+      style: full
+    template: " {{ .Path }} "
+    foreground: "#282828"
+    powerline_symbol: 
+    background: "#458588"
+    type: path
+    style: powerline
+  - properties:
+      branch_icon: "\ue0a0 "
+      branch_identical_icon: ●
+      branch_max_length: 25.0
+      fetch_stash_count: true
+      fetch_status: true
+    leading_diamond: 
+    trailing_diamond: 
+    template: " {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \ueb4b {{ .StashCount }}{{ end }} "
+    foreground: "#282828"
+    powerline_symbol: 
+    background: "#98971A"
+    type: git
+    style: powerline
+    background_templates:
+    - "{{ if or (.Working.Changed) (.Staging.Changed) }}#FF9248{{ end }}"
+    - "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#ff4500{{ end }}"
+    - "{{ if gt .Ahead 0 }}#B388FF{{ end }}"
+    - "{{ if gt .Behind 0 }}#B388FF{{ end }}"
+  - properties:
+      fetch_version: true
+    template: " \ue626 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} "
+    foreground: "#111111"
+    powerline_symbol: 
+    background: "#8ED1F7"
+    type: go
+    style: powerline
+  - properties:
+      fetch_version: true
+    template: " \ue624 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} "
+    foreground: "#111111"
+    powerline_symbol: 
+    background: "#4063D8"
+    type: julia
+    style: powerline
+  - properties:
+      display_mode: files
+      fetch_virtual_env: false
+    template: " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} "
+    foreground: "#111111"
+    powerline_symbol: 
+    background: "#FFDE57"
+    type: python
+    style: powerline
+  - properties:
+      display_mode: files
+      fetch_version: true
+    template: " \ue791 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} "
+    foreground: "#ffffff"
+    powerline_symbol: 
+    background: "#AE1401"
+    type: ruby
+    style: powerline
+  - properties:
+      display_mode: files
+      fetch_version: false
+    template: " \uf0e7{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} "
+    foreground: "#ffffff"
+    powerline_symbol: 
+    background: "#FEAC19"
+    type: azfunc
+    style: powerline
+  - properties:
+      display_default: false
+    template: " \ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} "
+    foreground: "#ffffff"
+    powerline_symbol: 
+    type: aws
+    style: powerline
+    background_templates:
+    - "{{if contains \"default\" .Profile}}#FFA400{{end}}"
+    - "{{if contains \"jan\" .Profile}}#f1184c{{end}}"
+  - template: " \uf0ad "
+    foreground: "#111111"
+    powerline_symbol: 
+    background: "#ffff66"
+    type: root
+    style: powerline
+version: 3
+final_space: true

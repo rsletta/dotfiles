@@ -1,0 +1,145 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
+
+version: 3
+final_space: true
+console_title_template: "{{ .Shell }} in {{ .Folder }}"
+blocks:
+  - type: prompt
+    alignment: left
+    segments:
+      - type: text
+        style: plain
+        template: "<#83a598>┏━</>"
+      - type: kubectl
+        properties:
+          context_aliases:
+            arn:aws:eks:eu-north-1:891377046560:cluster/eks-cluster-dev: spenn-dev
+            arn:aws:eks:eu-north-1:891377202159:cluster/eks-cluster-test: spenn-test
+            arn:aws:eks:eu-north-1:975050041551:cluster/eks-cluster-prod: spenn-prod
+        style: plain
+        template: "\U000F10FE {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}}"
+        foreground: "#336ce5"
+      - type: node
+        style: plain
+        properties:
+          cache_duration: "24h"
+          fetch_version: true
+        template: " \ued0d {{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }}"
+        foreground: "#5ea04e"
+      - type: java
+        style: plain
+        properties:
+          cache_duration: "24h"
+          fetch_version: true
+        template: " <#e76f02>\ue738</> {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}"
+        foreground: "#5382a1"
+      - type: kotlin
+        style: plain
+        properties:
+          cache_duration: "24h"
+          fetch_version: true
+        template: " \U000f1219 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}"
+        foreground: "#3f297f"
+      - type: dotnet
+        style: plain
+        properties:
+          cache_duration: "24h"
+          fetch_version: true
+        template: " \ue70c {{ .Full }} "
+        foreground: "#83a598"
+      - type: go
+        style: plain
+        properties:
+          cache_duration: "24h"
+          fetch_version: true
+        template: " \ue724 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}"
+        foreground: "#689d6a"
+      - type: python
+        style: plain
+        properties:
+          cache_duration: "24h"
+          display_mode: files
+          fetch_virtual_env: false
+        template: " <#3b77a7>\ue73c</> {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}"
+        foreground: "#ffe365"
+      - type: ruby
+        style: plain
+        properties:
+          cache_duration: "24h"
+          display_mode: files
+          fetch_version: true
+        template: "{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}"
+        foreground: "#b16286"
+      - type: azfunc
+        style: plain
+        properties:
+          cache_duration: "24h"
+          display_mode: files
+          fetch_version: false
+        template: "\uf0e7  {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} "
+        foreground: "#83a598"
+      - type: aws
+        style: plain
+        properties:
+          cache_duration: "30s"
+        template: "\ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} "
+        foreground: "#ebdbb2"
+        background_templates:
+          - '{{if contains "default" .Profile}}#d65d0e{{end}}'
+          - '{{if contains "jan" .Profile}}#fe8019{{end}}'
+
+  - type: prompt
+    alignment: left
+    segments:
+      - type: text
+        style: plain
+        template: "<#83a598>┣ </>"
+      - type: path
+        style: plain
+        properties:
+          cache_duration: none
+          home_icon: "~"
+          style: full
+          folder_separator_template: "<#83a598>/</>"
+        template: "<#ffaf00>{{ .Path }}</>"
+    newline: true
+
+  - type: prompt
+    alignment: right
+    overflow: hide
+    segments:
+      - type: git
+        style: plain
+        properties:
+          branch_max_length: 25.0
+          cache_duration: none
+          fetch_stash_count: true
+          fetch_status: true
+          fetch_upstream_icon: true
+        template: " <#83a598>[</>{{ .UpstreamIcon }} {{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }}|{{ end }}{{ if .Staging.Changed }}\uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uf692 {{ .StashCount }}{{ end }}<#83a598>]</>"
+        foreground: "#b8bb26"
+        foreground_templates:
+          - "{{ if or (.Working.Changed) (.Staging.Changed) }}#fb4934{{ end }}"
+          - "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#d79921{{ end }}"
+          - "{{ if gt .Ahead 0 }}#d79921{{ end }}"
+          - "{{ if gt .Behind 0 }}#d79921{{ end }}"
+
+  - type: prompt
+    alignment: left
+    segments:
+      - properties:
+          cache_duration: none
+        template: "\ue3bf "
+        foreground: "#fb4934"
+        type: root
+        style: plain
+      - properties:
+          always_enabled: true
+          cache_duration: none
+        template: "┗━#"
+        foreground: "#83a598"
+        type: text
+        style: plain
+        foreground_templates:
+          - "{{ if gt .Code 0 }}#fb4934{{ end }}"
+    newline: true
