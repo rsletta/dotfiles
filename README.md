@@ -6,10 +6,11 @@ The core principle behind this was to make it as platform independent as possibl
 
 While I still want to try out using GNU Stow to manage my dotfiles, rather than using my hackety hacks bootstrapping scripts, I will start by manually sourcing stuff in. This will probably be a bumpy ride, but isn't that part of what makes this fun?
 
-macOS terminal client of choice is still [iTerm 2](https://iterm2.com).
+~macOS terminal client of choice is still [iTerm 2](https://iterm2.com).~
+I have changed terminal client this time around and started using [Wez's Terminal Emulator(wezterm)](https://wezfurlong.org/wezterm/), which is using lua for [configuration](./wezterm).
 On iOS I use [Blink Shell](https://blink.sh), when ssh'ing into the Linux servers.
 
-At the moment, I have reset all colors to defaults, until I land on something I have been using [Gruvbox](https://github.com/morhetz/gruvbox) as my color scheme for some time. I've also used to use [Nord](https://www.nordtheme.com/), but my eyes are not what they used to, and I needed something new and contrasty. I had a quick look at [catppucin](https://catppuccin.com), and while it looks nice, I couldn't quite get the right feel for it. I might revisit it later, but I still search for the a color scheme that both looks good, and is easy on the eyes contrast wise.
+At the moment, I have been using [Gruvbox](https://github.com/morhetz/gruvbox) as my color scheme for some time. I've also used to use [Nord](https://www.nordtheme.com/), but my eyes are not what they used to, and I needed something new and contrasty. I had a quick look at [catppucin](https://catppuccin.com), and while it looks nice, I couldn't quite get the right feel for it. I might revisit it later, but I still search for the a color scheme that both looks good, and is easy on the eyes contrast wise.
 
 ## Scripts
 
@@ -26,27 +27,21 @@ _./lib_:
 - yyyymmdd - Returns correctly formated date. [DJ Adams](https://github.com/qmacro/dotfiles/blob/main/scripts/lib/yyyymmdd)
 
 ## Dependencies
-- [Homebrew](https://brew.sh/)
+- [Homebrew](https://brew.sh/)(macOS)
 - [Oh My Posh](https://ohmyposh.dev/)
 
 ## Oh My Posh Theme
 I used to run a minimalistic theme(that requires Nerd Fonts) I've called "[Oh My Gruvbox](./oh-my-posh)", inspired by several of the [existing minimal themes](https://ohmyposh.dev/docs/themes). It was a work in progress, with color palette from [morhetz/gruvbox](https://github.com/morhetz/gruvbox).
-![Demo from node.js directory](./ohmygruvbox-nodejs.png)
-![Demo from .Net directory](./ohmygruvbox-dotnet.png)
 
-I have not landed on a new one yet, so I'll keep this for reference for now.
+I have not landed on a new one yet, so I'll keep this for reference for now. The new WIP is the one called "oh-my-rikosjett".
 
 ### Language Servers
 [Available language servers](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md)
-- [TypeScript/JavaScript](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#tsserver) - ```$ npm install -g typescript typescript-language-server ```
-- [JSON](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jsonls) - ```npm i -g vscode-langservers-extracted ```
-- [HTML](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#html) - ```npm i -g vscode-langservers-extracted ```
-- [CSS](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#cssls) - ```npm i -g vscode-langservers-extracted ```
-- [Vue.js](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#vuels) - ```npm install -g vls ```
-- [bash](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#bashls) - ```npm i -g bash-language-server ```
-- [eslint](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#eslint) - ```npm i -g vscode-langservers-extracted```
+Reference the language server plugin setup for references to the different language servers.
 
 ## Neovim plugins
+
+I used to run all of these in my old config. I'll keep this for reference for the moment, but to see what I actually run, it is easier to just look into my [neovim config](./nvim/lua/config).
 ### Visuals
 - [mhinz/vim-startify](https://github.com/mhinz/vim-startify)
 - [vim-airline/vim-airline](https://github.com/vim-airline/vim-airline)

@@ -15,8 +15,8 @@ config.window_close_confirmation = "NeverPrompt"
 config.window_frame = {
   active_titlebar_bg = "#000000"
 }
-config.initial_cols = 350
-config.initial_rows = 80
+-- config.initial_cols = 350
+-- config.initial_rows = 80
 config.window_padding = {
 	left = 4,
 	right = 4,
@@ -24,7 +24,7 @@ config.window_padding = {
 	bottom = 4,
 }
 config.font = wezterm.font 'Iosevka Nerd Font'
-config.font_size = 20.0
+config.font_size = 14.0
 config.color_scheme = 'Gruvbox dark, medium (base16)'
 config.enable_tab_bar = false
 config.default_cursor_style = "BlinkingBar"
