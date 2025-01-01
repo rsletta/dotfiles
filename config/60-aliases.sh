@@ -6,7 +6,7 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias '~'='cd ~/'
-alias dot='cd ~/.dotfiles'
+alias dot='cd ~/.config/dotfiles'
 alias vault='cd ~/vault'
 
 # Git
@@ -47,3 +47,6 @@ if [ $(arch) = "i386" ]; then
 else
     alias brew='/opt/homebrew/bin/brew'
 fi
+
+# All below are added via 'aali' function
+alias jts='java -jar $HOME/tooling/search.jar'

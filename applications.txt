@@ -13,7 +13,48 @@ figlet
 vivid
 oh-my-posh
 ripgrep
-
+wezterm
+hyperkey
+db-browser-for-sqlite
+dbngin
+easy-move+resize
+hyperkey
+insomnia
+karabiner-elements
+marta
+numi
+pearcleaner
+qmk-toolbox
+visual-studio-code
+wezterm@nightly
+audacity
+dbeaver-community
+docker
+handbrake
+iina
+jordanbaird-ice
+kitty
+notunes
+overkill
+postman
+stats
+vlc
+amphetamine
+Bartender 5
+BetterDisplay
+Bulder
+ChatGPT
+Color Picker
+Gifski
+HEIC Converter
+Vivaldi
+LM Studio
+Notion
+Pixelmator Pro
+Spotify
+Zed
+Tailscale
+Raycast
 
 
 stow

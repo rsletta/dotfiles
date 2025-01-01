@@ -22,7 +22,9 @@ function aali() {
         echo example:
         echo "\t\$$0 ll 'ls -l'"
     else
-        echo "alias $1='$2'" >> $ALIASFILE
-        echo "alias ADDED to $ALIASFILE"
+        echo "" >> $ALIAS_FILE
+        echo "alias $1='$2'" >> $ALIAS_FILE
+        echo "alias ADDED to $ALIAS_FILE"
+        reload
     fi
 }

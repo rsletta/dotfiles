@@ -116,6 +116,7 @@ blocks:
           fetch_stash_count: true
           fetch_status: true
           fetch_upstream_icon: true
+          branch_icon: " "
         template: " <#83a598>[</>{{ .UpstreamIcon }} {{ .HEAD }}{{ .BranchStatus }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }}|{{ end }}{{ if .Staging.Changed }}\uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uf692 {{ .StashCount }}{{ end }}<#83a598>]</>"
         foreground: "#b8bb26"
         foreground_templates:
@@ -136,7 +137,7 @@ blocks:
       - properties:
           always_enabled: true
           cache_duration: none
-        template: "┗━#"
+        template: "<#83a598>┗━</>#"
         foreground: "#83a598"
         type: text
         style: plain

@@ -22,19 +22,6 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 " Treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-" LSP
-Plug 'neovim/nvim-lspconfig'
-
-" Autocompletion
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-emoji'
-Plug 'L3MON4D3/LuaSnip'
-Plug 'saadparwaiz1/cmp_luasnip'
-Plug 'onsails/lspkind-nvim'
-Plug 'ray-x/cmp-treesitter'
-Plug 'David-Kunz/cmp-npm'
-
 " Writing & Markdown
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
@@ -98,7 +85,7 @@ nnoremap <silent> <leader>l :set list!<cr>
 
 set background=dark
 set encoding=utf-8
-set colorcolumn=80
+set colorcolumn=120
 set ts=4
 set sts=4
 set expandtab
@@ -111,21 +98,6 @@ set noswapfile
 set signcolumn=yes
 " Soft wrap lines. Keeps indentation of parent. Does not split words.
 set wrap linebreak nolist breakindent formatoptions=1 lbr
-
-" Unified clipboard WSL2
-set clipboard+=unnamedplus
-let g:clipboard = {
-           \   'name': 'win32yank-wsl',
-           \   'copy': {
-           \      '+': 'win32yank.exe -i --crlf',
-           \      '*': 'win32yank.exe -i --crlf',
-           \    },
-           \   'paste': {
-           \      '+': 'win32yank.exe -o --lf',
-           \      '*': 'win32yank.exe -o --lf',
-           \   },
-           \   'cache_enabled': 0,
-           \ }
 
 " See https://github.com/neovim/neovim/issues/5559#issuecomment-258143499
 let g:is_bash = 1
