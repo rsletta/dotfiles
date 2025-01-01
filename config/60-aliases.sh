@@ -39,13 +39,18 @@ alias rec='asciinema rec'
 alias reload='source ~/.zshrc'
 
 # Some arch hacks to force arm64 or x86_64
-alias arm="env /usr/bin/arch -arm64 /bin/bash --login"
-alias intel="env /usr/bin/arch -x86_64 /bin/bash --login"
+# Check if the system is macOS
+if [ "$(uname)" = "Darwin" ]; then
+    # Aliases for forcing architecture
+    alias arm="env /usr/bin/arch -arm64 /bin/bash --login"
+    alias intel="env /usr/bin/arch -x86_64 /bin/bash --login"
 
-if [ $(arch) = "i386" ]; then
-    alias brew='/usr/local/bin/brew'
-else
-    alias brew='/opt/homebrew/bin/brew'
+    # Set brew alias based on architecture
+    if [ "$(arch)" = "i386" ]; then
+        alias brew='/usr/local/bin/brew'
+    else
+        alias brew='/opt/homebrew/bin/brew'
+    fi
 fi
 
 # All below are added via 'aali' function
