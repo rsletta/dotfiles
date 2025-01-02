@@ -12,6 +12,34 @@ On iOS I use [Blink Shell](https://blink.sh), when ssh'ing into the Linux server
 
 At the moment, I have been using [Gruvbox](https://github.com/morhetz/gruvbox) as my color scheme for some time. I've also used to use [Nord](https://www.nordtheme.com/), but my eyes are not what they used to, and I needed something new and contrasty. I had a quick look at [catppucin](https://catppuccin.com), and while it looks nice, I couldn't quite get the right feel for it. I might revisit it later, but I still search for the a color scheme that both looks good, and is easy on the eyes contrast wise.
 
+## Zsh
+I use `zsh`, since that is the default on macOS. I can't say I'm a very advanced user, so I look more to the usability of the shell, rather than pure features. I don't track my `.zshrc`, but rather source my [config](./config) in it, so I can make local customizations.
+
+```bash
+for rcfile in "$HOME"/.config/dotfiles/config/*.sh(N); do
+    # Check if the file is the aliases file
+    if [[ "$rcfile" == 60-aliases.sh ]]; then
+        export ALIAS_FILE="$rcfile"
+    fi
+    source "$rcfile"
+done
+```
+
+I tried `fish` when installing [CachyOS](https://cachyos.org) linux, which uses it as default. I liked some of the features it had, so I'm borrowing some ideas from their zsh config for "fish like syntax highlighting and autosuggestions". I also use history substring search. These are added manually to my `.zshrc`.
+
+
+```bash
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh-syntax-highlighting
+echo "source ~/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ~/.zshrc
+```
+```bash
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh-autosuggestions
+echo "source ~/.zsh-autosuggestions/zsh-autosuggestions.zsh" >> ~/.zshrc
+```
+```bash
+git clone https://github.com/zsh-users/zsh-history-substring-search ~/.zsh-history-substring-search
+echo "source ~/.zsh-history-substring-search/zsh-history-substring-search.zsh" >> ~/.zshrc
+```
 ## Scripts
 
 The scripts folder is where I keep my small utility scripts, for day to day tasks.
