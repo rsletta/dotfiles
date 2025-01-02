@@ -25,7 +25,7 @@ for rcfile in "$HOME"/.config/dotfiles/config/*.sh(N); do
 done
 ```
 
-I tried `fish` when installing [CachyOS](https://cachyos.org) linux, which uses it as default. I liked some of the features it had, so I'm borrowing some ideas from their zsh config for "fish like syntax highlighting and autosuggestions". I also use history substring search. These are added manually to my `.zshrc`.
+I tried `fish` when installing [CachyOS](https://cachyos.org) linux, which uses it as default. I liked some of the features it had, so I'm borrowing some ideas from [their zsh config](https://github.com/CachyOS/cachyos-zsh-config/blob/master/cachyos-config.zsh) for "fish like syntax highlighting and autosuggestions". I also use history substring search. These are added manually to my `.zshrc`.
 
 
 ```bash
