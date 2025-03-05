@@ -55,3 +55,13 @@ fi
 
 # All below are added via 'aali' function
 alias jts='java -jar $HOME/tooling/search.jar'
+
+alias python='python3'
+
+alias pip='pip3'
+
+alias l='/Users/rsletta/repositories/spenn/localdev/localdev.sh'
+
+alias conf='/Users/rsletta/.config'
+
+alias conf='cd ~/.config'

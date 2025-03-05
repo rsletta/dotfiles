@@ -59,8 +59,8 @@ blocks:
         properties:
           cache_duration: "24h"
           display_mode: files
-          fetch_virtual_env: false
-        template: " <#3b77a7>\ue73c</> {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}"
+          fetch_virtual_env: true
+        template: " <#3b77a7>\ue73c</> {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }}"
         foreground: "#ffe365"
       - type: ruby
         style: plain
