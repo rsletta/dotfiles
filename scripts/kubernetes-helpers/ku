@@ -1,0 +1,20 @@
+#!/bin/bash
+set -eu
+
+LINK=~/.kube/config
+DIR=~/.kube/config.d
+TARGET=$DIR/$1
+
+if [ -e $LINK ]; then
+    if [ ! -L $LINK ]; then
+        echo "Error: $LINK exists and is not a symbolic link" >&2
+        exit 1
+    fi
+fi
+
+if [ ! -e $TARGET ]; then
+    echo "Error: $TARGET does not exist" >&2
+fi
+
+
+ln -sf $TARGET $LINK
