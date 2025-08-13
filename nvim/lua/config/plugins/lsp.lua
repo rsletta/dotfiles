@@ -17,6 +17,16 @@ return {
       require("lspconfig").lua_ls.setup {}
       -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#yamlls
       require("lspconfig").yamlls.setup {}
+      -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#helm_ls
+      require'lspconfig'.helm_ls.setup{
+        settings = {
+          ['helm-ls'] = {
+            yamlls = {
+              path = 'yaml-language-server',
+            }
+          }
+        }
+      }
       -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#dockerls
       require("lspconfig").dockerls.setup {}
       -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#docker_compose_language_service

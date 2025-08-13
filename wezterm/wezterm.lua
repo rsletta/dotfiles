@@ -15,6 +15,7 @@ config.window_close_confirmation = "NeverPrompt"
 config.window_frame = {
     active_titlebar_bg = "#000000"
 }
+config.color_scheme = 'Tokyo Night Storm'
 -- config.initial_cols = 350
 -- config.initial_rows = 80
 config.window_padding = {
@@ -23,7 +24,11 @@ config.window_padding = {
     top = 4,
     bottom = 4,
 }
-config.font = wezterm.font 'Iosevka Nerd Font'
+config.font = wezterm.font_with_fallback {
+  'Iosevka Nerd Font',
+  'Noto Color Emoji',
+  'JetBrainsMono Nerd Font',
+}
 config.font_size = 14.0
 config.enable_tab_bar = false
 config.default_cursor_style = "BlinkingBar"

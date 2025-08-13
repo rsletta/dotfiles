@@ -31,6 +31,8 @@ vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.opt.wildignore:append { "**/node_modules/*", "**/.git/*" }
 
+vim.cmd.colorscheme("tokyonight-storm")
+
 -- Auto commands
 -- Highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {

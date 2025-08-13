@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# ───────────────────────────────────────────────
+# Interactive ffmpeg clip extractor with validation
+# Supports HH:MM:SS / HH.MM.SS / HH-MM-SS formats
+# Usage: ./extract_clip input_file
+# ───────────────────────────────────────────────
+
+INPUT="$1"
+
+if [[ -z "$INPUT" ]]; then
+  echo "❌ Error: You must provide the input video file as the first argument."
+  echo "Usage: $0 <input_file>"
+  exit 1
+fi
+
+if [[ ! -f "$INPUT" ]]; then
+  echo "❌ Error: File '$INPUT' does not exist."
+  exit 1
+fi
+
+read -rp "⏱ Enter start time (e.g. 00:01:00): " RAW_START
+read -rp "⏱ Enter end time   (e.g. 00:03:00): " RAW_END
+
+# ── Normalize separators to ":" and validate
+normalize_time() {
+  local raw="$1"
+  local cleaned="${raw//[-.]/:}"         # convert . and - to :
+  IFS=':' read -r h m s <<< "$cleaned"
+
+  # Default missing parts to 0
+  h="${h:-0}"
+  m="${m:-0}"
+  s="${s:-0}"
+
+  # Validate numeric
+  if ! [[ "$h" =~ ^[0-9]+$ && "$m" =~ ^[0-9]+$ && "$s" =~ ^[0-9]+$ ]]; then
+    echo "INVALID"
+    return
+  fi
+
+  # Pad with zeros
+  printf "%02d:%02d:%02d" "$h" "$m" "$s"
+}
+
+timestamp_to_seconds() {
+  IFS=':' read -r h m s <<< "$1"
+  echo $((10#$h * 3600 + 10#$m * 60 + 10#$s))
+}
+
+START="$(normalize_time "$RAW_START")"
+END="$(normalize_time "$RAW_END")"
+
+if [[ "$START" == "INVALID" || "$END" == "INVALID" ]]; then
+  echo "🚨 Error: Invalid timestamp format. Use HH:MM:SS or HH.MM.SS or HH-MM-SS"
+  exit 1
+fi
+
+START_SEC=$(timestamp_to_seconds "$START")
+END_SEC=$(timestamp_to_seconds "$END")
+
+if (( END_SEC <= START_SEC )); then
+  echo "🚨 Error: End time ($END) must be after start time ($START)."
+  exit 1
+fi
+
+read -rp "🎥 Enter output filename (leave empty to auto-generate): " OUTPUT
+
+if [[ -z "$OUTPUT" ]]; then
+  BASENAME="$(basename "$INPUT")"
+  NAME="${BASENAME%.*}"
+  OUTPUT="${NAME}_${START//:/-}_to_${END//:/-}.mp4"
+fi
+
+# Add .mp4 if no extension provided
+if [[ "$OUTPUT" != *.* ]]; then
+  OUTPUT="${OUTPUT}.mp4"
+fi
+
+echo "🔧 Extracting from $START to $END"
+echo "📁 Saving to: $OUTPUT"
+
+ffmpeg -ss "$START" -to "$END" -i "$INPUT" \
+  -c:v libx264 -preset fast -crf 23 \
+  -c:a aac -b:a 128k \
+  "$OUTPUT"

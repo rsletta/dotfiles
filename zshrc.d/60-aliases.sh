@@ -1,4 +1,22 @@
-#!/usr/bin/env bash
+# Utility replacement
+alias ls='eza --group-directories-first --icons'
+alias ll='eza -l --group-directories-first --icons'
+alias la='eza -la --group-directories-first --icons'
+alias lt='eza -T --level=2 --group-directories-first --icons'
+alias llt='eza -lT --level=2 --group-directories-first --icons'
+alias lsg='eza --git --long --all --icons'
+alias ldu='eza -lh --total-size --only-dirs'
+alias lsp='eza -la --icons --color=always | less -R'
+alias lss='eza -l --sort=size --reverse --icons'
+alias lsd='eza -l --only-dirs --icons'
+
+alias cd='z'        # gjør `cd` smart
+alias zz='z -'      # gå til forrige katalog
+alias zf='zoxide query -l | fzf'   # fuzzy jump
+alias zj='cd "$(zoxide query -l | fzf)"'  # jump til valgt
+alias ze='cd "$(zoxide query -l | fzf)" && nvim .'  # jump + open in Neovim
+alias zl='zoxide query -l | fzf --preview "eza -T --level=2 --icons {}"'
+alias zla='cd "$(zoxide query -l | fzf)" && eza -la --icons'
 
 # Folder traversal
 alias ..='cd ..'
@@ -23,9 +41,9 @@ alias nn='newNote'
 alias sd='python3 -m http.server'
 
 # ls alias with color-mode
-alias lh='ls -lha --color=auto'
-alias ls='ls -Fh --color=auto'
-alias l.='ls -d .* --color=auto'
+#alias lh='ls -lha --color=auto'
+#alias ls='ls -Fh --color=auto'
+#alias l.='ls -d .* --color=auto'
 
 # the great switch
 alias vim='nvim'
@@ -53,15 +71,18 @@ if [ "$(uname)" = "Darwin" ]; then
     fi
 fi
 
-# All below are added via 'aali' function
-alias jts='java -jar $HOME/tooling/search.jar'
-
 alias python='python3'
 
 alias pip='pip3'
 
-alias l='/Users/rsletta/repositories/spenn/localdev/localdev.sh'
-
 alias conf='/Users/rsletta/.config'
 
 alias conf='cd ~/.config'
+
+alias lg='lazygit'
+
+alias w='watson'
+
+alias tf='terraform'
+
+alias jts='java --add-exports=java.desktop/com.apple.eawt=ALL-UNNAMED -jar /Users/rsletta/.local/bin/search.jar'

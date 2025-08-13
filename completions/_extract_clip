@@ -1,0 +1,7 @@
+#compdef extract_clip
+
+_arguments \
+  '1:input file:_files' \
+  '2:start time (e.g. 00:10:00)' \
+  '3:end time (e.g. 00:15:00)' \
+  '4:output file:_files'

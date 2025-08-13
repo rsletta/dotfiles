@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+_extract_clip() {
+  local cur prev
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  case $COMP_CWORD in
+    1|4)
+      # Complete files for input and output
+      COMPREPLY=( $(compgen -f -- "$cur") )
+      ;;
+  esac
+}
+complete -F _extract_clip extract_clip.sh

@@ -1,0 +1,29 @@
+# Source config files
+for rcfile in "$HOME"/.config/dotfiles/zshrc.d/*.sh(N); do
+    # Check if the file is the aliases file
+    if [[ "$rcfile" == *60-aliases.sh ]]; then
+        export ALIAS_FILE="$rcfile"
+    fi
+    source "$rcfile"
+done
+
+if command -v fnm &>/dev/null; then
+    eval "$(fnm env --use-on-cd)"
+fi
+if command -v fzf &>/dev/null; then
+    eval "$(fzf --zsh)"
+fi
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/rsletta/.dart-cli-completion/zsh-config.zsh ]] && . /Users/rsletta/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
+# bun completions
+[ -s "/Users/rsletta/.bun/_bun" ] && source "/Users/rsletta/.bun/_bun"
+
+eval "$(zoxide init zsh)"
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

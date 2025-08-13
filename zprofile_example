@@ -1,0 +1,9 @@
+# Source config files
+for rcfile in "$HOME"/.config/dotfiles/zprofile.d/*.sh(N); do
+    source "$rcfile"
+done
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Added by Toolbox App
+export PATH="$PATH:/Users/rsletta/Library/Application Support/JetBrains/Toolbox/scripts"

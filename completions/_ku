@@ -1,0 +1,9 @@
+#compdef ku
+
+_ku() {
+  local -a contexts
+  contexts=(${(f)"$(ls ~/.kube/config.d 2>/dev/null)"})
+  _describe 'context' contexts
+}
+
+compdef _ku ku
