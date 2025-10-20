@@ -71,10 +71,6 @@ if [ "$(uname)" = "Darwin" ]; then
     fi
 fi
 
-alias python='python3'
-
-alias pip='pip3'
-
 alias conf='/Users/rsletta/.config'
 
 alias conf='cd ~/.config'

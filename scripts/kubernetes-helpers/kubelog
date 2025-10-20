@@ -1,0 +1,115 @@
+#!/usr/bin/env sh
+# kubelog — pick namespace or service (POSIX), stern → JSONL → lnav (via FIFO)
+
+set -eu
+
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'Missing: %s\n' "$1" >&2; exit 127; }; }
+have() { command -v "$1" >/dev/null 2>&1; }
+
+# pick one line from stdin: fzf if present, else numbered menu (POSIX)
+pick_one() {
+  label="$1"
+  if have fzf; then
+    # shellcheck disable=SC2016
+    choice=$(fzf --prompt="$label > " --height=50% --reverse || true)
+    [ -n "${choice:-}" ] && { printf '%s\n' "$choice"; return 0; }
+    printf 'No %s selected.\n' "$label" >&2; exit 1
+  fi
+
+  tmp="$(mktemp 2>/dev/null || echo "/tmp/kubelog.$$.$RANDOM")"
+  trap 'rm -f "$tmp"' EXIT HUP INT TERM
+  cat > "$tmp"
+
+  if [ ! -s "$tmp" ]; then
+    printf 'No %s available.\n' "$label" >&2
+    exit 1
+  fi
+
+  i=1
+  while IFS= read -r line; do
+    printf '%2d) %s\n' "$i" "$line"
+    i=$((i+1))
+  done < "$tmp"
+
+  printf '%s' "> "
+  read -r idx || exit 1
+
+  # ensure idx is a positive integer
+  case "$idx" in
+    ''|*[!0-9]*) printf 'Invalid selection.\n' >&2; exit 1 ;;
+    0) printf 'Invalid selection.\n' >&2; exit 1 ;;
+  esac
+
+  # get nth line
+  sel=$(awk "NR==$idx{print; exit}" "$tmp")
+  if [ -z "${sel:-}" ]; then
+    printf 'Selection out of range.\n' >&2; exit 1
+  fi
+  printf '%s\n' "$sel"
+}
+
+need kubectl
+need stern
+need jq
+need lnav
+
+# 1) choose ns or svc
+printf 'Pick (ns) namespace or (svc) service: '
+read -r mode || exit 1
+[ "$mode" = "ns" ] || [ "$mode" = "svc" ] || { printf "Type 'ns' or 'svc'.\n" >&2; exit 1; }
+
+# 2) pick namespace
+ns="$(kubectl get ns -o json | jq -r '.items[].metadata.name' | sort | pick_one "namespace")"
+[ -n "$ns" ] || { printf 'No namespace selected.\n' >&2; exit 1; }
+
+# 3) if service mode, pick service and derive label selector
+sel=""
+if [ "$mode" = "svc" ]; then
+  svc="$(kubectl get svc -n "$ns" -o json | jq -r '.items[].metadata.name' | sort | pick_one "service in $ns")"
+  [ -n "$svc" ] || { printf 'No service selected.\n' >&2; exit 1; }
+  sel="$(kubectl get svc -n "$ns" "$svc" -o json \
+        | jq -r '.spec.selector // {} | to_entries | map("\(.key)=\(.value)") | join(",")')"
+  [ -n "$sel" ] || { printf 'Service has no selector; cannot match pods.\n' >&2; exit 2; }
+fi
+
+# 4) FIFO so lnav reliably follows a growing stream
+fifo="$(mktemp 2>/dev/null || echo "/tmp/kubelog.$$.$RANDOM")"
+rm -f "$fifo"
+mkfifo "$fifo"
+cleanup() { rm -f "$fifo"; }
+trap 'cleanup' EXIT HUP INT TERM
+
+# 5) start lnav first, following the FIFO
+lnav "$fifo" &
+lnav_pid=$!
+
+# 6) build stern args (POSIX: use `set --`), stable template with ns/pod/container/message
+set -- ".*" -n "$ns" --since 10m --color=never \
+  --template '{{.Namespace}} {{.PodName}} {{.ContainerName}} {{.Message}}'
+[ -n "$sel" ] && set -- "$@" -l "$sel"
+
+# 7) jq filter: parse metadata + message; JSON messages pass, text gets wrapped; ensure @timestamp
+jq_prog='
+  capture("^(?<ns>\\S+)\\s+(?<pod>\\S+)\\s+(?<container>\\S+)\\s+(?<msg>.*)$") as $m
+  |
+  ($m.msg | fromjson? ) as $once
+  | (if ($once|type) == "string" then ($once | fromjson? ) else $once end) as $j
+  |
+  if $j != null then
+    $j
+    + { "kubernetes": (($j.kubernetes // {}) + {
+         "namespace": $m.ns, "pod": $m.pod, "container": $m.container }) }
+    | if has("@timestamp") then . else . + {"@timestamp": (now | todateiso8601)} end
+  else
+    { "@timestamp": (now | todateiso8601),
+      "message": $m.msg,
+      "kubernetes": { "namespace": $m.ns, "pod": $m.pod, "container": $m.container } }
+  end
+'
+
+# 8) run: stern → jq(JSONL) → FIFO
+# shellcheck disable=SC2016
+stern "$@" | jq -R -c "$jq_prog" > "$fifo" &
+
+# 9) wait for lnav to exit (Ctrl+C there to quit)
+wait "$lnav_pid"

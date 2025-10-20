@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+# kubelog — stern-powered multi-namespace log tailer that emits JSONL (ECS-friendly)
+# Works great with: lnav, jq, ripgrep, etc.
+
+set -Eeuo pipefail
+
+usage() {
+  cat <<'EOF'
+kubelog — tail logs across pods/namespaces using stern; output JSONL (ECS-friendly)
+
+USAGE:
+  kubelog [POD_REGEX] [stern/utility options...]
+
+POD_REGEX (default: ".*") matches pod names (regexp).
+
+SUPPORTED OPTIONS (CLI overrides ENV; unknown flags are passed through to stern):
+  -n, --namespace NAME      (repeatable) select specific namespaces
+      --all-namespaces      tail across the whole cluster
+  -l, --selector KEY=VAL    label selector
+  -c, --container NAME      only this container
+      --since DURATION      e.g. 10m, 1h
+      --tail N              last N lines before follow
+      --kubeconfig PATH     (kubelog option) set kubeconfig
+      --lnav                (kubelog option) pipe to lnav automatically
+      --ecs                 (kubelog option) light ECS-ish enrichment
+  -h, --help                show this help
+
+ENV VARS:
+  KUBELOG_REGEX=".*"
+  KUBELOG_NAMESPACES="ns1,ns2 ns3"     # comma and/or space separated
+  KUBELOG_ALL_NAMESPACES="false"       # "true" | "false"
+  KUBELOG_SELECTOR="app=myapp"
+  KUBELOG_CONTAINER="worker"
+  KUBELOG_SINCE="10m"
+  KUBELOG_TAIL="200"
+  KUBELOG_KUBECONFIG="~/.kube/config"
+  KUBELOG_MODE="stdout"                # "stdout" | "lnav"
+  KUBELOG_ECS_ENRICH="false"           # add light ECS-ish event.dataset
+  KUBELOG_NO_COLOR="true"              # force stern --color=never (recommended)
+
+EOF
+}
+
+# -------- defaults from ENV --------
+REGEX="${KUBELOG_REGEX:-.*}"
+ALL_NS="${KUBELOG_ALL_NAMESPACES:-false}"
+SELECTOR="${KUBELOG_SELECTOR:-}"
+CONTAINER="${KUBELOG_CONTAINER:-}"
+SINCE="${KUBELOG_SINCE:-}"
+TAIL_LINES="${KUBELOG_TAIL:-}"
+KCFG="${KUBELOG_KUBECONFIG:-}"
+MODE="${KUBELOG_MODE:-stdout}"               # stdout | lnav
+ECS_ENRICH="${KUBELOG_ECS_ENRICH:-false}"
+NO_COLOR="${KUBELOG_NO_COLOR:-true}"
+
+# Namespaces from ENV: accept comma and/or space separated
+NAMESPACES_ENV_RAW="${KUBELOG_NAMESPACES:-}"
+declare -a NAMESPACES_ENV=()
+if [[ -n "$NAMESPACES_ENV_RAW" ]]; then
+  IFS=', ' read -r -a NAMESPACES_ENV <<< "$NAMESPACES_ENV_RAW"
+fi
+
+# -------- parse CLI (overrides ENV) --------
+EXTRA_STERN_ARGS=()
+if [[ $# -gt 0 && ! "$1" =~ ^- ]]; then
+  REGEX="$1"; shift
+fi
+
+declare -a NAMESPACES_CLI=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help) usage; exit 0 ;;
+    --kubeconfig) KCFG="$2"; shift 2 ;;
+    --lnav) MODE="lnav"; shift ;;
+    --ecs) ECS_ENRICH="true"; shift ;;
+    -n|--namespace) NAMESPACES_CLI+=("$2"); shift 2 ;;
+    --all-namespaces) ALL_NS="true"; shift ;;
+    -l|--selector) SELECTOR="$2"; shift 2 ;;
+    -c|--container) CONTAINER="$2"; shift 2 ;;
+    --since) SINCE="$2"; shift 2 ;;
+    --tail) TAIL_LINES="$2"; shift 2 ;;
+    *) EXTRA_STERN_ARGS+=("$1"); shift ;;
+  esac
+done
+
+# -------- dependencies --------
+need() { command -v "$1" >/dev/null || { echo "Missing dependency: $1" >&2; exit 127; }; }
+need stern; need jq; need awk
+[[ "$MODE" == "lnav" ]] && need lnav
+
+# -------- kubeconfig --------
+if [[ -n "$KCFG" ]]; then
+  if [[ "$KCFG" == ~* ]]; then
+    KCFG="${KCFG/#\~/$HOME}"
+  fi
+  export KUBECONFIG="$KCFG"
+fi
+
+# -------- process namespaces (ENV + CLI) --------
+declare -a NAMESPACES=("${NAMESPACES_ENV[@]}" "${NAMESPACES_CLI[@]}")
+
+trap 'trap - SIGINT SIGTERM EXIT; kill -- -$$ 2>/dev/null || true' SIGINT SIGTERM EXIT
+
+# -------- build stern command --------
+STERN_CMD=(stern "$REGEX")
+[[ "$NO_COLOR" == "true" ]] && STERN_CMD+=(--color=never)
+
+if [[ "$ALL_NS" == "true" ]]; then
+  STERN_CMD+=(--all-namespaces)
+else
+  for ns in "${NAMESPACES[@]}"; do
+    [[ -n "$ns" ]] && STERN_CMD+=(-n "$ns")
+  done
+fi
+
+[[ -n "$SELECTOR" ]] && STERN_CMD+=(-l "$SELECTOR")
+[[ -n "$CONTAINER" ]] && STERN_CMD+=(-c "$CONTAINER")
+[[ -n "$SINCE" ]] && STERN_CMD+=(--since "$SINCE")
+[[ -n "$TAIL_LINES" ]] && STERN_CMD+=(--tail "$TAIL_LINES")
+
+STERN_CMD+=("${EXTRA_STERN_ARGS[@]}")
+
+# -------- JSON filter --------
+JSON_FILTER='
+  capture("^(?<ts>[^ ]+) (?<ns>[^/]+)/(?<pod>[^ ]+) (?<container>[^ ]+) ▶ (?<msg>.*)$") as $m
+  | ($m.msg | fromjson? ) as $j
+  | if $j != null then
+      ($j + { "kubernetes": (($j.kubernetes // {}) + {
+        "namespace": $m.ns, "pod": $m.pod, "container": $m.container }) })
+      | if has("@timestamp") then . else . + {"@timestamp": $m.ts} end
+    else
+      { "@timestamp": $m.ts,
+        "message": $m.msg,
+        "kubernetes": { "namespace": $m.ns, "pod": $m.pod, "container": $m.container } }
+    end
+'
+if [[ "$ECS_ENRICH" == "true" ]]; then
+  JSON_FILTER+='
+    | if has("raw") then . else
+        . + { "event": { "dataset": ((.kubernetes.namespace // "") + "." + (.kubernetes.container // "")) } }
+      end
+  '
+fi
+
+PIPELINE='awk '\''{print strftime("%Y-%m-%dT%H:%M:%SZ",systime()), $0}'\'' | jq -R -c --unbuffered -- '"$JSON_FILTER"
+
+# -------- run --------
+set -o pipefail
+if [[ "$MODE" == "lnav" ]]; then
+  eval "${STERN_CMD[@]} | $PIPELINE | lnav -"
+else
+  eval "${STERN_CMD[@]} | $PIPELINE"
+fi

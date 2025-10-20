@@ -26,3 +26,27 @@ function aali() {
         reload
     fi
 }
+
+function _set_kube_config() {
+    local NAME=$1
+
+    if [ -z "$NAME" ]; then
+        unset KUBECONFIG
+        echo "KUBECONFIG is now <unset>"
+        return 0
+    fi
+
+    local DIR=~/.kube/config.d
+    local TARGET=$DIR/$NAME
+
+    if [ ! -e $TARGET ]; then
+        echo "Error: $TARGET does not exist" >&2
+    fi
+
+    export KUBECONFIG=$TARGET
+    echo "KUBECONFIG is now $KUBECONFIG"
+    echo "  using context '$(yq .current-context $KUBECONFIG)'"
+}
+alias ku=_set_kube_config
+
+complete -W "$(ls ~/.kube/config.d)" _set_kube_config

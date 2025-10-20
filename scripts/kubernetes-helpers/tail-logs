@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -eu
+
+# Make sure to stop forked processes
+trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+
+export KUBECONFIG=~/.kube/config.d/$1
+shift
+
+mkdir -p logs
+NAMESPACE="app-braze-connector loyaltyhub"
+for ns in $NAMESPACE; do
+    while read pod; do
+        #kubectl logs -f -n $ns --all-containers --timestamps --prefix "$@" pods/$pod &
+        filename=logs/$pod.log
+
+        # Start with a dummy line to help lnav detect format
+        echo "
+        {
+            \"@timestamp\": \"2024-01-01T00:00:00.000Z\",
+            \"log.level\": \"INFO\",
+            \"message\": \"Starting to stream logs from $pod\",
+            \"service.name\": \"$ns\",
+            \"correlation.id\": \"$(uuidgen)\",
+            \"request.id\": \"$(uuidgen)\",
+            \"error.type\": \"\",
+            \"error.message\": \"\"
+        }
+        " | jq -c . > $filename
+
+        # Now get the logs
+        kubectl logs -f -n $ns --all-containers "$@" pods/$pod | jq -R -c --unbuffered 'fromjson? | .' >> $filename &
+        echo Logging to $filename
+    done < <(kubectl get -n $ns pods --no-headers -o custom-columns=":metadata.name")
+done < /dev/null
+sleep 1d
