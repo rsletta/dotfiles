@@ -1,0 +1,1 @@
+/Users/rsletta/.config/dotfiles/wezterm/wezterm.lua

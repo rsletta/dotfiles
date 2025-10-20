@@ -1,0 +1,16 @@
+ # Chrome
+window-decoration = auto
+macos-non-native-fullscreen = visible-menu
+macos-titlebar-style = hidden
+
+# Styles
+font-family = "Iosevka Nerd Font"
+theme = TokyoNight Storm
+font-size = 16
+cursor-style = bar
+
+# Key bindings
+keybind = cmd+enter=toggle_fullscreen
+keybind = opt+right=unbind
+keybind = opt+left=unbind
+keybind = opt+space=text:\x20

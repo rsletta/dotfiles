@@ -1,0 +1,65 @@
+# ----- Theme (top-level key) -----
+theme = "tokyonight-storm"
+
+# ----- Shell -----
+[shell]
+program = "/bin/zsh"
+args = ["-l"]
+
+# Make new tabs reuse current path (StackOverflow note: requires use-fork=false on macOS)
+use-fork = false
+
+# ----- Fonts -----
+[fonts]
+size = 14
+# set family for all styles (regular/bold/italic…) at once:
+family = "JetBrainsMono Nerd Font"
+
+# ----- Editor for OpenConfigEditor (Cmd+,) -----
+[editor]
+program = "zed"
+args = []
+
+# ----- Navigation UI -----
+[navigation]
+# Show tabs at the top and reuse current path when opening new tabs
+mode = "TopTab"
+use-current-path = true
+clickable = true
+# Ensure Cmd+, does NOT open in a split
+open-config-with-split = false
+
+# ----- Hints (lightweight) -----
+[hints]
+enabled = true
+
+# ----- Key bindings (Rio expects a [bindings] table) -----
+[bindings]
+keys = [
+  # Tabs
+  { key = "t", with = "super", action = "CreateTab" },
+  { key = "w", with = "super", action = "CloseTab" },
+  { key = "tab", with = "control", action = "SelectNextTab" },
+  { key = "tab", with = "control | shift", action = "SelectPrevTab" },
+
+  # Disable ALL split-related defaults so tmux owns panes
+  { key = "d", with = "super", action = "None" },              # SplitRight default
+  { key = "d", with = "super | shift", action = "None" },      # SplitDown default
+  { key = "]", with = "super", action = "None" },              # SelectNextSplitOrTab default
+  { key = "[", with = "super", action = "None" },              # SelectPrevSplitOrTab default
+  { key = "up",   with = "control | super", action = "None" }, # MoveDividerUp default
+  { key = "down", with = "control | super", action = "None" }, # MoveDividerDown default
+  { key = "left", with = "control | super", action = "None" }, # MoveDividerLeft default
+  { key = "right",with = "control | super", action = "None" }, # MoveDividerRight default
+
+  # Config editor (external nvim, not split)
+  { key = ",", with = "super", action = "OpenConfigEditor" },
+
+  # Scrolling (optional)
+  { key = "u", with = "super", action = "ScrollHalfPageUp" },
+  { key = "d", with = "super | shift", action = "ScrollHalfPageDown" }
+]
+
+# ----- Environment variables -----
+# Rio expects an array of "NAME=VALUE" strings, not a table
+env-vars = ["TERM=xterm-256color"]
