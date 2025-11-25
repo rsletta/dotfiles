@@ -1,8 +1,17 @@
 # Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
-right_format = """$cmd_duration $kubernetes"""
+format = """$directory$custom$git_branch$git_status$aws$kubernetes$line_break$character"""
+
 command_timeout = 2000
+
+# Disable the blank line at the start of the prompt
+add_newline = false
+
+palette = 'rsletta'
+
+[palettes.rsletta]
+codex_blue = '117'
 
 [username]
 style_user = "green bold"
@@ -12,7 +21,7 @@ disabled = false
 show_always = true
 
 [hostname]
-ssh_only = false
+ssh_only = true
 format = 'on [$hostname](bold purple) '
 trim_at = "."
 disabled = false
@@ -20,30 +29,37 @@ disabled = false
 # configure directory
 [directory]
 read_only = " 󰌾"
-truncation_length = 10
+truncation_length = 3
 truncate_to_repo = true    # truncates directory to root folder if in github repo
 style = "bold italic blue"
 
-[cmd_duration]
-min_time = 4
-show_milliseconds = false
-disabled = false
-style = "bold italic red"
-
-[[battery.display]]
-threshold = 100
-style = "bold green"
-
 [kubernetes]
 disabled = false
-format = '[$symbol$context( \($namespace\))](dimmed $style)'
+format = '☸($context) '
+style = "dimmed blue"
+
+[[kubernetes.contexts]]
+context_pattern = "arn:aws:eks:eu-north-1:891377046560:cluster/eks-cluster-dev"
+style = "green"
+context_alias = "spenn-dev"
+
+[[kubernetes.contexts]]
+context_pattern = "arn:aws:eks:eu-north-1:891377202159:cluster/eks-cluster-test"
+style = "yellow"
+context_alias = "spenn-test"
+
+[[kubernetes.contexts]]
+context_pattern = "arn:aws:eks:eu-north-1:975050041551:cluster/eks-cluster-prod"
+style = "bold red blink"
+context_alias = "🚫 spenn-prod 🚫"
 
 [aws]
-symbol = "  "
+symbol = ""
+format = '[$symbol($profile)]($style) '
 
 [docker_context]
-symbol = "  "
-format = "via [$symbol$context]($style) "
+symbol = ""
+format = "[$symbol($context)]($style) "
 style = "blue bold"
 only_with_files = true
 detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
@@ -51,7 +67,8 @@ detect_folders = []
 disabled = false
 
 [git_branch]
-symbol = "  "
+symbol = ""
+format = "[$symbol($branch)]($style) "
 
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
@@ -76,10 +93,10 @@ am = "am"
 am_or_rebase = "am/rebase"
 
 [kotlin]
-symbol = "  "
+symbol = ""
 
 [java]
-symbol = "  "
+symbol = ""
 style = "#FC9867"
 
 [memory_usage]
@@ -89,20 +106,70 @@ symbol = "󰍛  "
 symbol = " "
 
 [nodejs]
-symbol = "  "
-format = "via [ Node.js $version](bold green) "
+symbol = ""
+format = "[$symbol($version)](bold green) "
 detect_files = ["package.json", ".node-version"]
 detect_folders = ["node_modules"]
 
 [package]
-symbol = "󰏗  "
+symbol = "󰏗"
 
 [python]
-symbol = "  "
+symbol = ""
 #pyenv_version_name = true
-format = 'via [${symbol}python (${version} )(\($virtualenv\) )]($style)'
+format = '[${symbol}(${version})(\($virtualenv\))]($style) '
 style = "bold yellow"
 pyenv_prefix = "venv "
 python_binary = ["./venv/bin/python", "python", "python3", "python2"]
 detect_extensions = ["py"]
 version_format = "v${raw}"
+
+# ── PROD ───────────────────────────────────────────────────────────────────────
+[custom.spenn_cli_profile_prod]
+command = 'printf "SPENN(%s)" "$SPENN_CLI_PROFILE"'
+when = '[ -n "$SPENN_CLI_PROFILE" ] && printf %s "$SPENN_CLI_PROFILE" | grep -Eq "^prod(-|$)"'
+format = '[$output]($style) '
+style = "bold red"
+description = "SPENN CLI profile: prod"
+
+# ── TEST ───────────────────────────────────────────────────────────────────────
+[custom.spenn_cli_profile_test]
+command = 'printf "SPENN(%s)" "$SPENN_CLI_PROFILE"'
+when = '[ -n "$SPENN_CLI_PROFILE" ] && printf %s "$SPENN_CLI_PROFILE" | grep -Eq "^test(-|$)"'
+format = '[$output]($style) '
+style = "bold yellow"
+description = "SPENN CLI profile: test"
+
+# ── DEV ────────────────────────────────────────────────────────────────────────
+[custom.spenn_cli_profile_dev]
+command = 'printf "SPENN(%s)" "$SPENN_CLI_PROFILE"'
+when = '[ -n "$SPENN_CLI_PROFILE" ] && printf %s "$SPENN_CLI_PROFILE" | grep -Eq "^dev(-|$)"'
+format = '[$output]($style) '
+style = "bold green"
+description = "SPENN CLI profile: dev"
+
+# ── LOCALDEV ───────────────────────────────────────────────────────────────────
+[custom.spenn_cli_profile_localdev]
+command = 'printf "SPENN(%s)" "$SPENN_CLI_PROFILE"'
+when = '[ -n "$SPENN_CLI_PROFILE" ] && printf %s "$SPENN_CLI_PROFILE" | grep -Eq "^localdev(-|$)"'
+format = '[$output]($style) '
+style = "bold cyan"
+description = "SPENN CLI profile: localdev"
+
+[custom.alvtime_profile]
+command = '''
+ if [ -n "$ALVTIME_CONFIG" ] && [ -f "$ALVTIME_CONFIG" ]; then
+   grep "^profile:" "$ALVTIME_CONFIG" | awk '{print $2}'
+ elif [ -f "$HOME/.alvtime.conf" ]; then
+   grep "^profile:" "$HOME/.alvtime.conf" | awk '{print $2}'
+ fi
+'''
+when = '[ -n "$ALVTIME_CONFIG" ] && [ -f "$ALVTIME_CONFIG" ] || [ -f "$HOME/.alvtime.conf" ]'
+format = '[Alvtime\($output\)](bold cyan) '
+description = "Show alvtime profile from config"
+
+[custom.codex_config]
+command = 'context=${CODEX_HOME%/.codex}; context=${context##*/}; printf "Codex(%s) " "$context"'
+when = '[ -n "$CODEX_HOME" ]'
+format = '[$output](codex_blue)'
+
