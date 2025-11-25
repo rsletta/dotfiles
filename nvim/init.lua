@@ -23,15 +23,13 @@ vim.opt.shiftwidth = 2
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.showmode = true
-vim.opt.scrolloff = 10
+vim.opt.scrolloff = 999
 vim.opt.wrap = true
 vim.opt.linebreak = true
 vim.opt.breakindent = true
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.opt.wildignore:append { "**/node_modules/*", "**/.git/*" }
-
-vim.cmd.colorscheme("tokyonight-storm")
 
 -- Auto commands
 -- Highlight on yank

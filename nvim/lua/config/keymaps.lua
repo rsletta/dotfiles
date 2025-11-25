@@ -11,3 +11,9 @@ vim.keymap.set("n", "<leader>r", ":so $MYVIMRC<CR>")
 vim.keymap.set("n", "<leader>bn", ":bnext<CR>")
 vim.keymap.set("n", "<leader>bp", ":bprevious<CR>")
 vim.keymap.set("n", "<leader>bs", ":buffers<CR>:buffer ")
+
+-- Quickfix navigation
+vim.keymap.set("n", "<leader>co", ":copen<CR>", { desc = "Open quickfix" })
+vim.keymap.set("n", "<leader>cc", ":cclose<CR>", { desc = "Close quickfix" })
+vim.keymap.set("n", "]q", ":cnext<CR>", { desc = "Next quickfix" })
+vim.keymap.set("n", "[q", ":cprev<CR>", { desc = "Previous quickfix" })
