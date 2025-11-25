@@ -1,0 +1,51 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.8"
+# dependencies = [
+#   "click"
+# ]
+# ///
+import click
+import os
+from textwrap import dedent
+
+
+@click.command
+@click.argument("output", type=click.File('x', lazy=False))
+def create_new_script(output):
+    """
+    Creates a new self-contained python script with a simple 'click'
+    entrypoint. Intended to create quick (and dirty)
+    one-off scripts.
+
+    The generated script uses 'uv' and PEP 723 for package
+    management.
+
+    \b
+    Inspired by https://www.cottongeeks.com/articles/2025-06-24-fun-with-uv-and-pep-723
+    """
+    output.write(dedent("""\
+        #!/usr/bin/env -S uv run --script
+        # /// script
+        # requires-python = ">=3.8"
+        # dependencies = [
+        #   "click"
+        # ]
+        # ///
+        import click
+
+
+        @click.command
+        def main():
+            click.echo("OK")
+
+
+        if __name__ == "__main__":
+            main()
+        """))
+    os.chmod(output.name, 0o755)
+    click.echo(f"'{output.name}' created.")
+
+
+if __name__ == "__main__":
+    create_new_script()
