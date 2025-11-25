@@ -8,3 +8,5 @@ if [[ -z "$_compinit_done" ]]; then
   bashcompinit
   _compinit_done=1
 fi
+
+eval "$(op completion zsh)"; compdef _op op
