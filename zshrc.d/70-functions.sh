@@ -89,3 +89,5 @@ alias awsp=_set_aws_profile
 complete -W "$(aws configure list-profiles)" _set_aws_profile
 
 alias awsso="aws sso login"
+
+alias chkafka=switch-confluent-env
