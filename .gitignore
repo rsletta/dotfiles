@@ -1,2 +1,7 @@
 .DS_Store
-.idea
+.idea### Claude Code ###
+.claude/local/*
+!.claude/local/.gitkeep
+.claude/plans/local/*
+!.claude/plans/local/.gitkeep
+.claude/settings.local.json
