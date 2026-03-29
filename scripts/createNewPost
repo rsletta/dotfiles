@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-# Generate new blog post draft.
-# Arguments:
-# "title for post" tag1 tag2 tag3 tag4 etc
-declare bloghome=$BLOG_PATH
-declare windowname="New blog post"
 declare location="${0%/*}"
 
 source "$location/lib/slugify"
@@ -13,60 +8,49 @@ source "$location/lib/yyyymmdd"
 set -eo pipefail
 shopt -s extglob
 
-# exit with argument as error message
-die() { echo "$1" && exit 1; }
+die() { echo "$1" >&2; exit 1; }
 
-create_file() {
-  local filename=$1
-  local title=$2
-  # remove first two arguments from list, to leave only tags
-  shift
+# Strict context check
+[[ -n "$CONTEXT_POST_PATH" ]]     || die "No writing context. Run: cch <context>"
+[[ -n "$CONTEXT_POST_TEMPLATE" ]] || die "CONTEXT_POST_TEMPLATE not set for this context."
+
+render_template() {
+  local title="$1"
   shift
   local tags=("$@")
+  local date
+  date=$(yyyymmdd)
 
-  # create new from template
-  cat << EO_TEMPLATE > "$filename"
----
-title: $title
-date: $(yyyymmdd)
-draft: true
-EO_TEMPLATE
+  while IFS= read -r line; do
+    line="${line//__TITLE__/$title}"
+    line="${line//__DATE__/$date}"
+    line="${line//__CATEGORY__/${tags[1]:-uncategorized}}"
+    printf '%s\n' "$line"
+  done < "$CONTEXT_POST_TEMPLATE"
 
-# Add tags if present
-  if [[ "${#tags[@]}" -gt 0 ]]; then
-    echo "tags:" >> "$filename"
-    for tag in "${tags[@]}"; do
-      echo "  - $tag" >> "$filename"
+  if [[ "${#tags[@]}" -gt 1 ]]; then
+    for tag in "${tags[@]:1}"; do
+      printf '  - %s\n' "$tag"
     done
   fi
-# End front matter
-echo "---" >> "$filename"
-
 }
 
 generate_filename() {
   local title=$1
-
-  echo "$bloghome/content/post/$(yyyymmdd)-$(slugify "$title").md"
+  echo "$CONTEXT_POST_PATH/$(yyyymmdd)-$(slugify "$title").md"
 }
 
 main() {
   local title filename
 
-  #Abort if tmux isn't running
   [[ -n $TMUX ]] || die "tmux isn't running"
-
-  # Abort if no title is provided
-  : "${1:?Specify blog post title}"
+  : "${1:?Specify post title}"
 
   filename="$(generate_filename "$1")"
 
-  # Create the blog post if it does not already exist
-  [[ ! -f "$filename" ]] && create_file "$filename" "$@"
+  [[ ! -f "$filename" ]] && render_template "$@" > "$filename"
 
-  # TODO: fix new tmux window in current session
-  # Opens new draft in neovim
-  cd "$bloghome"
+  cd "$CONTEXT_POST_PATH"
   nvim "$filename"
 }
 

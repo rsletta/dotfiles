@@ -1,7 +1,7 @@
 # Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
-format = """$directory$custom$git_branch$git_status$aws$kubernetes$line_break$character"""
+format = """${custom.context}${custom.gh_account}${custom.git_user}$aws$kubernetes${custom.alvtime_profile}$line_break$directory$git_branch$git_status$character"""
 
 command_timeout = 2000
 
@@ -35,7 +35,7 @@ style = "bold italic blue"
 
 [kubernetes]
 disabled = false
-format = '☸($context) '
+format = '[\[k8s:$context\]]($style)  '
 style = "dimmed blue"
 
 [[kubernetes.contexts]]
@@ -43,23 +43,13 @@ context_pattern = "arn:aws:eks:eu-north-1:891377046560:cluster/eks-cluster-dev"
 style = "green"
 context_alias = "spenn-dev"
 
-[[kubernetes.contexts]]
-context_pattern = "arn:aws:eks:eu-north-1:891377202159:cluster/eks-cluster-test"
-style = "yellow"
-context_alias = "spenn-test"
-
-[[kubernetes.contexts]]
-context_pattern = "arn:aws:eks:eu-north-1:975050041551:cluster/eks-cluster-prod"
-style = "bold red blink"
-context_alias = "🚫 spenn-prod 🚫"
-
 [aws]
 symbol = ""
-format = '[$symbol($profile)]($style) '
+format = '[\[aws:$profile\]]($style)  '
 
 [docker_context]
 symbol = ""
-format = "[$symbol($context)]($style) "
+format = '[\[docker:$context\]]($style)  '
 style = "blue bold"
 only_with_files = true
 detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
@@ -124,52 +114,29 @@ python_binary = ["./venv/bin/python", "python", "python3", "python2"]
 detect_extensions = ["py"]
 version_format = "v${raw}"
 
-# ── PROD ───────────────────────────────────────────────────────────────────────
-[custom.spenn_cli_profile_prod]
-command = 'printf "SPENN(%s)" "$SPENN_CLI_PROFILE"'
-when = '[ -n "$SPENN_CLI_PROFILE" ] && printf %s "$SPENN_CLI_PROFILE" | grep -Eq "^prod(-|$)"'
-format = '[$output]($style) '
-style = "bold red"
-description = "SPENN CLI profile: prod"
+[custom.context]
+command = 'echo "${SHELL_CONTEXT}${CONTEXT_ENV:+:$CONTEXT_ENV}"'
+when = '[ -n "$SHELL_CONTEXT" ]'
+format = '[\[ctx:$output\]]($style)  '
+style = 'bold yellow'
+description = 'Active shell context and environment'
 
-# ── TEST ───────────────────────────────────────────────────────────────────────
-[custom.spenn_cli_profile_test]
-command = 'printf "SPENN(%s)" "$SPENN_CLI_PROFILE"'
-when = '[ -n "$SPENN_CLI_PROFILE" ] && printf %s "$SPENN_CLI_PROFILE" | grep -Eq "^test(-|$)"'
-format = '[$output]($style) '
-style = "bold yellow"
-description = "SPENN CLI profile: test"
+[custom.gh_account]
+command = 'echo "$GH_USER"'
+when = '[ -n "$GH_USER" ]'
+format = '[\[gh:$output\]]($style)  '
+style = 'dimmed green'
+description = 'Active GitHub account'
 
-# ── DEV ────────────────────────────────────────────────────────────────────────
-[custom.spenn_cli_profile_dev]
-command = 'printf "SPENN(%s)" "$SPENN_CLI_PROFILE"'
-when = '[ -n "$SPENN_CLI_PROFILE" ] && printf %s "$SPENN_CLI_PROFILE" | grep -Eq "^dev(-|$)"'
-format = '[$output]($style) '
-style = "bold green"
-description = "SPENN CLI profile: dev"
-
-# ── LOCALDEV ───────────────────────────────────────────────────────────────────
-[custom.spenn_cli_profile_localdev]
-command = 'printf "SPENN(%s)" "$SPENN_CLI_PROFILE"'
-when = '[ -n "$SPENN_CLI_PROFILE" ] && printf %s "$SPENN_CLI_PROFILE" | grep -Eq "^localdev(-|$)"'
-format = '[$output]($style) '
-style = "bold cyan"
-description = "SPENN CLI profile: localdev"
+[custom.git_user]
+command = 'git config user.email'
+when = 'git rev-parse --is-inside-work-tree 2>/dev/null'
+format = '[\[git:$output\]]($style)  '
+style = 'dimmed purple'
+description = 'Git user for current repo'
 
 [custom.alvtime_profile]
-command = '''
- if [ -n "$ALVTIME_CONFIG" ] && [ -f "$ALVTIME_CONFIG" ]; then
-   grep "^profile:" "$ALVTIME_CONFIG" | awk '{print $2}'
- elif [ -f "$HOME/.alvtime.conf" ]; then
-   grep "^profile:" "$HOME/.alvtime.conf" | awk '{print $2}'
- fi
-'''
-when = '[ -n "$ALVTIME_CONFIG" ] && [ -f "$ALVTIME_CONFIG" ] || [ -f "$HOME/.alvtime.conf" ]'
-format = '[Alvtime\($output\)](bold cyan) '
-description = "Show alvtime profile from config"
-
-[custom.codex_config]
-command = 'context=${CODEX_HOME%/.codex}; context=${context##*/}; printf "Codex(%s) " "$context"'
-when = '[ -n "$CODEX_HOME" ]'
-format = '[$output](codex_blue)'
-
+command = 'echo "$_ALVTIME_PROFILE"'
+when = '[ -n "$_ALVTIME_PROFILE" ]'
+format = '[\[alvtime:$output\]](bold cyan)  '
+description = "Show alvtime profile (cached in _ALVTIME_PROFILE)"

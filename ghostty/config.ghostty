@@ -1,0 +1,24 @@
+# Ghostty config
+# Symlink to: ~/.config/ghostty/config.ghostty
+
+# Shell
+command = /bin/zsh
+
+# Chrome
+window-decoration = true
+macos-non-native-fullscreen = visible-menu
+macos-titlebar-style = tabs
+window-padding-x = 8
+window-padding-y = 6
+
+# Styles
+font-family = CaskaydiaMono Nerd Font
+theme = Gruvbox Dark Hard
+font-size = 16
+cursor-style = bar
+
+# Keybindings
+keybind = cmd+enter=toggle_fullscreen
+keybind = opt+right=unbind
+keybind = opt+left=unbind
+keybind = opt+space=text:\x20

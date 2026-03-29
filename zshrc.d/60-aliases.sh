@@ -22,19 +22,12 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
-alias '~'='cd ~/'
 alias dot='cd ~/.config/dotfiles'
-alias vault='cd ~/vault'
 
 # Git
 alias gs='git status'
 alias gc='git commit'
 alias gd='git diff'
-
-# Notes
-alias dn='dailyNote'
-alias qrn='quickReadNote'
-alias nn='newNote'
 
 # Serve directory with http
 alias sd='python3 -m http.server'
@@ -51,13 +44,13 @@ alias reload='source ~/.zshrc'
 
 # Some arch hacks to force arm64 or x86_64
 # Check if the system is macOS
-if [ "$(uname)" = "Darwin" ]; then
+if [[ $(uname) == Darwin ]]; then
     # Aliases for forcing architecture
     alias arm="env /usr/bin/arch -arm64 /bin/bash --login"
     alias intel="env /usr/bin/arch -x86_64 /bin/bash --login"
 
     # Set brew alias based on architecture
-    if [ "$(arch)" = "i386" ]; then
+    if [[ $(arch) == i386 ]]; then
         alias brew='/usr/local/bin/brew'
     else
         alias brew='/opt/homebrew/bin/brew'
@@ -68,11 +61,18 @@ alias conf='cd ~/.config'
 
 alias lg='lazygit'
 
-alias w='watson'
-
 alias tf='terraform'
 
-alias jts='java --add-exports=java.desktop/com.apple.eawt=ALL-UNNAMED -jar /Users/rsletta/.local/bin/search.jar'
-
-
 alias a='alvtime'
+
+# Cache alvtime profile for starship prompt (avoids grep on every prompt render)
+_cache_alvtime_profile() {
+  if [[ -n "$ALVTIME_CONFIG" ]] && [[ -f "$ALVTIME_CONFIG" ]]; then
+    export _ALVTIME_PROFILE=$(grep "^profile:" "$ALVTIME_CONFIG" 2>/dev/null | awk '{print $2}')
+  elif [[ -f "$HOME/.alvtime.conf" ]]; then
+    export _ALVTIME_PROFILE=$(grep "^profile:" "$HOME/.alvtime.conf" 2>/dev/null | awk '{print $2}')
+  else
+    export _ALVTIME_PROFILE=""
+  fi
+}
+_cache_alvtime_profile

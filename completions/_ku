@@ -1,9 +1,15 @@
 #compdef ku
 
 _ku() {
-  local -a contexts
-  contexts=(${(f)"$(ls ~/.kube/config.d 2>/dev/null)"})
-  _describe 'context' contexts
+  local -a configs
+
+  if [[ -n "$SHELL_CONTEXT" ]] && (( ${#CONTEXT_KUBE_CONFIGS[@]} )); then
+    configs=("${CONTEXT_KUBE_CONFIGS[@]}")
+  else
+    configs=(${(f)"$(ls ~/.kube/config.d 2>/dev/null)"})
+  fi
+
+  _describe 'kubeconfig' configs
 }
 
 compdef _ku ku

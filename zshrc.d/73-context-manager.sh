@@ -1,0 +1,208 @@
+# Context manager: cman new|ls|edit
+
+_CONTEXT_TEMPLATE_DIR="$HOME/.config/dotfiles/templates/context"
+_CONTEXT_ROOT="$HOME/.config/contexts"
+
+_cman_new() {
+  local name="$1"
+
+  if [[ -z "$name" ]]; then
+    echo "Usage: cman new <name>" >&2
+    return 1
+  fi
+
+  local target="$_CONTEXT_ROOT/$name"
+
+  if [[ -d "$target" ]]; then
+    echo "Context '$name' already exists at $target" >&2
+    return 1
+  fi
+
+  if [[ ! -d "$_CONTEXT_TEMPLATE_DIR" ]]; then
+    echo "Template not found at $_CONTEXT_TEMPLATE_DIR" >&2
+    return 1
+  fi
+
+  cp -r "$_CONTEXT_TEMPLATE_DIR" "$target"
+
+  # Replace placeholders
+  local today
+  today=$(date +%Y-%m-%d)
+
+  find "$target" -type f -name '*.sh' -exec sed -i '' \
+    -e "s|__NAME__|$name|g" \
+    -e "s|__HOME__|$HOME/ws/$name|g" \
+    -e "s|__DATE__|$today|g" \
+    {} +
+
+  echo "Created context: $name"
+  echo "  $target/"
+  echo ""
+  echo "Next steps:"
+  echo "  1. Edit config.sh to set CONTEXT_HOME"
+  echo "  2. Configure tools in tools/setup.sh"
+  echo "  3. Run: cch $name"
+}
+
+_cman_ls() {
+  local dir="$_CONTEXT_ROOT"
+  [[ -d "$dir" ]] || { echo "No contexts directory" >&2; return 1; }
+
+  local -a contexts
+  contexts=("$dir"/*(N:t))
+  contexts=(${contexts:#_*})
+
+  if (( ${#contexts} == 0 )); then
+    echo "No contexts found"
+    return 0
+  fi
+
+  local ctx
+  for ctx in "${contexts[@]}"; do
+    local marker=" "
+    [[ "$ctx" == "$SHELL_CONTEXT" ]] && marker="*"
+    echo "$marker $ctx"
+  done
+}
+
+_cman_edit() {
+  local name="${1:-$SHELL_CONTEXT}"
+
+  if [[ -z "$name" ]]; then
+    echo "Usage: cman edit [name]  (defaults to active context)" >&2
+    return 1
+  fi
+
+  local target="$_CONTEXT_ROOT/$name"
+
+  if [[ ! -d "$target" ]]; then
+    echo "Context '$name' not found" >&2
+    return 1
+  fi
+
+  ${EDITOR:-vim} "$target"
+}
+
+# Known tools and their setup.sh export lines
+# Key = tool name, Value = export line template ($CONTEXT_DIR is available at runtime)
+typeset -A _CONTEXT_KNOWN_TOOLS
+_CONTEXT_KNOWN_TOOLS=(
+  gh      'export GH_CONFIG_DIR="$CONTEXT_DIR/tools/gh"'
+  aws     'export AWS_CONFIG_FILE="$CONTEXT_DIR/tools/aws/config"\nexport AWS_SHARED_CREDENTIALS_FILE="$CONTEXT_DIR/tools/aws/credentials"'
+  docker  'export DOCKER_CONFIG="$CONTEXT_DIR/tools/docker"'
+  azure   'export AZURE_CONFIG_DIR="$CONTEXT_DIR/tools/azure"'
+  gcloud  'export CLOUDSDK_CONFIG="$CONTEXT_DIR/tools/gcloud"'
+  helm    'export HELM_CONFIG_HOME="$CONTEXT_DIR/tools/helm"'
+  terraform 'export TF_CLI_CONFIG_FILE="$CONTEXT_DIR/tools/terraform/terraformrc"'
+  writing '# Writing system paths — fill in values for this context\n# export CONTEXT_VAULT_PATH=""\n# export CONTEXT_TIL_PATH=""\n# export CONTEXT_TIL_TEMPLATE="$HOME/.config/dotfiles/scripts/templates/til.md"\n# export CONTEXT_POST_PATH=""\n# export CONTEXT_POST_TEMPLATE="$HOME/.config/dotfiles/scripts/templates/post.md"'
+)
+
+_cman_add_tool() {
+  local tool="$1"
+  local name="${2:-$SHELL_CONTEXT}"
+
+  if [[ -z "$tool" ]]; then
+    echo "Usage: cman add-tool <tool> [context]" >&2
+    echo "" >&2
+    echo "Known tools: ${(k)_CONTEXT_KNOWN_TOOLS}" >&2
+    return 1
+  fi
+
+  if [[ -z "$name" ]]; then
+    echo "No context specified and none active. Usage: cman add-tool <tool> [context]" >&2
+    return 1
+  fi
+
+  local ctx_dir="$_CONTEXT_ROOT/$name"
+  if [[ ! -d "$ctx_dir" ]]; then
+    echo "Context '$name' not found" >&2
+    return 1
+  fi
+
+  local tool_dir="$ctx_dir/tools/$tool"
+  if [[ -d "$tool_dir" ]]; then
+    echo "Tool '$tool' already exists in context '$name'" >&2
+    return 1
+  fi
+
+  # Create tool directory
+  mkdir -p "$tool_dir"
+
+  # Wire into setup.sh if it's a known tool
+  local setup_file="$ctx_dir/tools/setup.sh"
+  if [[ -n "${_CONTEXT_KNOWN_TOOLS[$tool]}" ]]; then
+    echo "" >> "$setup_file"
+    echo -e "${_CONTEXT_KNOWN_TOOLS[$tool]}" >> "$setup_file"
+    echo "Added '$tool' to $name — wired into setup.sh"
+  else
+    echo "Added '$tool' to $name — unknown tool, add exports to setup.sh manually"
+  fi
+
+  echo "  $tool_dir/"
+}
+
+cman() {
+  local subcmd="$1"
+  shift 2>/dev/null
+
+  case "$subcmd" in
+    new)      _cman_new "$@" ;;
+    ls)       _cman_ls "$@" ;;
+    edit)     _cman_edit "$@" ;;
+    add-tool) _cman_add_tool "$@" ;;
+    *)
+      echo "Usage: cman <new|ls|edit|add-tool>" >&2
+      echo "  new <name>         Create context from template"
+      echo "  ls                 List contexts (* = active)"
+      echo "  edit [name]        Open context in \$EDITOR"
+      echo "  add-tool <tool> [ctx]  Add tool to context (default: active)"
+      return 1
+      ;;
+  esac
+}
+
+# zsh completion for cman
+_cman() {
+  local -a subcmds
+  subcmds=(
+    'new:Create context from template'
+    'ls:List contexts'
+    'edit:Open context in editor'
+    'add-tool:Add tool to context'
+  )
+
+  if (( CURRENT == 2 )); then
+    _describe -t commands 'cman command' subcmds
+    return
+  fi
+
+  case "${words[2]}" in
+    edit)
+      local -a contexts
+      local dir="$_CONTEXT_ROOT"
+      [[ -d $dir ]] || return 0
+      contexts=("$dir"/*(N:t))
+      contexts=(${contexts:#_*})
+      _describe -t contexts 'context' contexts
+      ;;
+    add-tool)
+      if (( CURRENT == 3 )); then
+        local -a tools
+        tools=(${(k)_CONTEXT_KNOWN_TOOLS})
+        _describe -t tools 'tool' tools
+      elif (( CURRENT == 4 )); then
+        local -a contexts
+        local dir="$_CONTEXT_ROOT"
+        [[ -d $dir ]] || return 0
+        contexts=("$dir"/*(N:t))
+        contexts=(${contexts:#_*})
+        _describe -t contexts 'context' contexts
+      fi
+      ;;
+    new)
+      # No completion for new context name
+      ;;
+  esac
+}
+
+compdef _cman cman
