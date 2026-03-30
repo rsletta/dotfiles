@@ -63,8 +63,6 @@ alias lg='lazygit'
 
 alias tf='terraform'
 
-alias a='alvtime'
-
 # Cache alvtime profile for starship prompt (avoids grep on every prompt render)
 _cache_alvtime_profile() {
   if [[ -n "$ALVTIME_CONFIG" ]] && [[ -f "$ALVTIME_CONFIG" ]]; then

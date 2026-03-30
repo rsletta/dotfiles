@@ -155,6 +155,56 @@ _cman_add_tool() {
   echo "  $tool_dir/"
 }
 
+_cman_rename() {
+  local old="$1"
+  local new="$2"
+
+  if [[ -z "$old" || -z "$new" ]]; then
+    echo "Usage: cman rename <old> <new>" >&2
+    return 1
+  fi
+
+  local old_ctx="$_CONTEXT_ROOT/$old"
+  local new_ctx="$_CONTEXT_ROOT/$new"
+
+  if [[ ! -d "$old_ctx" ]]; then
+    echo "Context '$old' not found" >&2
+    return 1
+  fi
+
+  if [[ -d "$new_ctx" ]]; then
+    echo "Context '$new' already exists" >&2
+    return 1
+  fi
+
+  if [[ "$SHELL_CONTEXT" == "$old" ]]; then
+    echo "Context '$old' is currently active — run 'cch' to clear it first" >&2
+    return 1
+  fi
+
+  if [[ -L "$old_ctx" ]]; then
+    echo "Context dir is a symlink — aborting" >&2
+    return 1
+  fi
+
+  mv "$old_ctx" "$new_ctx"
+  echo "Renamed: contexts/$old → contexts/$new"
+
+  local file updated=0
+  while IFS= read -r -d $'\0' file; do
+    if grep -q "/ws/$old\|CONTEXT_LABEL=\"$old\"\|Context: $old\|paths for $old" "$file" 2>/dev/null; then
+      sed -i '' "s|/ws/$old|/ws/$new|g" "$file"
+      sed -i '' "s|CONTEXT_LABEL=\"$old\"|CONTEXT_LABEL=\"$new\"|g" "$file"
+      sed -i '' "s|# Context: $old|# Context: $new|g" "$file"
+      sed -i '' "s|paths for $old context|paths for $new context|g" "$file"
+      echo "  Updated: ${file#$new_ctx/}"
+      (( updated++ ))
+    fi
+  done < <(find "$new_ctx" -name '*.sh' -type f -print0)
+
+  [[ "$updated" -eq 0 ]] && echo "  (no file content needed updating)"
+}
+
 cman() {
   local subcmd="$1"
   shift 2>/dev/null
@@ -164,12 +214,14 @@ cman() {
     ls)       _cman_ls "$@" ;;
     edit)     _cman_edit "$@" ;;
     add-tool) _cman_add_tool "$@" ;;
+    rename)   _cman_rename "$@" ;;
     *)
-      echo "Usage: cman <new|ls|edit|add-tool>" >&2
-      echo "  new <name>         Create context from template"
-      echo "  ls                 List contexts (* = active)"
-      echo "  edit [name]        Open context in \$EDITOR"
+      echo "Usage: cman <new|ls|edit|add-tool|rename>" >&2
+      echo "  new <name>             Create context from template"
+      echo "  ls                     List contexts (* = active)"
+      echo "  edit [name]            Open context in \$EDITOR"
       echo "  add-tool <tool> [ctx]  Add tool to context (default: active)"
+      echo "  rename <old> <new>     Rename a context"
       return 1
       ;;
   esac
@@ -183,6 +235,7 @@ _cman() {
     'ls:List contexts'
     'edit:Open context in editor'
     'add-tool:Add tool to context'
+    'rename:Rename a context'
   )
 
   if (( CURRENT == 2 )); then
@@ -215,6 +268,14 @@ _cman() {
       ;;
     new)
       # No completion for new context name
+      ;;
+    rename)
+      local -a contexts
+      local dir="$_CONTEXT_ROOT"
+      [[ -d $dir ]] || return 0
+      contexts=("$dir"/*(N:t))
+      contexts=(${contexts:#_*})
+      _describe -t contexts 'context' contexts
       ;;
   esac
 }

@@ -15,6 +15,9 @@ ws() {
     cd)
       _ws_cd "$@"
       ;;
+    rename)
+      _ws_rename "$@"
+      ;;
     *)
       echo "Unknown workspace command: $cmd" >&2
       _ws_help
@@ -62,6 +65,37 @@ _ws_list() {
   done
 }
 
+_ws_rename() {
+  local old="$1"
+  local new="$2"
+
+  if [[ -z "$old" || -z "$new" ]]; then
+    echo "Usage: ws rename <old> <new>" >&2
+    return 1
+  fi
+
+  local old_ws="$HOME/ws/$old"
+  local new_ws="$HOME/ws/$new"
+
+  if [[ ! -d "$old_ws" ]]; then
+    echo "Workspace '$old' not found" >&2
+    return 1
+  fi
+
+  if [[ -d "$new_ws" ]]; then
+    echo "Workspace '$new' already exists" >&2
+    return 1
+  fi
+
+  if [[ -L "$old_ws" ]]; then
+    echo "Workspace dir is a symlink — aborting" >&2
+    return 1
+  fi
+
+  mv "$old_ws" "$new_ws"
+  echo "Renamed: ws/$old → ws/$new"
+}
+
 _ws_cd() {
   local name="$1"
 
@@ -83,13 +117,13 @@ _ws_cd() {
 # Completion for ws command
 _ws() {
   local -a subcmds
-  subcmds=(new init list ls cd)
+  subcmds=(new init list ls cd rename)
 
   if (( CURRENT == 2 )); then
     _describe -t subcmds 'subcommand' subcmds
   elif (( CURRENT == 3 )); then
     case "${words[2]}" in
-      cd|init|new)
+      cd|init|new|rename)
         local -a workspaces
         if [[ -d "$HOME/ws" ]]; then
           workspaces=($(ls -d "$HOME/ws"/*/ 2>/dev/null | xargs -I {} basename {}))
@@ -107,10 +141,11 @@ _ws_help() {
 Workspace management
 
 Usage:
-  ws new <name>    Bootstrap a new workspace
-  ws init <name>   Alias for 'new'
-  ws list           List all workspaces
-  ws ls             Alias for 'list'
-  ws cd <name>      Change to workspace directory
+  ws new <name>         Bootstrap a new workspace
+  ws init <name>        Alias for 'new'
+  ws list               List all workspaces
+  ws ls                 Alias for 'list'
+  ws cd <name>          Change to workspace directory
+  ws rename <old> <new> Rename a workspace
 EOF
 }
