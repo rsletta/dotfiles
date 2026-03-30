@@ -30,4 +30,3 @@ function _start_opencode() {
 }
 
 alias oc=_start_opencode
-

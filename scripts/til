@@ -6,15 +6,12 @@ source "$location/lib/yyyymmdd"
 
 die() { echo "$1" >&2; exit 1; }
 
-# Strict context check
-[[ -n "$CONTEXT_TIL_PATH" ]]     || die "No writing context. Run: cch <context>"
-[[ -n "$CONTEXT_TIL_TEMPLATE" ]] || die "CONTEXT_TIL_TEMPLATE not set for this context."
+CATEGORIES_FILE="$location/lib/til-categories"
 
-# Args
-declare title="$1"
-declare category="${2:-uncategorized}"
-
-[[ -n "$title" ]] || die "Usage: til \"Title\" [category]"
+_til_require_context() {
+  [[ -n "$CONTEXT_TIL_PATH" ]]     || die "No writing context. Run: cch <context>"
+  [[ -n "$CONTEXT_TIL_TEMPLATE" ]] || die "CONTEXT_TIL_TEMPLATE not set for this context."
+}
 
 next_num() {
   local max=0 num
@@ -28,24 +25,91 @@ next_num() {
 }
 
 render_template() {
+  local title="$1"
+  shift
+  local -a categories=("$@")
   local date
   date=$(yyyymmdd)
   while IFS= read -r line; do
-    line="${line//__TITLE__/$title}"
-    line="${line//__DATE__/$date}"
-    line="${line//__CATEGORY__/$category}"
-    printf '%s\n' "$line"
+    if [[ "$line" == *"__CATEGORY__"* ]]; then
+      local indent="${line%%- __CATEGORY__*}"
+      for cat in "${categories[@]}"; do
+        printf '%s- %s\n' "$indent" "$cat"
+      done
+    else
+      line="${line//__TITLE__/$title}"
+      line="${line//__DATE__/$date}"
+      printf '%s\n' "$line"
+    fi
   done < "$CONTEXT_TIL_TEMPLATE"
 }
 
-main() {
+_til_new() {
+  _til_require_context
+
+  read -rp "Title (required): " title
+  [[ -n "$title" ]] || die "Title is required."
+
+  local selected
+  selected=$(sort "$CATEGORIES_FILE" | fzf --multi \
+    --prompt="Categories (TAB=multi-select, ENTER=confirm): ")
+  [[ -n "$selected" ]] || die "At least one category is required."
+
+  local -a categories
+  mapfile -t categories <<< "$selected"
+
   local n filepath
   n=$(next_num)
   filepath="$CONTEXT_TIL_PATH/$n.md"
 
-  render_template > "$filepath"
+  render_template "$title" "${categories[@]}" > "$filepath"
 
   ${EDITOR:-nvim} "$filepath"
 }
 
-main
+_til_category_list() {
+  sort "$CATEGORIES_FILE"
+}
+
+_til_category_new() {
+  read -rp "New category name (lowercase, hyphen-separated): " name
+  [[ -n "$name" ]] || die "Category name is required."
+
+  if grep -qx "$name" "$CATEGORIES_FILE"; then
+    echo "Category '$name' already exists." >&2
+    return 1
+  fi
+
+  echo "$name" >> "$CATEGORIES_FILE"
+  sort -o "$CATEGORIES_FILE" "$CATEGORIES_FILE"
+  echo "Added '$name'."
+}
+
+case "${1:-}" in
+  category)
+    case "${2:-}" in
+      list) _til_category_list ;;
+      new)  _til_category_new ;;
+      *)
+        echo "Usage: til category <command>" >&2
+        echo "" >&2
+        echo "Commands:" >&2
+        echo "  list   List all categories" >&2
+        echo "  new    Add a new category" >&2
+        exit 1
+        ;;
+    esac
+    ;;
+  "")
+    _til_new
+    ;;
+  *)
+    echo "Usage: til [category <command>]" >&2
+    echo "" >&2
+    echo "Commands:" >&2
+    echo "  (none)          Create a new TIL" >&2
+    echo "  category list   List all categories" >&2
+    echo "  category new    Add a new category" >&2
+    exit 1
+    ;;
+esac

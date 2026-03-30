@@ -32,6 +32,7 @@ _context_cleanup() {
   export CONTEXT_HOME=""
   export CONTEXT_LABEL=""
   export CONTEXT_ENV=""
+  [[ -n "$TMUX" ]] && tmux setenv -u SHELL_CONTEXT && tmux setenv -u CONTEXT_ENV
 }
 
 # Set current context
@@ -96,6 +97,9 @@ _set_context() {
     source "$ctx_dir/hooks/on-enter.sh"
   fi
 
+  # Sync to tmux server env so new panes inherit this context
+  [[ -n "$TMUX" ]] && tmux setenv SHELL_CONTEXT "$SHELL_CONTEXT"
+
   echo "Context: $SHELL_CONTEXT"
 }
 
@@ -129,6 +133,7 @@ _set_context_env() {
 
   if [[ -z "$env" ]]; then
     export CONTEXT_ENV=""
+    [[ -n "$TMUX" ]] && tmux setenv -u CONTEXT_ENV
     echo "Context env unset (env-specific exports persist until next cch)"
     return 0
   fi
@@ -140,6 +145,7 @@ _set_context_env() {
   fi
 
   export CONTEXT_ENV="$env"
+  [[ -n "$TMUX" ]] && tmux setenv CONTEXT_ENV "$CONTEXT_ENV"
   echo "Context env: $CONTEXT_ENV"
 
   local file

@@ -94,7 +94,7 @@ _CONTEXT_KNOWN_TOOLS=(
   gcloud  'export CLOUDSDK_CONFIG="$CONTEXT_DIR/tools/gcloud"'
   helm    'export HELM_CONFIG_HOME="$CONTEXT_DIR/tools/helm"'
   terraform 'export TF_CLI_CONFIG_FILE="$CONTEXT_DIR/tools/terraform/terraformrc"'
-  writing '# Writing system paths — fill in values for this context\n# export CONTEXT_VAULT_PATH=""\n# export CONTEXT_TIL_PATH=""\n# export CONTEXT_TIL_TEMPLATE="$HOME/.config/dotfiles/scripts/templates/til.md"\n# export CONTEXT_POST_PATH=""\n# export CONTEXT_POST_TEMPLATE="$HOME/.config/dotfiles/scripts/templates/post.md"'
+  writing '__WRITING__'
 )
 
 _cman_add_tool() {
@@ -130,7 +130,21 @@ _cman_add_tool() {
 
   # Wire into setup.sh if it's a known tool
   local setup_file="$ctx_dir/tools/setup.sh"
-  if [[ -n "${_CONTEXT_KNOWN_TOOLS[$tool]}" ]]; then
+  if [[ "$tool" == "writing" ]]; then
+    local vault_path="$HOME/ws/$name/notes/$name"
+    local writing_exports="export CONTEXT_VAULT_PATH=\"$vault_path\"\nexport CONTEXT_TIL_PATH=\"$vault_path/TIL\"\nexport CONTEXT_TIL_TEMPLATE=\"\$HOME/.config/dotfiles/templates/writing/til.md\"\nexport CONTEXT_POST_PATH=\"$vault_path/posts\"\nexport CONTEXT_POST_TEMPLATE=\"\$HOME/.config/dotfiles/templates/writing/post.md\""
+    echo "" >> "$setup_file"
+    echo -e "$writing_exports" >> "$setup_file"
+
+    local templates_src="$HOME/.config/dotfiles/templates/writing"
+    local templates_dst="$vault_path/__templates"
+    mkdir -p "$templates_dst"
+    cp "$templates_src/Daily Note.md" "$templates_dst/Daily Note.md"
+
+    echo "Added 'writing' to $name — wired into setup.sh"
+    echo "  Vault: $vault_path"
+    echo "  Copied Daily Note template → $templates_dst/"
+  elif [[ -n "${_CONTEXT_KNOWN_TOOLS[$tool]}" ]]; then
     echo "" >> "$setup_file"
     echo -e "${_CONTEXT_KNOWN_TOOLS[$tool]}" >> "$setup_file"
     echo "Added '$tool' to $name — wired into setup.sh"

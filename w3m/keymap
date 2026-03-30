@@ -1,0 +1,5 @@
+keymap o EXTERN
+keymap h BACK
+keymap j NEXT_LINK
+keymap k PREV_LINK
+keymap l GOTO_LINK

@@ -29,41 +29,80 @@ _writing_slugify() {
   echo "${str:?Cannot generate slug}"
 }
 
-_ensure_obsidian() {
-  pgrep -x Obsidian > /dev/null 2>&1 || open -a Obsidian
+# ── notes ───────────────────────────────────────────────────────────────────
+
+_writing_ordinal() {
+  local n=$1
+  case $n in
+    1|21|31) echo "${n}st" ;;
+    2|22)    echo "${n}nd" ;;
+    3|23)    echo "${n}rd" ;;
+    *)       echo "${n}th" ;;
+  esac
 }
 
-# ── notes ───────────────────────────────────────────────────────────────────
+_render_daily_template() {
+  local template="$1"
+  local day month year weekday ordinal_day
+  day=$(date +%-d)
+  month=$(date +%B)
+  year=$(date +%Y)
+  weekday=$(date +%A)
+  ordinal_day=$(_writing_ordinal "$day")
+
+  while IFS= read -r line; do
+    if [[ "$line" == *"{{"* ]]; then
+      local fmt before after
+      before="${line%%\{\{date:*}"
+      after="${line#*\}\}}"
+      fmt="${line#*\{\{date: }"
+      fmt="${fmt%%\}\}*}"
+      local result="$fmt"
+      result="${result//dddd/$weekday}"
+      result="${result//Do/$ordinal_day}"
+      result="${result//MMMM/$month}"
+      result="${result//YYYY/$year}"
+      result="${result//DD/$(date +%d)}"
+      result="${result//D/$day}"
+      result="${result//MM/$(date +%m)}"
+      line="${before}${result}${after}"
+    fi
+    printf '%s\n' "$line"
+  done < "$template"
+}
 
 _notes_daily() {
   _writing_require_vault || return 1
 
+  local folder="Daily Notes"
+  local template_path=""
+  local config="$CONTEXT_VAULT_PATH/.obsidian/daily-notes.json"
+
+  if [[ -f "$config" ]]; then
+    local cfgline
+    while IFS= read -r cfgline; do
+      [[ "$cfgline" =~ '"folder"[[:space:]]*:[[:space:]]*"([^"]+)"' ]] && folder="$match[1]"
+      [[ "$cfgline" =~ '"template"[[:space:]]*:[[:space:]]*"([^"]+)"' ]] && template_path="$match[1]"
+    done < "$config"
+  fi
+
   local date filepath
   date=$(_writing_date)
-  filepath="$CONTEXT_VAULT_PATH/Daily Notes/$date.md"
+  filepath="$CONTEXT_VAULT_PATH/$folder/$date.md"
 
   if [[ ! -f "$filepath" ]]; then
-    cat > "$filepath" << EOF
----
-tags:
-  - 📝
----
-# Daily Note: $(date "+%A %-d. %B %Y")
-
-## Goals
--
-
-## Tasks
-- [ ]
-
-## Reflections
--
-
-## Accomplishments
--
-
-## Miscellaneous
-EOF
+    mkdir -p "$(dirname "$filepath")"
+    if [[ -n "$template_path" ]]; then
+      local tfile="$CONTEXT_VAULT_PATH/$template_path.md"
+      [[ -f "$tfile" ]] || tfile="$CONTEXT_VAULT_PATH/$template_path"
+      if [[ -f "$tfile" ]]; then
+        _render_daily_template "$tfile" > "$filepath"
+      else
+        printf '# Daily Note: %s\n' "$date" > "$filepath"
+      fi
+    else
+      printf '# Daily Note: %s\n' "$date" > "$filepath"
+    fi
   fi
 
   ${EDITOR:-nvim} "$filepath"
