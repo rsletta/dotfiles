@@ -16,11 +16,20 @@ _CONTEXT_TOOL_VARS=(
   HELM_CONFIG_HOME
   TF_CLI_CONFIG_FILE
   GH_USER
+  CLAUDE_CONFIG_DIR
   CONTEXT_VAULT_PATH
   CONTEXT_TIL_PATH
   CONTEXT_TIL_TEMPLATE
   CONTEXT_POST_PATH
   CONTEXT_POST_TEMPLATE
+  CLAUDE_CODE_ENABLE_TELEMETRY
+  OTEL_METRICS_EXPORTER
+  OTEL_TRACES_EXPORTER
+  OTEL_EXPORTER_OTLP_PROTOCOL
+  OTEL_EXPORTER_OTLP_ENDPOINT
+  OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
+  CLAUDE_CODE_ENHANCED_TELEMETRY_BETA
+  OTEL_LOG_TOOL_DETAILS
 )
 
 # Clean up env vars from previous context
@@ -101,6 +110,34 @@ _set_context() {
   [[ -n "$TMUX" ]] && tmux setenv SHELL_CONTEXT "$SHELL_CONTEXT"
 
   echo "Context: $SHELL_CONTEXT"
+}
+
+# Read a gh oauth token from macOS Keychain by account name.
+# Works around cli/cli#12885: gh's own keychain lookup ignores the account
+# field, so with multiple gh accounts on github.com it returns an arbitrary
+# token. Setup.sh uses this to pin GH_TOKEN for the context's user.
+_gh_token_for_user() {
+  local user="$1"
+  local raw
+  raw=$(security find-generic-password -s "gh:github.com" -a "$user" -w 2>/dev/null) || return 1
+  printf '%s' "${raw#go-keyring-base64:}" | base64 -d
+}
+
+# Return cached GH username for the current context, fetching if needed.
+# Cache lives at $CONTEXT_DIR/.cache/gh_user — delete to force refresh.
+_gh_user_cached() {
+  local cache_file="$CONTEXT_DIR/.cache/gh_user"
+  if [[ -f "$cache_file" ]]; then
+    cat "$cache_file"
+    return
+  fi
+  local user
+  user="$(gh api user --jq .login 2>/dev/null)"
+  if [[ -n "$user" ]]; then
+    mkdir -p "${cache_file:h}"
+    echo "$user" > "$cache_file"
+    echo "$user"
+  fi
 }
 
 # Public command

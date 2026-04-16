@@ -74,3 +74,5 @@ _cache_alvtime_profile() {
   fi
 }
 _cache_alvtime_profile
+
+alias lazyd='lazydocker'

@@ -10,16 +10,23 @@ tns() {
 # add new alias to alias file
 function aali() {
     if [[ -z $1 || -z $2 || $# -gt 2 ]]; then
-        echo usage:
-        echo "\t\$$0 <alias> '<command>'"
-        echo example:
-        echo "\t\$$0 ll 'ls -l'"
-    else
-        echo "" >> $ALIAS_FILE
-        echo "alias $1='$2'" >> $ALIAS_FILE
-        echo "alias ADDED to $ALIAS_FILE"
-        reload
+        echo "aali — add a new alias to $ALIAS_FILE"
+        echo ""
+        echo "Usage:"
+        echo "  aali <name> '<command>'"
+        echo ""
+        echo "Examples:"
+        echo "  aali ll 'ls -la'"
+        echo "  aali gs 'git status'"
+        echo "  aali k 'kubectl'"
+        echo ""
+        echo "Note: wrap the command in single quotes. Reload is automatic."
+        return 0
     fi
+    echo "" >> $ALIAS_FILE
+    echo "alias $1='$2'" >> $ALIAS_FILE
+    echo "alias '$1' added to $ALIAS_FILE"
+    reload
 }
 
 function _start_opencode() {
@@ -30,3 +37,11 @@ function _start_opencode() {
 }
 
 alias oc=_start_opencode
+
+# Workaround for cli/cli#12885 — gh's keychain lookup ignores the account
+# field, so go-gh tools (e.g. gh-dash) get an arbitrary token under multi-account
+# setups. Pin GH_TOKEN to the active context's user for this invocation only.
+gh-dash() {
+  GH_TOKEN="$(_gh_token_for_user "$GH_USER")" command gh dash "$@"
+}
+alias ghd=gh-dash

@@ -30,7 +30,8 @@ How config files are loaded and what each one does.
   zshrc.d/72-context-tools.sh     ku, awsp with scoped completions
   zshrc.d/73-context-manager.sh   cman command
   zshrc.d/80-plugins.sh           zsh-syntax-highlighting, history-substring-search
-  _cached_init: fnm, fzf, zoxide  (see "Init caching" below)
+  fnm env (not cached — per-process multishell paths)
+  _cached_init: fzf, zoxide  (see "Init caching" below)
   SDKMAN (lazy-loaded — inits on first use of sdk/java/gradle/kotlin/mvn)
   Docker CLI completions (fpath only, uses compinit from 40-completions.sh)
 ```
@@ -68,7 +69,10 @@ the output to `~/.cache/zsh/<name>.zsh`. Subsequent shells just source the cache
 **Daily rotation**: A datestamp file (`~/.cache/zsh/.date`) is checked on startup. The
 first shell of each day wipes and rebuilds the cache. Every shell after that is fast.
 
-**Cached tools**: fnm, fzf, zoxide, op (op is cached in `40-completions.sh`)
+**Cached tools**: fzf, zoxide, op (op is cached in `40-completions.sh`)
+
+**Not cached**: fnm — its output contains per-process multishell paths that are
+unsafe to share across shells. Runs `eval "$(fnm env --use-on-cd)"` directly.
 
 **SDKMAN**: Not cached but lazy-loaded — stub functions for `sdk`, `java`, `gradle`,
 `kotlin`, and `mvn` defer `sdkman-init.sh` until first actual use.
