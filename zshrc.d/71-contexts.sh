@@ -15,6 +15,8 @@ _CONTEXT_TOOL_VARS=(
   CLOUDSDK_CONFIG
   HELM_CONFIG_HOME
   TF_CLI_CONFIG_FILE
+  JIRA_CONFIG_FILE
+  JIRA_API_TOKEN
   GH_USER
   CLAUDE_CONFIG_DIR
   CONTEXT_VAULT_PATH
@@ -105,6 +107,9 @@ _set_context() {
   if [[ -f "$ctx_dir/hooks/on-enter.sh" ]]; then
     source "$ctx_dir/hooks/on-enter.sh"
   fi
+
+  # Skillshare drift check (no-op if skillshare not installed in this context)
+  typeset -f _context_skillshare_check >/dev/null 2>&1 && _context_skillshare_check
 
   # Sync to tmux server env so new panes inherit this context
   [[ -n "$TMUX" ]] && tmux setenv SHELL_CONTEXT "$SHELL_CONTEXT"

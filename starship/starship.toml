@@ -137,6 +137,6 @@ description = 'Git user for current repo'
 
 [custom.alvtime_profile]
 command = 'echo "$_ALVTIME_PROFILE"'
-when = '[ -n "$_ALVTIME_PROFILE" ]'
+when = '[ -n "$_ALVTIME_PROFILE" ] && [ "$_ALVTIME_PROFILE" != "ronnie" ]'
 format = '[\[alvtime:$output\]](bold cyan)  '
 description = "Show alvtime profile (cached in _ALVTIME_PROFILE)"

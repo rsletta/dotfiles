@@ -52,11 +52,13 @@ _til_new() {
 
   local selected
   selected=$(sort "$CATEGORIES_FILE" | fzf --multi \
-    --prompt="Categories (TAB=multi-select, ENTER=confirm): ")
-  [[ -n "$selected" ]] || die "At least one category is required."
+    --bind="ctrl-n:execute-silent([ -n {q} ] && echo {q} >> '$CATEGORIES_FILE' && sort -o '$CATEGORIES_FILE' '$CATEGORIES_FILE')+reload(sort '$CATEGORIES_FILE')+clear-query" \
+    --prompt="Categories (TAB=multi, ENTER=confirm, Ctrl-N=add typed, Esc=none): ")
 
-  local -a categories
-  mapfile -t categories <<< "$selected"
+  local -a categories=()
+  while IFS= read -r line; do
+    [[ -n "$line" ]] && categories+=("$line")
+  done <<< "$selected"
 
   local n filepath
   n=$(next_num)
@@ -69,6 +71,127 @@ _til_new() {
 
 _til_category_list() {
   sort "$CATEGORIES_FILE"
+}
+
+_til_scan_used_categories() {
+  local file
+  for file in "$CONTEXT_TIL_PATH"/*.md; do
+    [[ -f "$file" ]] || continue
+    awk '
+      /^---[[:space:]]*$/ { fm = !fm; if (!fm) exit; next }
+      fm && /^categories:/ { incat=1; next }
+      fm && incat && /^[[:space:]]+-[[:space:]]*/ {
+        sub(/^[[:space:]]+-[[:space:]]*/, "")
+        sub(/[[:space:]]+$/, "")
+        if (length) print
+        next
+      }
+      fm && incat && /^[^[:space:]]/ { incat=0 }
+    ' "$file"
+  done
+}
+
+_til_files_using_category() {
+  local target="$1" file
+  for file in "$CONTEXT_TIL_PATH"/*.md; do
+    [[ -f "$file" ]] || continue
+    awk -v target="$target" '
+      /^---[[:space:]]*$/ { fm = !fm; if (!fm) exit; next }
+      fm && /^categories:/ { incat=1; next }
+      fm && incat && /^[[:space:]]+-[[:space:]]*/ {
+        sub(/^[[:space:]]+-[[:space:]]*/, "")
+        sub(/[[:space:]]+$/, "")
+        if ($0 == target) { found=1 }
+        next
+      }
+      fm && incat && /^[^[:space:]]/ { incat=0 }
+      END { exit !found }
+    ' "$file" && echo "$file"
+  done
+}
+
+_til_category_count() {
+  awk '
+    /^---[[:space:]]*$/ { fm = !fm; if (!fm) exit; next }
+    fm && /^categories:/ { incat=1; next }
+    fm && incat && /^[[:space:]]+-[[:space:]]*[^[:space:]]/ { n++; next }
+    fm && incat && /^[^[:space:]]/ { incat=0 }
+    END { print n+0 }
+  ' "$1"
+}
+
+_til_regex_escape() {
+  printf '%s' "$1" | sed 's/[][\\/.^$*+?()|{}]/\\&/g'
+}
+
+_til_category_sync() {
+  _til_require_context
+
+  local used approved drift
+  used=$(_til_scan_used_categories | sort -u)
+  approved=$(sort "$CATEGORIES_FILE")
+  drift=$(comm -23 <(echo "$used") <(echo "$approved"))
+
+  if [[ -z "$drift" ]]; then
+    echo "Clean — all categories in use are approved."
+    return 0
+  fi
+
+  local selected
+  selected=$(echo "$drift" | fzf --multi \
+    --prompt="Drift (TAB=multi, ENTER=confirm): " \
+    --header="Categories used in TILs but not in approved list")
+  [[ -z "$selected" ]] && { echo "No action taken."; return 0; }
+
+  echo ""
+  echo "Selected:"
+  echo "$selected" | sed 's/^/  /'
+  echo ""
+  read -rp "Action: (a)dd to approved, (d)elete from TILs, (s)kip? [s] " action
+  action="${action:-s}"
+
+  case "$action" in
+    a|A)
+      while IFS= read -r cat; do
+        [[ -n "$cat" ]] && echo "$cat" >> "$CATEGORIES_FILE"
+      done <<< "$selected"
+      sort -uo "$CATEGORIES_FILE" "$CATEGORIES_FILE"
+      echo "Added to approved list."
+      ;;
+    d|D)
+      local cat esc file
+      while IFS= read -r cat; do
+        [[ -z "$cat" ]] && continue
+        esc=$(_til_regex_escape "$cat")
+        while IFS= read -r file; do
+          [[ -z "$file" ]] && continue
+          sed -i '' "/^[[:space:]]*-[[:space:]]*${esc}[[:space:]]*$/d" "$file"
+        done < <(_til_files_using_category "$cat")
+      done <<< "$selected"
+
+      local -a orphaned=()
+      for file in "$CONTEXT_TIL_PATH"/*.md; do
+        [[ -f "$file" ]] || continue
+        if (( $(_til_category_count "$file") == 0 )) && grep -q '^categories:[[:space:]]*$' "$file"; then
+          awk '
+            /^categories:[[:space:]]*$/ && !added { print; print "    -"; added=1; next }
+            { print }
+          ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+          orphaned+=("$file")
+        fi
+      done
+
+      echo "Deleted selected categories from TILs."
+      if (( ${#orphaned[@]} > 0 )); then
+        echo ""
+        echo "TILs now without categories — please re-categorize:"
+        printf '  %s\n' "${orphaned[@]}"
+      fi
+      ;;
+    *)
+      echo "Skipped."
+      ;;
+  esac
 }
 
 _til_category_new() {
@@ -90,12 +213,14 @@ case "${1:-}" in
     case "${2:-}" in
       list) _til_category_list ;;
       new)  _til_category_new ;;
+      sync) _til_category_sync ;;
       *)
         echo "Usage: til category <command>" >&2
         echo "" >&2
         echo "Commands:" >&2
         echo "  list   List all categories" >&2
         echo "  new    Add a new category" >&2
+        echo "  sync   Find categories used in TILs but not approved; add or delete" >&2
         exit 1
         ;;
     esac
@@ -110,6 +235,7 @@ case "${1:-}" in
     echo "  (none)          Create a new TIL" >&2
     echo "  category list   List all categories" >&2
     echo "  category new    Add a new category" >&2
+    echo "  category sync   Reconcile drift between TILs and approved list" >&2
     exit 1
     ;;
 esac

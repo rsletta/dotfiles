@@ -2,12 +2,14 @@ architecture
 arduino
 docker
 git
+golang
 hardware
 kubernetes
 linux
 macos
 neovim
 nodejs
+programming
 rpi
 sap
 server

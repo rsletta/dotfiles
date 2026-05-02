@@ -94,7 +94,9 @@ _CONTEXT_KNOWN_TOOLS=(
   gcloud  'export CLOUDSDK_CONFIG="$CONTEXT_DIR/tools/gcloud"'
   helm    'export HELM_CONFIG_HOME="$CONTEXT_DIR/tools/helm"'
   terraform 'export TF_CLI_CONFIG_FILE="$CONTEXT_DIR/tools/terraform/terraformrc"'
+  jira    'export JIRA_CONFIG_FILE="$CONTEXT_DIR/tools/jira/config.yml"'
   writing '__WRITING__'
+  skillshare '__SKILLSHARE__'
 )
 
 _cman_add_tool() {
@@ -144,15 +146,146 @@ _cman_add_tool() {
     echo "Added 'writing' to $name — wired into setup.sh"
     echo "  Vault: $vault_path"
     echo "  Copied Daily Note template → $templates_dst/"
+  elif [[ "$tool" == "skillshare" ]]; then
+    _cman_skillshare_setup "$ctx_dir" "$name" "$tool_dir"
+  elif [[ "$tool" == "jira" ]]; then
+    echo "" >> "$setup_file"
+    echo -e "${_CONTEXT_KNOWN_TOOLS[$tool]}" >> "$setup_file"
+    mkdir -p "$tool_dir/orgs"
+    echo "Added 'jira' to $name — wired into setup.sh"
+    echo "  $tool_dir/"
+    _cman_jira_setup "$ctx_dir"
   elif [[ -n "${_CONTEXT_KNOWN_TOOLS[$tool]}" ]]; then
     echo "" >> "$setup_file"
     echo -e "${_CONTEXT_KNOWN_TOOLS[$tool]}" >> "$setup_file"
+
+    local tool_template_dir="$_CONTEXT_TEMPLATE_DIR/tools/$tool"
+    if [[ -d "$tool_template_dir" ]]; then
+      cp -r "$tool_template_dir/." "$tool_dir/"
+    fi
+
     echo "Added '$tool' to $name — wired into setup.sh"
+    echo "  $tool_dir/"
   else
     echo "Added '$tool' to $name — unknown tool, add exports to setup.sh manually"
+    echo "  $tool_dir/"
+  fi
+}
+
+_cman_skillshare_setup() {
+  local ctx_dir="$1"
+  local name="$2"
+  local tool_dir="$3"
+
+  if ! command -v skillshare &>/dev/null; then
+    echo "skillshare CLI not found — install it first (brew install runkids/tap/skillshare)" >&2
+    rmdir "$tool_dir" 2>/dev/null
+    return 1
   fi
 
-  echo "  $tool_dir/"
+  local claude_dir="$ctx_dir/tools/claude"
+  if [[ ! -d "$claude_dir" ]]; then
+    echo "Context '$name' has no tools/claude/ — add Claude Code support before skillshare" >&2
+    rmdir "$tool_dir" 2>/dev/null
+    return 1
+  fi
+
+  local skills_dir="$claude_dir/skills"
+  mkdir -p "$skills_dir"
+
+  local target="$name-claude"
+  skillshare target add "$target" "$skills_dir" || {
+    rmdir "$tool_dir" 2>/dev/null
+    return 1
+  }
+
+  printf 'target: %s\nskills: %s\n' "$target" "$skills_dir" > "$tool_dir/installed"
+
+  echo "Added 'skillshare' to $name"
+  echo "  Target: $target → $skills_dir"
+  echo "  Next: skillshare sync"
+}
+
+_context_skillshare_check() {
+  local marker="$CONTEXT_DIR/tools/skillshare/installed"
+  [[ -f "$marker" ]] || return 0
+  command -v skillshare &>/dev/null || return 0
+  command -v jq &>/dev/null || return 0
+
+  local target
+  target=$(awk -F': ' '/^target:/ {print $2}' "$marker")
+  [[ -z "$target" ]] && return 0
+
+  local count
+  count=$(skillshare diff "$target" --json 2>/dev/null \
+    | jq '[.targets[0].items[]? | select(.is_sync == true)] | length' 2>/dev/null)
+  [[ -z "$count" ]] && return 0
+
+  (( count > 0 )) && echo "⚠ skillshare: $count skill(s) need sync — run: skillshare sync"
+}
+
+_cman_jira_setup() {
+  local ctx_dir="$1"
+  local tool_dir="$ctx_dir/tools/jira"
+
+  echo ""
+  _cman_jira_add_org "$tool_dir" && echo ""
+
+  # 1Password token (shared across orgs — same Atlassian account)
+  if ! command -v op &>/dev/null; then
+    echo "  Tip: add JIRA_API_TOKEN to env/shared/variables.sh:"
+    echo "    export JIRA_API_TOKEN=\"op://<Vault>/<Item>/<field>\""
+    return
+  fi
+
+  echo -n "Configure JIRA_API_TOKEN from 1Password? [Y/n] "
+  read -r _jira_reply
+  [[ "$_jira_reply" == [nN]* ]] && return
+
+  local vault item field
+  vault=$(op vault list --format=json 2>/dev/null | jq -r '.[].name' \
+    | fzf --prompt="Vault: " --layout=reverse --height=10) || return
+  [[ -z "$vault" ]] && echo "  Skipped." && return
+
+  item=$(op item list --vault "$vault" --format=json 2>/dev/null | jq -r '.[].title' \
+    | fzf --prompt="Item: " --layout=reverse --height=10) || return
+  [[ -z "$item" ]] && echo "  Skipped." && return
+
+  field=$(op item get "$item" --vault "$vault" --format=json 2>/dev/null \
+    | jq -r '.fields[] | select(.value != null) | .label' \
+    | fzf --prompt="Field: " --layout=reverse --height=10) || return
+  [[ -z "$field" ]] && echo "  Skipped." && return
+
+  local op_ref="op://$vault/$item/$field"
+  printf '\nexport JIRA_API_TOKEN="%s"\n' "$op_ref" >> "$ctx_dir/env/shared/variables.sh"
+  echo "  JIRA_API_TOKEN → $op_ref"
+}
+
+_cman_jira_add_org() {
+  local tool_dir="$1"
+  local orgs_dir="$tool_dir/orgs"
+
+  echo -n "Org name (short identifier, e.g. 'work' or 'oldorg'): "
+  read -r _jira_org
+  [[ -z "$_jira_org" ]] && _jira_org="default"
+
+  local org_file="$orgs_dir/$_jira_org.yml"
+  cp "$_CONTEXT_TEMPLATE_DIR/tools/jira/config.yml" "$org_file"
+
+  echo -n "Jira server URL (e.g. https://yourorg.atlassian.net): "
+  read -r _jira_server
+  if [[ -n "$_jira_server" ]]; then
+    sed -i '' "s|^server:.*|server: $_jira_server|" "$org_file"
+  fi
+
+  echo -n "Jira login email: "
+  read -r _jira_login
+  if [[ -n "$_jira_login" ]]; then
+    sed -i '' "s|^login:.*|login: $_jira_login|" "$org_file"
+  fi
+
+  ln -sf "orgs/$_jira_org.yml" "$tool_dir/config.yml"
+  echo "  org '$_jira_org' → active"
 }
 
 _cman_rename() {

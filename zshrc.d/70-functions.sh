@@ -1,5 +1,9 @@
 tla() {
   # Tmux list and attach to session
+  if [[ -n "$TMUX" ]]; then
+    echo "You're already in tmux. Use ctrl+a s like a normal person."
+    return 1
+  fi
   tmux a -t "$(tmux ls -F '#S' | fzf --layout=reverse --border --info=inline --margin=8,20)"
 }
 

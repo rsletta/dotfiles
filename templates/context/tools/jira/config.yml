@@ -1,0 +1,7 @@
+version: 1
+server: https://YOURORG.atlassian.net
+login: user@example.com
+project:
+  key: ""
+issue:
+  types: []

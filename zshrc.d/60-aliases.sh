@@ -59,7 +59,7 @@ fi
 
 alias conf='cd ~/.config'
 
-alias lg='lazygit'
+alias lazyg='lazygit'
 
 alias tf='terraform'
 
