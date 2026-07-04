@@ -15,7 +15,7 @@ config.window_close_confirmation = "NeverPrompt"
 config.window_frame = {
     active_titlebar_bg = "#000000"
 }
-config.color_scheme = 'Tokyo Night Storm'
+config.color_scheme = 'Tokyo Night'
 -- config.initial_cols = 350
 -- config.initial_rows = 80
 config.window_padding = {

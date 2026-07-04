@@ -13,7 +13,7 @@ window-padding-y = 6
 
 # Styles
 font-family = CaskaydiaMono Nerd Font
-theme = Gruvbox Dark Hard
+theme = TokyoNight Night
 font-size = 16
 cursor-style = bar
 
