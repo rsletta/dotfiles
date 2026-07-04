@@ -4,7 +4,7 @@
 
 Config: `ghostty/config`
 
-- Theme: TokyoNight Storm
+- Theme: TokyoNight Night
 - Font: Iosevka Nerd Font, 16pt
 - Cursor: bar
 - Hidden titlebar
@@ -45,7 +45,7 @@ Config: `tmux/tmux.conf`
 ### Plugins (via tpm)
 
 - tmux-sensible — sensible defaults
-- tmux-gruvbox — Gruvbox dark theme
+- tmux-tokyo-night — Tokyo Night (night) theme
 - tmux-open — open URLs/files from scrollback
 - tmux-copycat — regex search in scrollback
 - tmux-yank — system clipboard integration
@@ -54,7 +54,7 @@ Config: `tmux/tmux.conf`
 
 Config: `wezterm/wezterm.lua`
 
-- Theme: Tokyo Night Storm
+- Theme: Tokyo Night (night)
 - Font: Iosevka Nerd Font, 14pt
 - No tab bar (tmux handles tabs)
 

@@ -58,7 +58,7 @@ c, lua, vim, vimdoc, query, yaml, javascript, typescript, html, svelte, css, hcl
 
 ## Theme
 
-Gruvbox (hard contrast) with custom color overrides for keywords, types, functions, strings, and operators.
+Tokyo Night (night variant) — near-black background for high contrast, stock highlighting.
 
 ## Plugin list
 
@@ -68,7 +68,7 @@ Gruvbox (hard contrast) with custom color overrides for keywords, types, functio
 | nvim-lspconfig | LSP configuration |
 | telescope.nvim | Fuzzy finder |
 | nvim-treesitter | Syntax highlighting + textobjects |
-| gruvbox.nvim | Color scheme |
+| tokyonight.nvim | Color scheme |
 | which-key.nvim | Keybinding hints |
 | mini-icons | File icons |
 | mini-pairs | Auto-close brackets |
