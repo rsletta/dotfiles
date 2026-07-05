@@ -5,11 +5,13 @@
 command = /bin/zsh
 
 # Chrome
-window-decoration = true
 macos-non-native-fullscreen = visible-menu
-macos-titlebar-style = tabs
 window-padding-x = 8
 window-padding-y = 6
+
+# Minimal chrome: no titlebar, no borders, square corners, no traffic lights.
+# Window movement handled by Rectangle. herdr handles tabs/panes.
+window-decoration = none
 
 # Styles
 font-family = CaskaydiaMono Nerd Font
