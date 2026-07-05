@@ -34,6 +34,21 @@ _CONTEXT_TOOL_VARS=(
   OTEL_LOG_TOOL_DETAILS
 )
 
+# herdr per-pane context state, so new/split panes can inherit the source
+# pane's current context. Mirrors the tmux setenv mechanism; only active
+# inside a herdr pane (HERDR_PANE_ID set).
+_HERDR_CTX_STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/herdr-ctx"
+_herdr_ctx_persist() {
+  [[ -n "$HERDR_PANE_ID" ]] || return 0
+  local f="$_HERDR_CTX_STATE_DIR/$HERDR_PANE_ID"
+  if [[ -z "$SHELL_CONTEXT" ]]; then
+    rm -f "$f"
+  else
+    mkdir -p "$_HERDR_CTX_STATE_DIR"
+    printf 'SHELL_CONTEXT=%s\nCONTEXT_ENV=%s\n' "$SHELL_CONTEXT" "$CONTEXT_ENV" >| "$f"
+  fi
+}
+
 # Clean up env vars from previous context
 _context_cleanup() {
   for var in "${_CONTEXT_TOOL_VARS[@]}"; do
@@ -59,6 +74,7 @@ _set_context() {
       _context_cleanup
       export SHELL_CONTEXT=""
       export CONTEXT_DIR=""
+      _herdr_ctx_persist
       echo "Context cleared"
       return 0
     fi
@@ -113,6 +129,7 @@ _set_context() {
 
   # Sync to tmux server env so new panes inherit this context
   [[ -n "$TMUX" ]] && tmux setenv SHELL_CONTEXT "$SHELL_CONTEXT"
+  _herdr_ctx_persist
 
   echo "Context: $SHELL_CONTEXT"
 }
@@ -176,6 +193,7 @@ _set_context_env() {
   if [[ -z "$env" ]]; then
     export CONTEXT_ENV=""
     [[ -n "$TMUX" ]] && tmux setenv -u CONTEXT_ENV
+    _herdr_ctx_persist
     echo "Context env unset (env-specific exports persist until next cch)"
     return 0
   fi
@@ -188,6 +206,7 @@ _set_context_env() {
 
   export CONTEXT_ENV="$env"
   [[ -n "$TMUX" ]] && tmux setenv CONTEXT_ENV "$CONTEXT_ENV"
+  _herdr_ctx_persist
   echo "Context env: $CONTEXT_ENV"
 
   local file
@@ -231,8 +250,11 @@ ccd() {
   _change_to_context_home "$@"
 }
 
-# Restore context in new tmux panes (inherited from parent shell)
-if [[ -n "$TMUX" && -n "$_INHERITED_CONTEXT" ]]; then
+# Restore context inherited from the parent shell. Sources: tmux
+# update-environment, or herdr `pane split --env` (via herdr-split). Fires for
+# any multiplexer/terminal when a non-empty context was inherited; a plain
+# shell inherits none, so nothing happens.
+if [[ -n "$_INHERITED_CONTEXT" ]]; then
   cch "$_INHERITED_CONTEXT" > /dev/null
   [[ -n "$_INHERITED_CONTEXT_ENV" ]] && cenv "$_INHERITED_CONTEXT_ENV" > /dev/null
 fi

@@ -28,10 +28,19 @@ Legend: ✅ already herdr default · ⚙️ set in config · 🔀 re-express her
 | tpm plugins: tokyo-night | `[theme] name = "tokyo-night"` | ✅ done | [x] |
 | tpm plugins: yank / open / copycat | native clipboard / URL / copy-mode | ⛔/⚠️ no plugin system — see verify | [ ] |
 
-## ⚠️ Verify before trusting parity (real regression risks)
+## Context propagation (solved)
 
-1. **Context env forwarding** — tmux forwards `SHELL_CONTEXT` / `CONTEXT_ENV` via `update-environment` for the `cch`/context system. Confirm herdr propagates updated context env into new **and** existing panes, or context switching may silently regress. *(highest priority — touches core workflow)*
-2. **Scrollback search** — currently tmux-copycat (regex search in scrollback). Confirm herdr copy-mode has a search equivalent before assuming parity.
+herdr does **not** forward context env out of the box (no `tmux setenv`/`update-environment` equivalent). Implemented instead as, all multiplexer-agnostic:
+
+1. `cch`/`cenv` persist the active context per pane to `~/.local/state/herdr-ctx/$HERDR_PANE_ID` (`71-contexts.sh`, `_herdr_ctx_persist`).
+2. `prefix+↓`/`prefix+→` run `scripts/herdr-split`, which reads the source pane's state (via `HERDR_ACTIVE_PANE_ID`) and calls `herdr pane split --env SHELL_CONTEXT=… --env CONTEXT_ENV=…`.
+3. Shell startup re-activates any inherited context (`71-contexts.sh` restore, no longer `$TMUX`-gated).
+
+Verified: split inherits the source pane's *current* context (incl. after an in-session `cch`); a cleared pane splits context-less. Detail: `.agents/plans/herdr-context-propagation.md`.
+
+## ⚠️ Still to verify
+
+- **Scrollback search** — currently tmux-copycat (regex search in scrollback). Confirm herdr copy-mode has a search equivalent before assuming parity.
 
 ## Config surface reference (v0.7.1)
 
@@ -48,4 +57,4 @@ Full default: `herdr --default-config`. Sections:
 
 ## Status
 
-Trial. Config tracked + symlinked + themed. Bindings/behavior porting = pending walkthrough (checklist above). tmux unchanged.
+Trial. Config tracked + symlinked + themed. Prefix (`ctrl+a`), splits (`↓`/`→`), vim pane nav, and context propagation all live. tmux unchanged. Open: scrollback search parity.

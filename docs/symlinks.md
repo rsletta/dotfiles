@@ -27,6 +27,7 @@ Select scripts are individually symlinked onto `PATH` at `~/.local/bin/` (link n
 | `scripts/generate-vivaldi-raycast-commands.sh` | `generate-vivaldi-raycast-commands` |
 | `scripts/newTmuxSession` | `newTmuxSession` |
 | `scripts/kubernetes-helpers/tail-logs` | `tail-logs` |
+| `scripts/herdr-split` | `herdr-split` (herdr split wrapper; carries context) |
 
 ## Sourced, not symlinked
 

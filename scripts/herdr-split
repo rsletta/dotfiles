@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# herdr-split <down|right>
+#
+# Split the source herdr pane and carry its current context into the new pane.
+# Bound via [[keys.command]] on prefix+down / prefix+right (see herdr/config.toml).
+# Reads the per-pane context state written by cch/cenv (zshrc.d/71-contexts.sh)
+# and passes it to `herdr pane split --env`, so the new pane's shell inherits
+# SHELL_CONTEXT/CONTEXT_ENV and re-activates on startup.
+#
+# Degrades gracefully: with no pane id or no recorded context it just does a
+# plain split, matching herdr's native behavior.
+set -euo pipefail
+
+dir="${1:-down}"
+case "$dir" in
+  down | right) ;;
+  *)
+    echo "usage: herdr-split <down|right>" >&2
+    exit 2
+    ;;
+esac
+
+herdr="${HERDR_BIN_PATH:-herdr}"
+pane="${HERDR_ACTIVE_PANE_ID:-}"
+
+args=(pane split)
+if [[ -n "$pane" ]]; then
+  args+=(--pane "$pane")
+else
+  args+=(--current)
+fi
+args+=(--direction "$dir")
+
+# Carry the source pane's context, if recorded.
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/herdr-ctx"
+ctx="" cenv=""
+if [[ -n "$pane" && -f "$state_dir/$pane" ]]; then
+  while IFS='=' read -r k v; do
+    case "$k" in
+      SHELL_CONTEXT) ctx="$v" ;;
+      CONTEXT_ENV) cenv="$v" ;;
+    esac
+  done <"$state_dir/$pane"
+fi
+
+# Always pass explicit values (empty = no context) so the new pane inherits the
+# source pane's context exactly, never the herdr server's ambient SHELL_CONTEXT.
+args+=(--env "SHELL_CONTEXT=$ctx" --env "CONTEXT_ENV=$cenv")
+
+exec "$herdr" "${args[@]}"

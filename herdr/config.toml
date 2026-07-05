@@ -3,10 +3,20 @@
 
 [keys]
 prefix = "ctrl+a"
-# Splits: herdr has 2 axis actions (names are inverse of tmux).
-# Bound to the arrows actually used (99% down/right); up/left left unbound.
-split_horizontal = "prefix+down"   # split below (stacked)
-split_vertical   = "prefix+right"  # split right (side-by-side)
+# Splits are handled by the herdr-split wrapper (carries the source pane's
+# context into the new pane); see [[keys.command]] below. Native
+# split_horizontal/split_vertical left unbound so prefix+down/right route there.
+# (99% of splits are down/right; up/left intentionally unbound.)
+
+[[keys.command]]
+key = "prefix+down"
+type = "shell"
+command = "herdr-split down"
+
+[[keys.command]]
+key = "prefix+right"
+type = "shell"
+command = "herdr-split right"
 
 [theme]
 name = "tokyo-night"
