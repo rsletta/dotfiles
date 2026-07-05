@@ -14,6 +14,7 @@ Authoritative record of how this repo is applied to the machine. Not using GNU S
 | `starship/starship.toml` | `~/.config/starship.toml` |
 | `ghostty/config.ghostty` | `~/.config/ghostty/config.ghostty` |
 | `wezterm/wezterm.lua` | `~/.config/wezterm/wezterm.lua` |
+| `herdr/config.toml` | `~/.config/herdr/config.toml` |
 
 ## Script symlinks
 
