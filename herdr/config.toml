@@ -1,6 +1,13 @@
 # herdr config
 # Symlink to: ~/.config/herdr/config.toml
 
+[keys]
+prefix = "ctrl+a"
+# Splits: herdr has 2 axis actions (names are inverse of tmux).
+# Bound to the arrows actually used (99% down/right); up/left left unbound.
+split_horizontal = "prefix+down"   # split below (stacked)
+split_vertical   = "prefix+right"  # split right (side-by-side)
+
 [theme]
 name = "tokyo-night"
 auto_switch = false
