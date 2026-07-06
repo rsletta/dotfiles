@@ -24,3 +24,4 @@ auto_switch = false
 
 [ui]
 agent_panel_sort = "spaces"
+pane_gaps = false
