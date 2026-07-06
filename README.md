@@ -10,7 +10,7 @@ While I still want to try out using GNU Stow to manage my dotfiles, rather than 
 I have changed terminal client this time around and started using [Wez's Terminal Emulator(wezterm)](https://wezfurlong.org/wezterm/), which is using lua for [configuration](./wezterm).
 On iOS I use [Blink Shell](https://blink.sh), when ssh'ing into the Linux servers.
 
-At the moment, I have been using [Gruvbox](https://github.com/morhetz/gruvbox) as my color scheme for some time. I've also used to use [Nord](https://www.nordtheme.com/), but my eyes are not what they used to, and I needed something new and contrasty. I had a quick look at [catppucin](https://catppuccin.com), and while it looks nice, I couldn't quite get the right feel for it. I might revisit it later, but I still search for the a color scheme that both looks good, and is easy on the eyes contrast wise.
+At the moment, I'm using [Catppuccin Mocha](https://catppuccin.com) as my color scheme across Ghostty, tmux, Zellij, and Neovim. Previously I ran [Gruvbox](https://github.com/morhetz/gruvbox) (hard contrast) for a long stretch, and [Nord](https://www.nordtheme.com/) before that — moved away from gruvbox because I needed a break from the brown.
 
 ## Zsh
 I use `zsh`, since that is the default on macOS. I can't say I'm a very advanced user, so I look more to the usability of the shell, rather than pure features. I don't track my `.zshrc`, but rather source my [config](./config) in it, so I can make local customizations.

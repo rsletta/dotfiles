@@ -45,7 +45,7 @@ Config: `tmux/tmux.conf`
 ### Plugins (via tpm)
 
 - tmux-sensible — sensible defaults
-- tmux-gruvbox — Gruvbox dark theme
+- catppuccin/tmux — Catppuccin Mocha theme
 - tmux-open — open URLs/files from scrollback
 - tmux-copycat — regex search in scrollback
 - tmux-yank — system clipboard integration
