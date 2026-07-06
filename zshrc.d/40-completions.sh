@@ -1,6 +1,9 @@
 # Load completions from your custom path
 fpath=(~/.completions $fpath)
 
+# Docker CLI completions (Colima/Docker Desktop drops them here)
+[[ -d ~/.docker/completions ]] && fpath=(~/.docker/completions $fpath)
+
 # Load Zsh completions only once — use cached dump unless stale (24h)
 autoload -Uz compinit
 if [[ -z "$_compinit_done" ]]; then

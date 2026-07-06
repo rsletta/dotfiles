@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# Install LSP servers required by nvim/lua/config/plugins/lsp.lua.
+# Idempotent: skips servers whose binary is already on PATH.
+set -euo pipefail
+
+# bin → install spec ("npm <pkg>" or "brew <pkg>")
+servers=(
+  "lua-language-server|brew lua-language-server"
+  "yaml-language-server|npm yaml-language-server"
+  "docker-langserver|npm dockerfile-language-server-nodejs"
+  "docker-compose-langserver|npm @microsoft/compose-language-service"
+  "marksman|brew marksman"
+  "basedpyright|brew basedpyright"
+  "svelteserver|npm svelte-language-server"
+  "tailwindcss-language-server|npm @tailwindcss/language-server"
+  "vtsls|npm @vtsls/language-server"
+  "vscode-json-language-server|npm vscode-langservers-extracted"
+  "vscode-css-language-server|npm vscode-langservers-extracted"
+  "vscode-html-language-server|npm vscode-langservers-extracted"
+  "taplo|brew taplo"
+  "gopls|go golang.org/x/tools/gopls@latest"
+  "terraform-ls|brew hashicorp/tap/terraform-ls"
+  "helm_ls|brew mrjosh/helm-ls/helm-ls"
+)
+
+npm_pkgs=()
+brew_pkgs=()
+go_pkgs=()
+already=()
+
+for entry in "${servers[@]}"; do
+  bin="${entry%%|*}"
+  spec="${entry#*|}"
+  mgr="${spec%% *}"
+  pkg="${spec#* }"
+
+  if command -v "$bin" >/dev/null 2>&1; then
+    already+=("$bin")
+    continue
+  fi
+
+  case "$mgr" in
+    npm)  npm_pkgs+=("$pkg") ;;
+    brew) brew_pkgs+=("$pkg") ;;
+    go)   go_pkgs+=("$pkg") ;;
+  esac
+done
+
+# Dedupe arrays (vscode-langservers-extracted appears 3 times)
+dedupe() {
+  local -A seen
+  local out=()
+  for x in "$@"; do
+    if [[ -z "${seen[$x]:-}" ]]; then
+      seen[$x]=1
+      out+=("$x")
+    fi
+  done
+  printf '%s\n' "${out[@]}"
+}
+
+if ((${#already[@]})); then
+  printf 'already installed: %s\n' "${already[*]}"
+fi
+
+if ((${#brew_pkgs[@]})); then
+  mapfile -t brew_pkgs < <(dedupe "${brew_pkgs[@]}")
+  echo
+  echo "==> brew install ${brew_pkgs[*]}"
+  brew install "${brew_pkgs[@]}"
+fi
+
+if ((${#npm_pkgs[@]})); then
+  mapfile -t npm_pkgs < <(dedupe "${npm_pkgs[@]}")
+  echo
+  echo "==> npm install -g ${npm_pkgs[*]}"
+  npm install -g "${npm_pkgs[@]}"
+fi
+
+if ((${#go_pkgs[@]})); then
+  mapfile -t go_pkgs < <(dedupe "${go_pkgs[@]}")
+  echo
+  for pkg in "${go_pkgs[@]}"; do
+    echo "==> go install $pkg"
+    go install "$pkg"
+  done
+fi
+
+echo
+echo "done."
