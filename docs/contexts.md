@@ -67,8 +67,9 @@ Completions for both are scoped to the active context.
 | gcloud | `CLOUDSDK_CONFIG` |
 | helm | `HELM_CONFIG_HOME` |
 | terraform | `TF_CLI_CONFIG_FILE` |
+| codex | `CODEX_HOME` |
 | jira | `JIRA_CONFIG_FILE` — token via `JIRA_API_TOKEN` (1Password, see below) |
-| skillshare | — registers `<ctx>-claude` target in global skillshare config; fans out global skills to context's Claude dir. See below. |
+| skillshare | — registers a per-context skillshare target and stores local sync metadata. See below. |
 
 **Kubeconfig exception:** Kubeconfigs stay in `~/.kube/config.d/` (cloud tools write there). Context declares which ones belong to it in `tools/kube.sh`.
 
@@ -96,19 +97,19 @@ jira issue list
 
 ### Skillshare setup
 
-Skills live in a single global source (`~/.config/skillshare/skills/`, git-tracked). Per-context registration fans them out into each context's Claude config dir via symlinks. Local skills in a context coexist with synced skills (merge mode).
+Skills live in a single global source (`~/.config/skillshare/skills/`, git-tracked). Per-context registration fans them out into a context-local skill directory via symlinks. Local skills in a context coexist with synced skills (merge mode).
 
-Prereqs: `skillshare` CLI (`brew install runkids/tap/skillshare`) and `jq`. Context must already have `tools/claude/`.
+Prereqs: `skillshare` CLI (`brew install runkids/tap/skillshare`) and `jq`.
 
 ```sh
 # Per context
-cman add-tool skillshare [ctx]   # registers <ctx>-claude target, drops tools/skillshare/installed marker
+cman add-tool skillshare [ctx]   # registers target, drops tools/skillshare/installed marker
 skillshare sync                  # populates symlinks; pre-existing local duplicates stay local (delete first if you want them linked)
 ```
 
 Drift detection runs on every `cch`. If source has skills the target doesn't, `cch` prints `⚠ skillshare: N skill(s) need sync — run: skillshare sync`. Silent when clean.
 
-Project-mode skills (`.skillshare/` committed in a repo) sync to the repo's local `.claude/skills` and work independently of contexts.
+Project-mode skills (`.skillshare/` committed in a repo) work independently of contexts.
 
 ## Prompt
 

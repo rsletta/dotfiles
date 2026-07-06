@@ -95,6 +95,8 @@ _CONTEXT_KNOWN_TOOLS=(
   helm    'export HELM_CONFIG_HOME="$CONTEXT_DIR/tools/helm"'
   terraform 'export TF_CLI_CONFIG_FILE="$CONTEXT_DIR/tools/terraform/terraformrc"'
   jira    'export JIRA_CONFIG_FILE="$CONTEXT_DIR/tools/jira/config.yml"'
+  abx     'export ABX_CONFIG_DIR="$CONTEXT_DIR/tools/abx"'
+  codex   'export CODEX_HOME="$CONTEXT_DIR/tools/codex"'
   writing '__WRITING__'
   skillshare '__SKILLSHARE__'
 )
@@ -183,17 +185,10 @@ _cman_skillshare_setup() {
     return 1
   fi
 
-  local claude_dir="$ctx_dir/tools/claude"
-  if [[ ! -d "$claude_dir" ]]; then
-    echo "Context '$name' has no tools/claude/ — add Claude Code support before skillshare" >&2
-    rmdir "$tool_dir" 2>/dev/null
-    return 1
-  fi
-
-  local skills_dir="$claude_dir/skills"
+  local skills_dir="$tool_dir/skills"
   mkdir -p "$skills_dir"
 
-  local target="$name-claude"
+  local target="$name-skills"
   skillshare target add "$target" "$skills_dir" || {
     rmdir "$tool_dir" 2>/dev/null
     return 1
