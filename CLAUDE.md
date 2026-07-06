@@ -11,7 +11,7 @@ Not using GNU Stow yet — dotfiles are applied via manual sourcing and symlinki
 
 - **Shell config**: `.zshrc` sources all `zshrc.d/*.sh` in numeric order. `.zprofile` sources all `zprofile.d/*.sh` in numeric order.
 - **Scripts**: Each script is individually symlinked from `scripts/` into `~/.local/bin/`.
-- **Symlinked configs**: `.tmux.conf → tmux/tmux.conf`, `.completions → completions/`
+- **Symlinked configs**: `.tmux.conf → tmux/tmux.conf`, `.completions → completions/`, `~/.config/zellij/config.kdl → zellij/config.kdl`
 - **Example files**: `zshrc_example` and `zprofile_example` show how to wire up sourcing on a new machine.
 
 ## Directory structure

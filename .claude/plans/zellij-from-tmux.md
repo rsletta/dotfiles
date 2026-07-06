@@ -28,6 +28,7 @@ Source: `tmux/tmux.conf`. Captures intent, not syntax. Translation to KDL is a s
 - Default startup mode: `normal`.
 - Tab/pane navigation primarily via `Alt`-modified keys in normal mode (zellij default), or via mode entry (`Ctrl-p`, `Ctrl-t`, etc.).
 - Drop tmux-only constructs: prefix-prefix, `bind -r` repeat, `C-z` suspend disable (zellij doesn't suspend).
+- Remove zellij's built-in `tmux` mode (`Ctrl-b`). Hard landing — no training wheels.
 
 ## 4. Mouse
 
@@ -46,9 +47,10 @@ The following actions must be reachable. Idiomatic key choices to be settled in 
 2. Jump to tab N (1–9).
 
 ### Splits & new tabs (cwd-inheriting by default)
-1. New tab in cwd.
-2. New pane: split above / below / left / right.
-3. Generic vertical split, generic horizontal split.
+1. New tab in cwd (zellij default: `Ctrl-t` → `n`).
+2. New pane below / right (zellij defaults: `Ctrl-p` → `d` / `r`).
+3. Generic new pane, auto direction (`Ctrl-p` → `n`, or `Alt n` in normal mode).
+4. Drop split-up / split-left — rare in practice, `auto_layout` handles direction.
 
 ### Copy / scroll
 1. Enter scroll/search mode.
@@ -60,11 +62,11 @@ The following actions must be reachable. Idiomatic key choices to be settled in 
 
 ## 6. Status bar / theming
 
-1. Theme: `gruvbox-dark`.
-2. Status bar should be **dense** like tmux — minimize vertical real estate lost.
-3. Help bar at bottom is desired (informative).
-4. Tab labels show name only, no index/flags decoration if possible.
-5. Implementation candidates: `compact-bar` (single line, dense) — to be evaluated in translation pass.
+1. Theme: built-in `gruvbox-dark`. No upfront tuning — tune later if specific issues surface.
+2. Status bar: `compact-bar` (single line, bottom). Set via `default_layout "compact"`.
+3. Drop directory display in chrome — noise. Shell prompt / pane title cover cwd.
+4. Tab labels show name only.
+5. Visual identity will differ from `z3z1ma/tmux-gruvbox` (no powerline separators). Accepted; revisit only if it bothers in use.
 
 ## 7. Plugins — feature parity map
 
@@ -81,9 +83,9 @@ The following actions must be reachable. Idiomatic key choices to be settled in 
 
 - Drop. No `~/.tmux.conf.local` equivalent. Project-specific configuration goes in zellij layout files.
 
-## 9. Open follow-ups for translation pass
+## 9. Resolved decisions
 
-1. Pick exact bindings for split-direction (zellij has `NewPane "Down"` etc.; choose ergonomic keys, not tmux's arrow-key idiom unless it's also ergonomic in zellij).
-2. Choose status bar implementation: `compact-bar` vs. custom layout. Goal: tmux-like density + help line.
-3. Confirm `gruvbox-dark` matches the visual identity of `egel/tmux-gruvbox` closely enough; adjust if not.
-4. Decide whether to keep zellij's default `tmux` mode (under `Ctrl-b`) or remove it — feels redundant given idiomatic zellij stance.
+1. Splits: zellij defaults — `Ctrl-p` → `n`/`d`/`r`, `Alt n` in normal mode. Drop split-up/split-left.
+2. Status bar: `compact-bar` via `default_layout "compact"`. No directory in chrome.
+3. Theme: built-in `gruvbox-dark`, no upfront tuning.
+4. Remove zellij's `tmux` mode block (`Ctrl-b`). Hard landing.
