@@ -28,7 +28,6 @@ See [contexts.md](contexts.md) for details.
 | `tla` | Tmux: list sessions, pick with fzf, attach |
 | `tns <name>` | Tmux: create or attach to named session |
 | `aali <alias> '<cmd>'` | Add alias to alias file and reload |
-| `klaude [dirs...]` | Claude Code with extra `--add-dir` args |
 | `oc` | Launch opencode with 1Password secrets |
 
 ## Aliases — navigation

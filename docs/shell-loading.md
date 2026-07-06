@@ -25,7 +25,7 @@ How config files are loaded and what each one does.
   zshrc.d/30-prompt.sh            Starship init
   zshrc.d/40-completions.sh       Completion system + 1Password
   zshrc.d/60-aliases.sh           All aliases
-  zshrc.d/70-functions.sh         General functions (tmux, notes, claude)
+  zshrc.d/70-functions.sh         General functions (tmux, notes)
   zshrc.d/71-contexts.sh          Context system core (cch, cenv, ccd)
   zshrc.d/72-context-tools.sh     ku, awsp with scoped completions
   zshrc.d/73-context-manager.sh   cman command
