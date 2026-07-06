@@ -58,7 +58,7 @@ c, lua, vim, vimdoc, query, yaml, javascript, typescript, html, svelte, css, hcl
 
 ## Theme
 
-Catppuccin Mocha (stock).
+Tokyo Night (night variant) — near-black background for high contrast, stock highlighting.
 
 ## Plugin list
 
@@ -68,7 +68,7 @@ Catppuccin Mocha (stock).
 | nvim-lspconfig | LSP configuration |
 | telescope.nvim | Fuzzy finder |
 | nvim-treesitter | Syntax highlighting + textobjects |
-| catppuccin/nvim | Color scheme |
+| tokyonight.nvim | Color scheme |
 | which-key.nvim | Keybinding hints |
 | mini-icons | File icons |
 | mini-pairs | Auto-close brackets |

@@ -13,7 +13,7 @@ window-padding-y = 6
 
 # Styles
 font-family = CaskaydiaMono Nerd Font
-theme = Catppuccin Mocha
+theme = TokyoNight Night
 font-size = 16
 cursor-style = bar
 

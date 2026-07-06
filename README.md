@@ -10,7 +10,7 @@ While I still want to try out using GNU Stow to manage my dotfiles, rather than 
 I have changed terminal client this time around and started using [Wez's Terminal Emulator(wezterm)](https://wezfurlong.org/wezterm/), which is using lua for [configuration](./wezterm).
 On iOS I use [Blink Shell](https://blink.sh), when ssh'ing into the Linux servers.
 
-At the moment, I'm using [Catppuccin Mocha](https://catppuccin.com) as my color scheme across Ghostty, tmux, Zellij, and Neovim. Previously I ran [Gruvbox](https://github.com/morhetz/gruvbox) (hard contrast) for a long stretch, and [Nord](https://www.nordtheme.com/) before that — moved away from gruvbox because I needed a break from the brown.
+I've now settled on [Tokyo Night](https://github.com/folke/tokyonight.nvim) (the `night` variant) across the whole stack. I used to run [Gruvbox](https://github.com/morhetz/gruvbox), and before that [Nord](https://www.nordtheme.com/), but my eyes are not what they used to be and I needed something contrasty. I looked at [catppuccin](https://catppuccin.com) — it looks nice but I couldn't get the right feel for it. Tokyo Night's `night` variant pairs a near-black background with bright, saturated syntax colors, which is easy on the eyes while keeping code legible.
 
 ## Zsh
 I use `zsh`, since that is the default on macOS. I can't say I'm a very advanced user, so I look more to the usability of the shell, rather than pure features. I don't track my `.zshrc`, but rather source my [config](./config) in it, so I can make local customizations.
@@ -56,12 +56,7 @@ _./lib_:
 
 ## Dependencies
 - [Homebrew](https://brew.sh/)(macOS)
-- [Oh My Posh](https://ohmyposh.dev/)
-
-## Oh My Posh Theme
-I used to run a minimalistic theme(that requires Nerd Fonts) I've called "[Oh My Gruvbox](./oh-my-posh)", inspired by several of the [existing minimal themes](https://ohmyposh.dev/docs/themes). It was a work in progress, with color palette from [morhetz/gruvbox](https://github.com/morhetz/gruvbox).
-
-I have not landed on a new one yet, so I'll keep this for reference for now. The new WIP is the one called "oh-my-rikosjett".
+- [Starship](https://starship.rs/) — prompt
 
 ### Language Servers
 [Available language servers](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md)
@@ -69,49 +64,7 @@ Reference the language server plugin setup for references to the different langu
 
 ## Neovim plugins
 
-I used to run all of these in my old config. I'll keep this for reference for the moment, but to see what I actually run, it is easier to just look into my [neovim config](./nvim/lua/config).
-### Visuals
-- [mhinz/vim-startify](https://github.com/mhinz/vim-startify)
-- [vim-airline/vim-airline](https://github.com/vim-airline/vim-airline)
-- [airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter)
-- [morhetz/gruvbox](https://github.com/morhetz/gruvbox)
-- [kyazdani42/nvim-web-devicons](https://github.com/kyazdani42/nvim-web-devicons)
-
-### Telescope stuff
-- [nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
-- [nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-- [nvim-telescope/telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim)
-- [Plug 'nvim-telescope/telescope-fzf-native.nvim](https://github.com/nvim-telescope/telescope-fzf-native.nvim)
-
-### Language Server Protocol
-- [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
-
-### Treesitter
-- [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
-
-### Autocompletion
-- [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
-- [hrsh7th/cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp)
-- [hrsh7th/cmp-emoji](https://github.com/hrsh7th/cmp-emoji)
-- [L3MON4D3/LuaSnip](https://github.com/L3MON4D3/LuaSnip)
-- [saadparwaiz1/cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip)
-- [onsails/lspkind-nvim](https://github.com/onsails/lspkind-nvim)
-- [ray-x/cmp-treesitter](https://github.com/ray-x/cmp-treesitter)
-- [David-Kunz/cmp-npm](https://github.com/David-Kunz/cmp-npm)
-
-### Writing & Markdown
-- [junegunn/goyo.vim](https://github.com/junegunn/goyo.vim)
-- [junegunn/limelight.vim](https://github.com/junegunn/limelight.vim)
-- [preservim/vim-markdown](https://github.com/preservim/vim-markdown)
-- [iamcco/markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim)
-- [godlygeek/tabular](https://github.com/godlygeek/tabular)
-
-### Tools
-- [tpope/vim-surround](https://github.com/tpope/vim-surround])
-- [bfrg/vim-jq](https://github.com/bfrg/vim-jq)
-
-### Git
-- [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive])
+Managed with [lazy.nvim](https://github.com/folke/lazy.nvim) — each plugin lives in its own file under [`nvim/lua/config/plugins/`](./nvim/lua/config/plugins). See [docs/neovim.md](./docs/neovim.md) for the current plugin list, theme, and keymaps.
 
 ## Inspirations
 

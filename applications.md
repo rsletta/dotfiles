@@ -227,7 +227,6 @@ Inventory of what's installed and why. Not automated — update when things chan
 | fastfetch / neofetch | brew | System info display |
 | ddgr | brew | DuckDuckGo from terminal |
 | gource | brew | Git history visualization |
-| vivid | brew | LS_COLORS theme generator |
 
 ## Fonts (brew cask)
 
