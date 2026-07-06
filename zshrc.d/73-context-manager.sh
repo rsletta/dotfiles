@@ -95,7 +95,6 @@ _CONTEXT_KNOWN_TOOLS=(
   helm    'export HELM_CONFIG_HOME="$CONTEXT_DIR/tools/helm"'
   terraform 'export TF_CLI_CONFIG_FILE="$CONTEXT_DIR/tools/terraform/terraformrc"'
   jira    'export JIRA_CONFIG_FILE="$CONTEXT_DIR/tools/jira/config.yml"'
-  abx     'export ABX_CONFIG_DIR="$CONTEXT_DIR/tools/abx"'
   codex   'export CODEX_HOME="$CONTEXT_DIR/tools/codex"'
   writing '__WRITING__'
   skillshare '__SKILLSHARE__'
