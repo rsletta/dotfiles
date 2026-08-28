@@ -9,9 +9,21 @@ See [contexts.md](contexts.md) for details.
 | Command | Description |
 |---------|-------------|
 | `cch <name>` | Switch context |
+| `cch --workspace <name>` | Switch context and update the herdr workspace default |
 | `cenv [env]` | Set env within context |
 | `ccd` | cd to CONTEXT_HOME |
-| `cman <sub>` | Context management (new/ls/edit/add-tool) |
+| `cman <sub>` | Context management (new/ls/edit/add-tool/rename) |
+
+## Writing and workspaces
+
+| Command | Description |
+|---------|-------------|
+| `notes daily` | Open today's daily note |
+| `notes new <title>` | Create an inbox note |
+| `notes search [query]` | Search the active context's vault |
+| `til` | Create a TIL entry |
+| `til category <list\|new\|sync>` | Manage approved TIL categories |
+| `ws <new\|list\|cd\|rename>` | Manage workspaces under `~/ws` |
 
 ## Tool commands
 
@@ -20,6 +32,10 @@ See [contexts.md](contexts.md) for details.
 | `ku [name]` | Set KUBECONFIG from `~/.kube/config.d/`. No arg = unset |
 | `awsp [name]` | Set AWS_PROFILE. No arg = unset |
 | `awsso` | `aws sso login` |
+| `jira` | Context-aware Jira CLI wrapper |
+| `lazyj` | Open Jira TUI for the selected project |
+| `wtf [engine] <query>` | Search with ddgr and w3m/browser |
+| `browse [url]` | Open w3m directly or through ddgr |
 
 ## Functions
 
@@ -35,10 +51,8 @@ See [contexts.md](contexts.md) for details.
 | Alias | Destination |
 |-------|------------|
 | `..` `...` `....` `.....` | Up 1-4 levels |
-| `~` | Home |
 | `dot` | `~/.config/dotfiles` |
 | `conf` | `~/.config` |
-| `vault` | `~/vault` |
 
 ## Aliases — eza (ls replacement)
 
@@ -73,7 +87,7 @@ See [contexts.md](contexts.md) for details.
 | `gs` | `git status` |
 | `gc` | `git commit` |
 | `gd` | `git diff` |
-| `lg` | `lazygit` |
+| `lazyg` | `lazygit` |
 
 ## Aliases — other
 
@@ -85,4 +99,4 @@ See [contexts.md](contexts.md) for details.
 | `a` | `alvtime` (time tracking) |
 | `sd` | `python3 -m http.server` |
 | `rec` | `asciinema rec` |
-| `lg` | `lazygit` |
+| `lazyd` | `lazydocker` |

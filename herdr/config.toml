@@ -1,3 +1,4 @@
+onboarding = false
 # herdr config
 # Symlink to: ~/.config/herdr/config.toml
 
@@ -7,6 +8,23 @@ prefix = "ctrl+a"
 # context into the new pane); see [[keys.command]] below. Native
 # split_horizontal/split_vertical left unbound so prefix+down/right route there.
 # (99% of splits are down/right; up/left intentionally unbound.)
+new_tab = ""
+new_worktree = ""
+
+[[keys.command]]
+key = "prefix+c"
+type = "shell"
+command = "herdr-tab"
+
+[[keys.command]]
+key = "prefix+shift+g"
+type = "pane"
+command = "herdr-worktree --interactive"
+
+[[keys.command]]
+key = "prefix+shift+d"
+type = "pane"
+command = "herdr-worktree-rm --interactive"
 
 [[keys.command]]
 key = "prefix+down"
@@ -17,6 +35,9 @@ command = "herdr-split down"
 key = "prefix+right"
 type = "shell"
 command = "herdr-split right"
+
+[worktrees]
+directory = "~/ws/worktrees"
 
 [theme]
 name = "tokyo-night"

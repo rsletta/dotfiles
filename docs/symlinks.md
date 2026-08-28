@@ -24,10 +24,12 @@ Select scripts are individually symlinked onto `PATH` at `~/.local/bin/` (link n
 |-----------|----------------------------|
 | `scripts/create-script` | `create-script` |
 | `scripts/ffmpeg/extract_clip` | `extract_clip` |
-| `scripts/generate-vivaldi-raycast-commands.sh` | `generate-vivaldi-raycast-commands` |
 | `scripts/newTmuxSession` | `newTmuxSession` |
 | `scripts/kubernetes-helpers/tail-logs` | `tail-logs` |
 | `scripts/herdr-split` | `herdr-split` (herdr split wrapper; carries context) |
+| `scripts/herdr-tab` | `herdr-tab` (herdr tab wrapper; carries workspace context) |
+| `scripts/herdr-worktree` | `herdr-worktree` (smart herdr worktree wrapper) |
+| `scripts/herdr-worktree-rm` | `herdr-worktree-rm` (remove current herdr worktree checkout) |
 
 ## Sourced, not symlinked
 
@@ -45,8 +47,9 @@ Loaded in-place from the repo by the shell — no symlink involved.
 Present in the repo but not applied to the machine (repo is **not** authoritative for these):
 
 - `w3m/` — under trial; live `~/.w3m` is a separate, unlinked copy.
-- Scripts under reconsideration, intentionally off `PATH`: `scripts/alvify.sh`, `scripts/createNewPost`, `scripts/fports`, `scripts/til`, `scripts/kubernetes-helpers/kubelog`.
-- `scripts/lib/` (`slugify`, `yyyymmdd`) — shared libs sourced by other scripts; not meant for `PATH`.
+- Scripts under reconsideration, intentionally off `PATH`: `scripts/alvify.sh`, `scripts/createNewPost`, `scripts/fports`, `scripts/kubernetes-helpers/kubelog`.
+- `scripts/til` — invoked in place by the `til` zsh function; not linked directly.
+- `scripts/lib/` (`slugify`, `yyyymmdd`, `til-categories`) — writing support files; not meant for `PATH`.
 
 ## Adding a new symlinked config
 

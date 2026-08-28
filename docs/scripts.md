@@ -1,49 +1,35 @@
 # Scripts
 
-Utility scripts in `scripts/`. Added to PATH via `~/.local/bin` or called directly.
+Utilities under `scripts/`. Selected scripts are symlinked to `~/.local/bin`;
+the authoritative list is in [symlinks.md](symlinks.md).
 
-## Tmux
+## Active commands
 
-| Script | Description |
-|--------|-------------|
-| `newTmuxSession <name>` | Create or attach to named tmux session from current directory |
+| Script | Command/use | Description |
+|--------|-------------|-------------|
+| `create-script` | `create-script <path>` | Scaffold a Python CLI using uv and Click |
+| `ffmpeg/extract_clip` | `extract_clip` | Interactively extract a video segment |
+| `newTmuxSession` | `newTmuxSession <name>` / `tns <name>` | Create or attach to a tmux session |
+| `herdr-split` | herdr key binding | Split a pane while carrying its context |
+| `herdr-tab` | herdr key binding | Create a tab with the workspace context |
+| `herdr-worktree` | command and herdr key binding | Create a branch worktree and workspace, named per the repo's layout |
+| `herdr-worktree-rm` | command and herdr key binding | Remove a linked worktree checkout |
+| `kubernetes-helpers/tail-logs` | `tail-logs` | Stream logs for its project-specific namespaces |
+| `til` | `til` zsh function | Create and categorize TIL entries for the active writing context |
 
-## Notes and writing
+`install-nvim-lsps` is run directly from the repository when bootstrapping
+the language servers configured by Neovim.
 
-Not actively used, planned for revision.
+## Parked scripts
 
-| Script | Description | Depends on |
-|--------|-------------|------------|
-| `dailyNote` | Open today's daily note, create from template if missing | WRITING_PATH, lib/yyyymmdd |
-| `quickReadNote` | Fuzzy-select and read a daily note with bat | WRITING_PATH, fzf, bat |
-| `newNote` | Create new note in Inbox with title | tmux, lib/slugify, lib/yyyymmdd |
-| `createNewPost` | Create blog post with frontmatter and tags | BLOG_PATH, lib/slugify, lib/yyyymmdd |
+These are intentionally not on `PATH` and remain for evaluation or migration:
 
-## Utilities
+- `alvify.sh`
+- `createNewPost`
+- `fports`
+- `kubernetes-helpers/kubelog`
 
-| Script | Description | Depends on |
-|--------|-------------|------------|
-| `fports "8080,3000" user@host` | SSH port forwarding for comma-separated ports | ssh |
-| `create-script` | Scaffold Python CLI script with uv + click | uv (Python) |
-| `alvify.sh` | Interactive text transformer for Norwegian text (A/a replacement) | — |
-| `generate-vivaldi-raycast-commands.sh` | Generate Raycast commands for Vivaldi browser profiles | jq, Vivaldi |
+## Libraries
 
-## Kubernetes helpers
-
-| Script | Description | Depends on |
-|--------|-------------|------------|
-| `kubernetes-helpers/kubelog` | Interactive log aggregation with stern + lnav + jq | kubectl, stern, jq, lnav |
-| `kubernetes-helpers/tail-logs` | Stream pod logs to files (project-specific, hard-coded namespaces) | kubectl, jq |
-
-## Library (scripts/lib/)
-
-| Script | Description |
-|--------|-------------|
-| `slugify` | Convert string to URL-safe slug |
-| `yyyymmdd` | Return today's date as YYYY-MM-DD |
-
-## ffmpeg
-
-| Script | Description |
-|--------|-------------|
-| `ffmpeg/extract_clip` | Interactive video clip extraction with time range prompts | ffmpeg |
+`scripts/lib/yyyymmdd`, `slugify`, and `til-categories` support the writing
+scripts and are not standalone commands.
