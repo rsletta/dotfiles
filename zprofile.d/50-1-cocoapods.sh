@@ -1,5 +1,8 @@
 # Set homebrew ruby path
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-# Set ruby gems path for cocoapods
-export GEM_HOME=$HOME/.gem
-export PATH=$GEM_HOME/ruby/3.3.0/bin:$PATH
+
+# Keep user-installed gems (including CocoaPods) on PATH without pinning Ruby.
+if command -v gem >/dev/null 2>&1; then
+  export GEM_HOME="$(gem env user_gemhome)"
+  export PATH="$GEM_HOME/bin:$PATH"
+fi
