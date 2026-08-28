@@ -26,6 +26,7 @@ Select scripts are individually symlinked onto `PATH` at `~/.local/bin/` (link n
 | `scripts/ffmpeg/extract_clip` | `extract_clip` |
 | `scripts/newTmuxSession` | `newTmuxSession` |
 | `scripts/kubernetes-helpers/tail-logs` | `tail-logs` |
+| `scripts/wt` | `wt` (git worktree helper; multiplexer-agnostic) |
 | `scripts/herdr-split` | `herdr-split` (herdr split wrapper; carries context) |
 | `scripts/herdr-tab` | `herdr-tab` (herdr tab wrapper; carries workspace context) |
 | `scripts/herdr-worktree` | `herdr-worktree` (smart herdr worktree wrapper) |

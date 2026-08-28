@@ -1,0 +1,352 @@
+#!/usr/bin/env bash
+# wt — git worktree helper
+#
+# Pure git/shell. Knows nothing about tmux, herdr, or the context system: it runs
+# in whatever shell it is given, and the shell already knows how to be in a context.
+#
+# stdout is machine-readable (a path, nothing else) so `cd "$(wt open foo)"` works.
+# Everything human goes to stderr.
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'EOF'
+usage: wt <command> [args]
+
+  open [branch] [--base REF] [--path P] [--fetch] [--strict]
+        Idempotent. Worktree exists -> print its path. Branch exists without a
+        worktree -> create one for it. Neither -> create both.
+        --strict  fail if the branch already exists
+        --fetch   fetch remotes before resolving refs
+        --base    ref to branch from (default HEAD)
+        --path    explicit checkout path, overrides layout detection
+
+  rm [branch] [--here] [--force]
+        Remove a linked checkout, keep the branch. Refuses the main checkout,
+        and refuses dirty or unpushed work unless --force.
+
+  list [--json]     branch, path, dirty, ahead/behind
+  path <branch>     print the worktree path for a branch, or exit 1
+  label [path]      window/display name for a checkout (default: cwd)
+  layout            print detected layout and main checkout (debug)
+
+Layout is detected from the repo's MAIN worktree. Override per repo with:
+  git config wt.layout nested|flat
+EOF
+}
+
+die() { printf 'wt: %s\n' "$*" >&2; exit 1; }
+note() { printf '%s\n' "$*" >&2; }
+
+# ---------------------------------------------------------------- repo basics
+
+repo_root() {
+  git -C "${1:-$PWD}" rev-parse --show-toplevel 2>/dev/null ||
+    die "not inside a git repo: ${1:-$PWD}"
+}
+
+# The MAIN worktree, not the current one. Deriving paths from the current
+# worktree compounds suffixes (monorepo-feature-x-hotfix-y).
+main_worktree_root() {
+  local common_dir base
+  if common_dir="$(git -C "$repo_root" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)" &&
+    [[ -n "$common_dir" ]]; then
+    base="$(basename "$common_dir")"
+    if [[ "$base" == ".git" || "$base" == ".bare" ]]; then
+      dirname "$common_dir"; return 0
+    fi
+  fi
+  git -C "$repo_root" worktree list --porcelain 2>/dev/null |
+    sed -n 's/^worktree //p' | sed -n '1p'
+}
+
+slugify() {
+  local v="${1#worktree/}"
+  v="$(printf '%s' "$v" | tr '[:upper:]' '[:lower:]')"
+  v="$(printf '%s' "$v" | sed -E 's#[^a-z0-9]+#-#g; s#^-+##; s#-+$##; s#-+#-#g')"
+  printf '%s\n' "${v:-worktree}"
+}
+
+# Prints "<layout>\t<container>". Container is the dir new checkouts go into.
+#   nested: <repo>/{main,feature-x}   -- dirs are bare branch slugs
+#   flat:   <repo>{,-feature-x}       -- dirs carry the repo prefix
+detect_layout() {
+  local root="$1" base parent head_branch
+  [[ -d "$root/.bare" ]] && { printf 'nested\t%s\n' "$root"; return 0; }
+  base="$(basename "$root")"; parent="$(dirname "$root")"
+  case "$base" in
+    main|master|trunk|develop) printf 'nested\t%s\n' "$parent"; return 0 ;;
+  esac
+  head_branch="$(git -C "$root" symbolic-ref --short HEAD 2>/dev/null || true)"
+  if [[ -n "$head_branch" && "$base" == "$(slugify "$head_branch")" ]]; then
+    printf 'nested\t%s\n' "$parent"; return 0
+  fi
+  [[ -d "$parent/.bare" ]] && { printf 'nested\t%s\n' "$parent"; return 0; }
+  printf 'flat\t%s\n' "$parent"
+}
+
+resolve_layout() {
+  main_root="$(main_worktree_root)"
+  [[ -n "$main_root" ]] || main_root="$repo_root"
+  local detected container_detected override
+  IFS=$'\t' read -r detected container_detected <<<"$(detect_layout "$main_root")"
+  override="$(git -C "$repo_root" config --get wt.layout 2>/dev/null || true)"
+  case "${override:-auto}" in
+    auto|"") layout="$detected" ;;
+    nested|flat) layout="$override" ;;
+    *) die "invalid wt.layout: $override (expected nested or flat)" ;;
+  esac
+  container="$container_detected"
+}
+
+default_path_for_branch() {
+  local slug; slug="$(slugify "$1")"
+  if [[ "$layout" == "nested" ]]; then
+    printf '%s/%s\n' "$container" "$slug"
+  else
+    printf '%s/%s-%s\n' "$container" "$(basename "$main_root")" "$slug"
+  fi
+}
+
+# ------------------------------------------------------------------ ref logic
+
+branch_exists() { git -C "$repo_root" show-ref --verify --quiet "refs/heads/$1"; }
+remote_exists() { git -C "$repo_root" remote get-url "$1" >/dev/null 2>&1; }
+
+default_remote() {
+  remote_exists origin && { printf 'origin\n'; return 0; }
+  git -C "$repo_root" remote | sed -n '1p'
+}
+
+# feature/x -> origin/feature/x, or origin/feature/x verbatim. Empty if neither.
+remote_branch_ref() {
+  local ref="$1" remote="${1%%/*}"
+  if [[ "$ref" == */* ]] && remote_exists "$remote" &&
+     git -C "$repo_root" show-ref --verify --quiet "refs/remotes/$ref"; then
+    printf '%s\n' "$ref"; return 0
+  fi
+  remote="$(default_remote)"; [[ -n "$remote" ]] || return 1
+  git -C "$repo_root" show-ref --verify --quiet "refs/remotes/$remote/$ref" &&
+    printf '%s/%s\n' "$remote" "$ref"
+}
+
+generated_branch() {
+  local adj=(amber blue bright calm copper crimson deep fast golden green lunar
+             misty quiet rapid red silver still swift violet wild)
+  local nouns=(brook canyon cedar comet dawn field harbor meadow moon ridge river
+               spark stone tide valley wave)
+  local hex candidate
+  for _ in {1..40}; do
+    printf -v hex '%04x' "$((RANDOM % 65536))"
+    candidate="worktree/${adj[$((RANDOM % ${#adj[@]}))]}-${nouns[$((RANDOM % ${#nouns[@]}))]}-$hex"
+    branch_exists "$candidate" || { printf '%s\n' "$candidate"; return 0; }
+  done
+  die "could not generate an unused branch name"
+}
+
+# Existing worktree path for a branch, if any.
+worktree_path_for_branch() {
+  local want="$1" path="" br=""
+  while IFS= read -r line; do
+    case "$line" in
+      worktree\ *) path="${line#worktree }" ;;
+      branch\ *)   br="${line#branch refs/heads/}"
+                   [[ "$br" == "$want" ]] && { printf '%s\n' "$path"; return 0; } ;;
+      "")          path=""; br="" ;;
+    esac
+  done < <(git -C "$repo_root" worktree list --porcelain 2>/dev/null)
+  return 1
+}
+
+is_main_worktree() { [[ "$(cd "$1" && pwd -P)" == "$(cd "$main_root" && pwd -P)" ]]; }
+
+# ------------------------------------------------------------------- commands
+
+cmd_open() {
+  local branch="" base="" path="" do_fetch=0 strict=0
+  while (($#)); do
+    case "$1" in
+      --base)   [[ $# -ge 2 ]] || die "missing value for --base"; base="$2"; shift 2 ;;
+      --path)   [[ $# -ge 2 ]] || die "missing value for --path"; path="$2"; shift 2 ;;
+      --fetch)  do_fetch=1; shift ;;
+      --strict) strict=1; shift ;;
+      -h|--help) usage; exit 0 ;;
+      --*) die "unknown option: $1" ;;
+      *) [[ -z "$branch" ]] || die "unexpected argument: $1"; branch="$1"; shift ;;
+    esac
+  done
+
+  repo_root="$(repo_root)"; resolve_layout
+
+  if (( do_fetch )); then
+    note "fetching remotes..."
+    git -C "$repo_root" fetch --all --prune >&2 || die "fetch failed"
+  fi
+
+  [[ -n "$branch" ]] || branch="$(generated_branch)"
+
+  # Already checked out? Idempotent: hand back the path.
+  local existing
+  if existing="$(worktree_path_for_branch "$branch")"; then
+    (( strict )) && die "branch already has a worktree: $existing"
+    note "already open: $branch"
+    printf '%s\n' "$existing"; return 0
+  fi
+
+  # Remote-only branch: adopt it as a local branch of the same name.
+  local remote_ref=""
+  if ! branch_exists "$branch"; then
+    remote_ref="$(remote_branch_ref "$branch" || true)"
+    # Lazy fetch: only reach for the network if the ref is genuinely missing.
+    # Lazy and narrow: ask the remote about this ONE ref rather than dragging
+    # down every branch. A brand-new branch name costs a single ls-remote, not
+    # a full `fetch --all --prune`.
+    if [[ -z "$remote_ref" && $do_fetch -eq 0 ]]; then
+      local rem; rem="$(default_remote)"
+      if [[ -n "$rem" ]] && git -C "$repo_root" ls-remote --exit-code --heads "$rem" "$branch" >/dev/null 2>&1; then
+        note "$branch exists on $rem; fetching that ref..."
+        git -C "$repo_root" fetch --quiet "$rem" "$branch" >&2 || note "warning: fetch failed; creating a local branch instead"
+        remote_ref="$(remote_branch_ref "$branch" || true)"
+      fi
+    fi
+    if [[ -n "$remote_ref" ]]; then
+      branch="${remote_ref#*/}"
+      [[ -n "$base" ]] || base="$remote_ref"
+      if existing="$(worktree_path_for_branch "$branch")"; then
+        note "already open: $branch"; printf '%s\n' "$existing"; return 0
+      fi
+    fi
+  elif (( strict )); then
+    die "branch already exists: $branch"
+  fi
+
+  [[ -n "$path" ]] || path="$(default_path_for_branch "$branch")"
+  [[ -e "$path" ]] && die "path already exists: $path"
+
+  if branch_exists "$branch"; then
+    git -C "$repo_root" worktree add "$path" "$branch" >&2
+  elif [[ -n "$base" ]]; then
+    git -C "$repo_root" worktree add -b "$branch" "$path" "$base" >&2
+  else
+    git -C "$repo_root" worktree add -b "$branch" "$path" >&2
+  fi
+
+  note "opened $branch ($layout)"
+  printf '%s\n' "$(cd "$path" && pwd -P)"
+}
+
+cmd_rm() {
+  local branch="" force=0 here=0
+  while (($#)); do
+    case "$1" in
+      --here) here=1; shift ;;
+      --force|-f) force=1; shift ;;
+      -h|--help) usage; exit 0 ;;
+      --*) die "unknown option: $1" ;;
+      *) [[ -z "$branch" ]] || die "unexpected argument: $1"; branch="$1"; shift ;;
+    esac
+  done
+
+  repo_root="$(repo_root)"; resolve_layout
+
+  local target
+  if [[ -n "$branch" && $here -eq 0 ]]; then
+    target="$(worktree_path_for_branch "$branch")" || die "no worktree for branch: $branch"
+  else
+    target="$repo_root"
+  fi
+
+  is_main_worktree "$target" && die "refusing to remove the main checkout: $target"
+
+  if (( ! force )); then
+    [[ -n "$(git -C "$target" status --porcelain 2>/dev/null)" ]] &&
+      die "worktree has uncommitted changes: $target (use --force)"
+    local counts ahead
+    if counts="$(git -C "$target" rev-list --count --left-right '@{upstream}...HEAD' 2>/dev/null)"; then
+      ahead="$(printf '%s' "$counts" | cut -f2)"
+      [[ "${ahead:-0}" != "0" ]] &&
+        die "worktree has $ahead unpushed commit(s): $target (use --force)"
+    else
+      note "warning: no upstream for this branch; cannot check unpushed work"
+    fi
+  fi
+
+  git -C "$repo_root" worktree remove ${force:+--force} "$target" >&2
+  note "removed $target (branch kept)"
+}
+
+cmd_list() {
+  local json=0
+  [[ "${1:-}" == "--json" ]] && json=1
+  repo_root="$(repo_root)"; resolve_layout
+
+  local path="" br="" first=1
+  (( json )) && printf '['
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    case "$line" in
+      worktree\ *) path="${line#worktree }" ;;
+      branch\ *)   br="${line#branch refs/heads/}" ;;
+      detached)    br="(detached)" ;;
+      "")
+        [[ -n "$path" ]] || continue
+        local dirty="clean" ab="-"
+        [[ -n "$(git -C "$path" status --porcelain 2>/dev/null)" ]] && dirty="dirty"
+        local c; if c="$(git -C "$path" rev-list --count --left-right '@{upstream}...HEAD' 2>/dev/null)"; then
+          ab="-$(printf '%s' "$c" | cut -f1)/+$(printf '%s' "$c" | cut -f2)"
+        fi
+        if (( json )); then
+          (( first )) || printf ','
+          printf '{"branch":"%s","path":"%s","dirty":%s,"aheadbehind":"%s"}' \
+            "$br" "$path" "$([[ $dirty == dirty ]] && echo true || echo false)" "$ab"
+          first=0
+        else
+          printf '%-46s %-6s %-9s %s\n' "${br:-?}" "$dirty" "$ab" "$path"
+        fi
+        path=""; br="" ;;
+    esac
+  done < <(git -C "$repo_root" worktree list --porcelain 2>/dev/null; echo)
+  (( json )) && printf ']\n'
+  return 0
+}
+
+cmd_path() {
+  [[ $# -ge 1 ]] || die "usage: wt path <branch>"
+  repo_root="$(repo_root)"; resolve_layout
+  worktree_path_for_branch "$1" || exit 1
+}
+
+# Display name for a checkout. Nested containers already carry the repo name,
+# so the label is <repo>/<branch-slug>; flat dirs carry the prefix themselves.
+cmd_label() {
+  local target="${1:-$PWD}"
+  repo_root="$(repo_root "$target")"; resolve_layout
+  target="$(cd "$target" && pwd -P)"
+  if [[ "$layout" == "nested" ]]; then
+    printf '%s/%s\n' "$(basename "$(dirname "$target")")" "$(basename "$target")"
+  else
+    basename "$target"
+  fi
+}
+
+cmd_layout() {
+  repo_root="$(repo_root)"; resolve_layout
+  printf 'repo:      %s\n' "$repo_root"
+  printf 'main:      %s\n' "$main_root"
+  printf 'layout:    %s\n' "$layout"
+  printf 'container: %s\n' "$container"
+  printf 'example:   %s\n' "$(default_path_for_branch feature/IV-1234-example)"
+}
+
+# ---------------------------------------------------------------------- entry
+
+repo_root=""; main_root=""; layout=""; container=""
+
+case "${1:-}" in
+  open)   shift; cmd_open "$@" ;;
+  rm)     shift; cmd_rm "$@" ;;
+  list)   shift; cmd_list "$@" ;;
+  path)   shift; cmd_path "$@" ;;
+  label)  shift; cmd_label "$@" ;;
+  layout) shift; cmd_layout "$@" ;;
+  -h|--help|"") usage; exit 0 ;;
+  *) die "unknown command: $1 (try: wt --help)" ;;
+esac

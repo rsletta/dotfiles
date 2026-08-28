@@ -10,6 +10,7 @@ the authoritative list is in [symlinks.md](symlinks.md).
 | `create-script` | `create-script <path>` | Scaffold a Python CLI using uv and Click |
 | `ffmpeg/extract_clip` | `extract_clip` | Interactively extract a video segment |
 | `newTmuxSession` | `newTmuxSession <name>` / `tns <name>` | Create or attach to a tmux session |
+| `wt` | `wt open\|rm\|list\|path\|layout` | Git worktree helper. Pure git/shell — no multiplexer, no context knowledge |
 | `herdr-split` | herdr key binding | Split a pane while carrying its context |
 | `herdr-tab` | herdr key binding | Create a tab with the workspace context |
 | `herdr-worktree` | command and herdr key binding | Create a branch worktree and workspace, named per the repo's layout |
