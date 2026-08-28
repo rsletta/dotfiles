@@ -120,6 +120,7 @@ _notes_new() {
   filepath="$CONTEXT_VAULT_PATH/Inbox/$date-$slug.md"
 
   if [[ ! -f "$filepath" ]]; then
+    mkdir -p "${filepath:h}"
     cat > "$filepath" << EOF
 # $title
 Date: $date

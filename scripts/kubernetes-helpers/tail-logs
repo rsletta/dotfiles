@@ -3,15 +3,15 @@
 set -eu
 
 # Make sure to stop forked processes
-trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+trap 'trap - SIGTERM; kill -- -$$' SIGINT SIGTERM EXIT
 
-export KUBECONFIG=~/.kube/config.d/$1
+export KUBECONFIG="$HOME/.kube/config.d/$1"
 shift
 
 mkdir -p logs
 NAMESPACE="app-braze-connector loyaltyhub"
 for ns in $NAMESPACE; do
-    while read pod; do
+    while IFS= read -r pod; do
         #kubectl logs -f -n $ns --all-containers --timestamps --prefix "$@" pods/$pod &
         filename=logs/$pod.log
 
@@ -27,11 +27,11 @@ for ns in $NAMESPACE; do
             \"error.type\": \"\",
             \"error.message\": \"\"
         }
-        " | jq -c . > $filename
+        " | jq -c . > "$filename"
 
         # Now get the logs
-        kubectl logs -f -n $ns --all-containers "$@" pods/$pod | jq -R -c --unbuffered 'fromjson? | .' >> $filename &
-        echo Logging to $filename
-    done < <(kubectl get -n $ns pods --no-headers -o custom-columns=":metadata.name")
+        kubectl logs -f -n "$ns" --all-containers "$@" "pods/$pod" | jq -R -c --unbuffered 'fromjson? | .' >> "$filename" &
+        echo "Logging to $filename"
+    done < <(kubectl get -n "$ns" pods --no-headers -o custom-columns=":metadata.name")
 done < /dev/null
 sleep 1d
