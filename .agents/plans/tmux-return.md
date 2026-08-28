@@ -92,13 +92,14 @@ Authoritative (hook-driven) beats herdr's screen-scraping fallback.
 
 ## Slice 6 — cheatsheet + teardown
 
-**Teardown DEFERRED** (28 Aug) — mid-work; herdr stays installed. Cheatsheet items are done; removal items are not.
+**Teardown done** (29 Aug). The `herdr` binary itself is left installed and a server was still running at the time; only the repo's config, wrappers, symlinks, docs and state were removed.
 
 1. [x] `bind -N` added for the three new bindings; 79 documented prefix bindings total.
 2. [x] `prefix+?` opens the cheatsheet popup.
 3. [x] `docs/terminal.md` keybinding tables **removed**, not regenerated — a generated copy would drift just the same. Points at `prefix+?` instead; the rest of the file (Ghostty, plugins, WezTerm, Starship) stays. Added `docs/worktrees.md` for `wt`/`tmux-wt`.
-4. [ ] Remove `herdr/config.toml`, `scripts/herdr-{split,tab,worktree,worktree-rm}`, symlinks, `docs/herdr.md`, and `~/.local/state/herdr-ctx/` (~180 stale files).
-5. [ ] Update `docs/symlinks.md`, `docs/scripts.md`, `AGENTS.md`.
+4. [x] Removed `herdr/config.toml` (+ the `herdr/` dir), `scripts/herdr-{split,tab,worktree,worktree-rm}`, all five symlinks, `docs/herdr.md`, and `~/.local/state/herdr-ctx/` (241 files, 964K).
+5. [x] Updated `docs/symlinks.md`, `docs/scripts.md`, `AGENTS.md`, `README.md`, `ghostty/config.ghostty`.
+6. [ ] Left alone deliberately: the brew-installed `herdr` binary, its runtime dir `~/.config/herdr/` (live sockets/logs), the `.agents/plans/herdr-*.md` history, the skillshare `herdr` skill, and the comparative rationale in `docs/agents.md`.
 
 ## Parked
 

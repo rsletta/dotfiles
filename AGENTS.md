@@ -29,7 +29,6 @@ starship/             # Starship prompt config
 ghostty/              # Ghostty terminal config
 nvim/                 # Neovim config
 wezterm/              # WezTerm config — experimental
-herdr/                # herdr multiplexer config
 w3m/                  # w3m browser config — trial, not linked
 applications.md       # App inventory — update manually when things change
 ```
@@ -76,4 +75,3 @@ See `docs/workspaces.md`.
 | `docs/commands.md` | Key commands reference |
 | `docs/terminal.md` | Terminal and prompt setup |
 | `docs/neovim.md` | Neovim config notes |
-| `docs/herdr.md` | herdr config surface + tmux porting analysis |

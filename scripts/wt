@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # wt — git worktree helper
 #
-# Pure git/shell. Knows nothing about tmux, herdr, or the context system: it runs
+# Pure git/shell. Knows nothing about tmux or the context system: it runs
 # in whatever shell it is given, and the shell already knows how to be in a context.
 #
 # stdout is machine-readable (a path, nothing else) so `cd "$(wt open foo)"` works.

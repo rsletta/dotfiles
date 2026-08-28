@@ -13,10 +13,6 @@ the authoritative list is in [symlinks.md](symlinks.md).
 | `wt` | `wt open\|rm\|list\|path\|layout` | Git worktree helper. Pure git/shell — no multiplexer, no context knowledge |
 | `tmux-wt` | tmux key binding (`prefix+G` / `prefix+D`) | Open or remove a worktree as a tmux window, via fzf popup |
 | `tmux-agent-status` | agent lifecycle hooks | Record agent state on its pane; roll up to the window |
-| `herdr-split` | herdr key binding | Split a pane while carrying its context |
-| `herdr-tab` | herdr key binding | Create a tab with the workspace context |
-| `herdr-worktree` | command and herdr key binding | Create a branch worktree and workspace, named per the repo's layout |
-| `herdr-worktree-rm` | command and herdr key binding | Remove a linked worktree checkout |
 | `kubernetes-helpers/tail-logs` | `tail-logs` | Stream logs for its project-specific namespaces |
 | `til` | `til` zsh function | Create and categorize TIL entries for the active writing context |
 

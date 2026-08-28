@@ -1,7 +1,7 @@
 # macOS dotfiles
 
 Personal dotfiles for a macOS development environment built around zsh,
-Ghostty, herdr/tmux, Neovim, and Starship.
+Ghostty, tmux, Neovim, and Starship.
 
 The repository is applied manually rather than through GNU Stow:
 
@@ -16,7 +16,7 @@ The repository is applied manually rather than through GNU Stow:
 - Contexts (`cch`, `cenv`, `cman`) isolate client-specific tool configuration.
 - Workspaces (`ws`) organize projects under `~/ws/<name>/`.
 - Writing commands (`notes`, `til`) use paths supplied by the active context.
-- Herdr and tmux carry active context state into new shells.
+- tmux carries active context state into new shells.
 
 ## Documentation
 

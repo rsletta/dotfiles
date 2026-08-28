@@ -10,7 +10,7 @@ window-padding-x = 8
 window-padding-y = 6
 
 # Minimal chrome: no titlebar, no borders, square corners, no traffic lights.
-# Window movement handled by Rectangle. herdr handles tabs/panes.
+# Window movement handled by Rectangle. tmux handles windows/panes.
 window-decoration = none
 
 # Styles

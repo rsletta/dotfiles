@@ -14,7 +14,6 @@ Authoritative record of how this repo is applied to the machine. Not using GNU S
 | `starship/starship.toml` | `~/.config/starship.toml` |
 | `ghostty/config.ghostty` | `~/.config/ghostty/config.ghostty` |
 | `wezterm/wezterm.lua` | `~/.config/wezterm/wezterm.lua` |
-| `herdr/config.toml` | `~/.config/herdr/config.toml` |
 
 ## Script symlinks
 
@@ -29,10 +28,6 @@ Select scripts are individually symlinked onto `PATH` at `~/.local/bin/` (link n
 | `scripts/wt` | `wt` (git worktree helper; multiplexer-agnostic) |
 | `scripts/tmux-wt` | `tmux-wt` (tmux adapter: `wt` path -> tmux window) |
 | `scripts/tmux-agent-status` | `tmux-agent-status` (agent state -> tmux options) |
-| `scripts/herdr-split` | `herdr-split` (herdr split wrapper; carries context) |
-| `scripts/herdr-tab` | `herdr-tab` (herdr tab wrapper; carries workspace context) |
-| `scripts/herdr-worktree` | `herdr-worktree` (smart herdr worktree wrapper) |
-| `scripts/herdr-worktree-rm` | `herdr-worktree-rm` (remove current herdr worktree checkout) |
 
 ## Sourced, not symlinked
 
