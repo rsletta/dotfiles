@@ -9,7 +9,6 @@ See [contexts.md](contexts.md) for details.
 | Command | Description |
 |---------|-------------|
 | `cch <name>` | Switch context |
-| `cch --workspace <name>` | Switch context and update the herdr workspace default |
 | `cenv [env]` | Set env within context |
 | `ccd` | cd to CONTEXT_HOME |
 | `cman <sub>` | Context management (new/ls/edit/add-tool/rename) |

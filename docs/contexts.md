@@ -7,7 +7,6 @@ Switch between work contexts (clients, personal) on the same machine. Each conte
 | Command | Description |
 |---------|-------------|
 | `cch <name>` | Switch context |
-| `cch --workspace <name>` | Switch context and set the herdr workspace default |
 | `cenv [env]` | Set env within context (dev/test/prod). No arg = unset |
 | `ccd` | cd to CONTEXT_HOME |
 | `cman new <name>` | Create context from template |
@@ -37,13 +36,12 @@ Template for new contexts: `dotfiles/templates/context/`.
 
 ## Safety model
 
-Context activation is always conscious in plain shells. Multiplexer-created shells may inherit explicit multiplexer context state:
+Context activation is always conscious in plain shells. Multiplexer-created shells inherit it:
 
-- tmux shells inherit via the tmux server environment.
-- herdr splits inherit the source pane context.
-- herdr new tabs inherit the workspace default context.
+- tmux windows and panes inherit the session environment, which `cch` sets.
+- `cch` in one pane changes that pane only; the session default is untouched, so a pane can run a different context from the rest of the session.
 
-In herdr, `cch <name>` promotes to the workspace default only when the workspace has one tab and one pane. In populated workspaces it is pane-local; use `cch --workspace <name>` to retarget the workspace default explicitly.
+Set the context once when the session starts and everything opened afterwards inherits it.
 
 **Auto-set (safe):** `tools/setup.sh` sets config *paths* — tells tools where to find config files. No profiles or clusters are activated.
 
