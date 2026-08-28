@@ -8,7 +8,7 @@ How config files are loaded and what each one does.
 ~/.zprofile (login shell — once per terminal window)
   zprofile.d/10-path.sh           ~/.local/bin to PATH
   zprofile.d/15-locales.sh        Norwegian locale (nb_NO.UTF-8)
-  zprofile.d/50-1-cocoapods.sh    Ruby + CocoaPods paths
+  zprofile.d/50-1-cocoapods.sh    Ruby + dynamic user gem path
   zprofile.d/50-2-flutter.sh      Flutter + FVM paths
   zprofile.d/50-3-dotnet.sh       .NET tools path
   zprofile.d/50-4-rust.sh         Cargo bin path
@@ -25,11 +25,16 @@ How config files are loaded and what each one does.
   zshrc.d/30-prompt.sh            Starship init
   zshrc.d/40-completions.sh       Completion system + 1Password
   zshrc.d/60-aliases.sh           All aliases
-  zshrc.d/70-functions.sh         General functions (tmux, notes)
+  zshrc.d/65-writing.sh           notes and til writing commands
+  zshrc.d/70-functions.sh         General functions
   zshrc.d/71-contexts.sh          Context system core (cch, cenv, ccd)
   zshrc.d/72-context-tools.sh     ku, awsp with scoped completions
   zshrc.d/73-context-manager.sh   cman command
+  zshrc.d/75-workspace.sh         ws workspace management
+  zshrc.d/76-web-search.sh        wtf and browse commands
+  zshrc.d/77-jira.sh              Context-aware Jira commands
   zshrc.d/80-plugins.sh           zsh-syntax-highlighting, history-substring-search
+  zshrc.d/81-alvtime.sh           alvtime completion and prompt profile
   fnm env (not cached — per-process multishell paths)
   _cached_init: fzf, zoxide  (see "Init caching" below)
   SDKMAN (lazy-loaded — inits on first use of sdk/java/gradle/kotlin/mvn)
@@ -79,7 +84,7 @@ unsafe to share across shells. Runs `eval "$(fnm env --use-on-cd)"` directly.
 
 **`compinit`**: Uses `-C` (skip security check, reuse dump) unless the dump is older
 than 24 hours. Docker Desktop added a duplicate `compinit` at the bottom of `.zshrc`
-which was removed — Docker completions work via the fpath entry alone.
+which was removed. Docker completions work via the fpath entry alone.
 
 To force a full cache rebuild: `rm -rf ~/.cache/zsh`
 

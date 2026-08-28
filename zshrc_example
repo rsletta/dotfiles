@@ -1,4 +1,14 @@
-# Source config files
+# Daily cache: the first shell of the day rebuilds generated init scripts.
+_ZSH_CACHE_DIR="$HOME/.cache/zsh"
+_today=$(date +%Y-%m-%d)
+if [[ ! -f "$_ZSH_CACHE_DIR/.date" ]] || [[ "$(cat "$_ZSH_CACHE_DIR/.date" 2>/dev/null)" != "$_today" ]]; then
+    rm -rf "$_ZSH_CACHE_DIR"
+    mkdir -p "$_ZSH_CACHE_DIR"
+    echo "$_today" > "$_ZSH_CACHE_DIR/.date"
+fi
+unset _today
+
+# Source config files.
 for rcfile in "$HOME"/.config/dotfiles/zshrc.d/*.sh(N); do
     # Check if the file is the aliases file
     if [[ "$rcfile" == *60-aliases.sh ]]; then
@@ -7,23 +17,39 @@ for rcfile in "$HOME"/.config/dotfiles/zshrc.d/*.sh(N); do
     source "$rcfile"
 done
 
-if command -v fnm &>/dev/null; then
-    eval "$(fnm env --use-on-cd)"
-fi
-if command -v fzf &>/dev/null; then
-    eval "$(fzf --zsh)"
-fi
+_cached_init() {
+    local name="$1"
+    shift
+    local cache="$_ZSH_CACHE_DIR/$name.zsh"
+    if [[ ! -s "$cache" ]]; then
+        "$@" > "$cache" 2>/dev/null
+    fi
+    source "$cache"
+}
+
+# fnm emits process-specific multishell paths and must not be cached.
+command -v fnm &>/dev/null && eval "$(fnm env --use-on-cd)"
+command -v fzf &>/dev/null && _cached_init fzf fzf --zsh
+command -v zoxide &>/dev/null && _cached_init zoxide zoxide init zsh
 
 ## [Completion]
 ## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/rsletta/.dart-cli-completion/zsh-config.zsh ]] && . /Users/rsletta/.dart-cli-completion/zsh-config.zsh || true
+[[ -f "$HOME/.dart-cli-completion/zsh-config.zsh" ]] && source "$HOME/.dart-cli-completion/zsh-config.zsh"
 ## [/Completion]
 
 # bun completions
-[ -s "/Users/rsletta/.bun/_bun" ] && source "/Users/rsletta/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
-eval "$(zoxide init zsh)"
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+# SDKMAN is loaded on first use rather than on every shell startup.
 export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+if [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
+    _sdkman_lazy_init() {
+        unfunction sdk java gradle kotlin mvn 2>/dev/null
+        source "$SDKMAN_DIR/bin/sdkman-init.sh"
+    }
+    sdk()    { _sdkman_lazy_init; sdk "$@" }
+    java()   { _sdkman_lazy_init; java "$@" }
+    gradle() { _sdkman_lazy_init; gradle "$@" }
+    kotlin() { _sdkman_lazy_init; kotlin "$@" }
+    mvn()    { _sdkman_lazy_init; mvn "$@" }
+fi
