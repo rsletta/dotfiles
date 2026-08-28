@@ -2,7 +2,7 @@
 
 ## Ghostty (primary)
 
-Config: `ghostty/config`
+Config: `ghostty/config.ghostty`
 
 - Theme: TokyoNight Night
 - Font: Iosevka Nerd Font, 16pt
@@ -17,30 +17,28 @@ Config: `tmux/tmux.conf`
 - Prefix: **Ctrl-A** (not default Ctrl-B)
 - Mode: vi keybindings
 - Mouse: enabled (but click-to-focus disabled)
-- Status bar: bottom, empty (no clutter)
+- Status bar: bottom, Tokyo Night theme
 - Windows start at 1, renumber on close
 - History: 10,000 lines
 - Image passthrough enabled
 
-### Navigation
+### Keybindings
 
-| Key | Action |
-|-----|--------|
-| `h` `j` `k` `l` | Select pane (vi-style) |
-| `Ctrl-H` / `Ctrl-L` | Previous / next window |
-| `Ctrl-A Ctrl-A` | Cycle panes |
+Not listed here. Every binding carries its own description via `bind -N`, so the config is the only source of truth:
 
-### Pane/window management
+```
+prefix + ?      cheatsheet popup (fzf over `tmux list-keys -N`)
+```
 
-| Key | Action |
-|-----|--------|
-| `c` | New window (inherits path) |
-| `C` | New window (home) |
-| Arrow keys | Split in that direction (inherits path) |
-| `_` | Split vertical |
-| `\|` | Split horizontal |
-| `a` | Enter copy mode |
-| `r` | Reload config |
+That covers the ~79 documented bindings including tmux's own defaults. A table in this file would drift from `tmux.conf` the moment either changed.
+
+Worth knowing, since they are not obvious from the list:
+
+| Binding | Why |
+|---------|-----|
+| `prefix + G` | Open a worktree as a window — fzf over existing ones; type an unmatched name to create it. See [worktrees.md](worktrees.md). |
+| `prefix + D` | Remove a worktree checkout, keeping the branch. |
+| Shift + drag | Bypasses tmux's mouse capture for Ghostty's native selection. Plain drag copies to the clipboard on release. |
 
 ### Plugins (via tpm)
 
@@ -75,4 +73,3 @@ Format: `context directory gh_account alvtime_profile git_branch git_status aws 
 ### Kubernetes
 
 Shows context name with aliases for known EKS clusters.
-

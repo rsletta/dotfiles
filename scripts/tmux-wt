@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+# tmux-wt — thin tmux adapter over `wt`
+#
+# The whole integration: ask `wt` for a checkout path, then put a tmux window
+# there. All git knowledge lives in `wt`; all context handling is the session
+# environment's job. This file knows only about windows.
+#
+# Bound to a popup (see tmux.conf). Run from a normal shell too.
+set -euo pipefail
+
+# The tmux server's PATH may predate ~/.local/bin, so resolve explicitly.
+WT="${WT_BIN:-$(command -v wt 2>/dev/null || echo "$HOME/.local/bin/wt")}"
+[[ -x "$WT" ]] || { echo "wt not found (set WT_BIN)" >&2; exit 1; }
+
+die() { printf 'tmux-wt: %s\n' "$*" >&2; pause; exit 1; }
+
+# Popups vanish the instant the command exits, so hold on error.
+pause() { [[ -t 0 ]] && { printf '\npress enter to close...' >&2; IFS= read -r _; }; }
+
+in_tmux() { [[ -n "${TMUX:-}" ]]; }
+
+# Existing window in this session already sitting in that path, if any.
+window_for_path() {
+  local want="$1"
+  in_tmux || return 1
+  while read -r wid wpath; do
+    [[ "$wpath" == "$want" ]] && { printf '%s\n' "$wid"; return 0; }
+  done < <(tmux list-panes -s -F '#{window_id} #{pane_current_path}' 2>/dev/null)
+  return 1
+}
+
+open_window() {
+  local path="$1" name
+  name="$("$WT" label "$path" 2>/dev/null || basename "$path")"
+
+  if ! in_tmux; then
+    printf '%s\n' "$path"      # composable outside tmux: cd "$(tmux-wt ...)"
+    return 0
+  fi
+
+  local existing
+  if existing="$(window_for_path "$path")"; then
+    tmux select-window -t "$existing"
+    tmux display-message "switched to $name"
+    return 0
+  fi
+
+  # No -e needed: a new window inherits the session environment, so the
+  # context comes along by itself.
+  tmux new-window -c "$path" -n "$name"
+  tmux display-message "opened $name"
+}
+
+# branch<TAB>path for every checkout in this repo
+worktree_rows() {
+  "$WT" list 2>/dev/null | awk '{ b=$1; p=$NF; printf "%s\t%s\n", b, p }'
+}
+
+pick() {
+  local prompt="$1" header="$2" rows out
+  rows="$(worktree_rows)" || true
+  out="$(printf '%s\n' "$rows" |
+    fzf --with-nth=1 --delimiter='\t' \
+        --print-query --prompt="$prompt" --header="$header" \
+        --height=100% --reverse --info=inline || true)"
+  printf '%s' "$out"
+}
+
+cmd_open() {
+  local branch="${1:-}"
+
+  if [[ -z "$branch" ]]; then
+    local out query choice
+    out="$(pick 'worktree> ' 'enter to open · type a new branch name to create it')"
+    query="$(printf '%s' "$out" | sed -n '1p')"
+    choice="$(printf '%s' "$out" | sed -n '2p')"
+    if [[ -n "$choice" ]]; then
+      branch="$(printf '%s' "$choice" | cut -f1)"
+    elif [[ -n "$query" ]]; then
+      branch="$query"           # typed something that matched nothing -> create it
+    else
+      exit 0                    # cancelled
+    fi
+  fi
+
+  local path
+  path="$("$WT" open "$branch")" || die "wt open failed"
+  open_window "$path"
+}
+
+cmd_rm() {
+  local out query choice branch path
+  out="$(pick 'remove worktree> ' 'select a worktree to remove — the branch is kept')"
+  choice="$(printf '%s' "$out" | sed -n '2p')"
+  [[ -n "$choice" ]] || exit 0
+  branch="$(printf '%s' "$choice" | cut -f1)"
+  path="$(printf '%s' "$choice" | cut -f2)"
+
+  printf 'remove %s\n  %s\nbranch is kept. [y/N] ' "$branch" "$path" >&2
+  IFS= read -r answer
+  case "$answer" in y|Y|yes|YES) ;; *) echo "cancelled" >&2; exit 0 ;; esac
+
+  local win=""
+  in_tmux && win="$(window_for_path "$path" || true)"
+  "$WT" rm "$branch" || die "wt rm failed (use a shell for --force)"
+  [[ -n "$win" ]] && tmux kill-window -t "$win" 2>/dev/null || true
+}
+
+case "${1:-open}" in
+  open) shift || true; cmd_open "${1:-}" ;;
+  rm)   shift || true; cmd_rm ;;
+  -h|--help) echo "usage: tmux-wt [open [branch] | rm]" >&2 ;;
+  *) cmd_open "$1" ;;
+esac

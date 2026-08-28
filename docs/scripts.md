@@ -11,6 +11,7 @@ the authoritative list is in [symlinks.md](symlinks.md).
 | `ffmpeg/extract_clip` | `extract_clip` | Interactively extract a video segment |
 | `newTmuxSession` | `newTmuxSession <name>` / `tns <name>` | Create or attach to a tmux session |
 | `wt` | `wt open\|rm\|list\|path\|layout` | Git worktree helper. Pure git/shell — no multiplexer, no context knowledge |
+| `tmux-wt` | tmux key binding (`prefix+G` / `prefix+D`) | Open or remove a worktree as a tmux window, via fzf popup |
 | `herdr-split` | herdr key binding | Split a pane while carrying its context |
 | `herdr-tab` | herdr key binding | Create a tab with the workspace context |
 | `herdr-worktree` | command and herdr key binding | Create a branch worktree and workspace, named per the repo's layout |
