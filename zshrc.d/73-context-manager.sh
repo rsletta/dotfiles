@@ -1,6 +1,10 @@
 # Context manager: cman new|ls|edit
 
 _CONTEXT_TEMPLATE_DIR="$HOME/.config/dotfiles/templates/context"
+# Per-tool seeds live OUTSIDE the context skeleton: `cman new` copies the
+# skeleton wholesale, so a tool template kept in there would land in every new
+# context and then block `cman add-tool` as "already exists".
+_CONTEXT_TOOL_TEMPLATE_DIR="$HOME/.config/dotfiles/templates/tools"
 _CONTEXT_ROOT="$HOME/.config/contexts"
 
 _cman_new() {
@@ -139,34 +143,35 @@ _cman_add_tool() {
     echo "" >> "$setup_file"
     echo -e "$writing_exports" >> "$setup_file"
 
-    local templates_src="$HOME/.config/dotfiles/templates/writing"
     local templates_dst="$vault_path/__templates"
     mkdir -p "$templates_dst"
-    cp "$templates_src/Daily Note.md" "$templates_dst/Daily Note.md"
+    cp "$HOME/.config/dotfiles/templates/writing/Daily Note.md" "$templates_dst/Daily Note.md"
 
     echo "Added 'writing' to $name — wired into setup.sh"
-    echo "  Vault: $vault_path"
-    echo "  Copied Daily Note template → $templates_dst/"
+    echo "  Vault: ${vault_path/#$HOME/~}"
+
   elif [[ "$tool" == "skillshare" ]]; then
     _cman_skillshare_setup "$ctx_dir" "$name" "$tool_dir"
-  elif [[ "$tool" == "jira" ]]; then
-    echo "" >> "$setup_file"
-    echo -e "${_CONTEXT_KNOWN_TOOLS[$tool]}" >> "$setup_file"
-    mkdir -p "$tool_dir/orgs"
-    echo "Added 'jira' to $name — wired into setup.sh"
-    echo "  $tool_dir/"
-    _cman_jira_setup "$ctx_dir"
+
   elif [[ -n "${_CONTEXT_KNOWN_TOOLS[$tool]}" ]]; then
     echo "" >> "$setup_file"
     echo -e "${_CONTEXT_KNOWN_TOOLS[$tool]}" >> "$setup_file"
 
-    local tool_template_dir="$_CONTEXT_TEMPLATE_DIR/tools/$tool"
-    if [[ -d "$tool_template_dir" ]]; then
-      cp -r "$tool_template_dir/." "$tool_dir/"
-    fi
+    local tool_template_dir="$_CONTEXT_TOOL_TEMPLATE_DIR/$tool"
+    [[ -d "$tool_template_dir" ]] && cp -r "$tool_template_dir/." "$tool_dir/"
 
     echo "Added '$tool' to $name — wired into setup.sh"
     echo "  $tool_dir/"
+
+    # jira needs an org before it can do anything; `lazyj org add` owns that
+    # flow, so do not duplicate it here.
+    if [[ "$tool" == "jira" ]]; then
+      mkdir -p "$tool_dir/orgs"
+      echo "  Next: cch $name && lazyj org add"
+      echo "        then add the token to tools/setup.sh:"
+      echo "          cexport JIRA_API_TOKEN=\"op://<Vault>/<Item>/<field>\""
+    fi
+
   else
     echo "Added '$tool' to $name — unknown tool, add exports to setup.sh manually"
     echo "  $tool_dir/"
@@ -174,9 +179,7 @@ _cman_add_tool() {
 }
 
 _cman_skillshare_setup() {
-  local ctx_dir="$1"
-  local name="$2"
-  local tool_dir="$3"
+  local ctx_dir="$1" name="$2" tool_dir="$3"
 
   if ! command -v skillshare &>/dev/null; then
     echo "skillshare CLI not found — install it first (brew install runkids/tap/skillshare)" >&2
@@ -184,10 +187,12 @@ _cman_skillshare_setup() {
     return 1
   fi
 
-  local skills_dir="$tool_dir/skills"
+  # Skills live under the Claude config dir, not under tools/skillshare/ — that
+  # is where every existing context actually points. tools/skillshare/ holds
+  # only the marker that `cch` and `cman doctor` read.
+  local target="$name-claude" skills_dir="$ctx_dir/tools/claude/skills"
   mkdir -p "$skills_dir"
 
-  local target="$name-skills"
   skillshare target add "$target" "$skills_dir" || {
     rmdir "$tool_dir" 2>/dev/null
     return 1
@@ -196,7 +201,7 @@ _cman_skillshare_setup() {
   printf 'target: %s\nskills: %s\n' "$target" "$skills_dir" > "$tool_dir/installed"
 
   echo "Added 'skillshare' to $name"
-  echo "  Target: $target → $skills_dir"
+  echo "  Target: $target → ${skills_dir/#$HOME/~}"
   echo "  Next: skillshare sync"
 }
 
@@ -216,70 +221,6 @@ _context_skillshare_check() {
   [[ -z "$count" ]] && return 0
 
   (( count > 0 )) && echo "⚠ skillshare: $count skill(s) need sync — run: skillshare sync"
-}
-
-_cman_jira_setup() {
-  local ctx_dir="$1"
-  local tool_dir="$ctx_dir/tools/jira"
-
-  echo ""
-  _cman_jira_add_org "$tool_dir" && echo ""
-
-  # 1Password token (shared across orgs — same Atlassian account)
-  if ! command -v op &>/dev/null; then
-    echo "  Tip: add JIRA_API_TOKEN to tools/setup.sh:"
-    echo "    cexport JIRA_API_TOKEN=\"op://<Vault>/<Item>/<field>\""
-    return
-  fi
-
-  echo -n "Configure JIRA_API_TOKEN from 1Password? [Y/n] "
-  read -r _jira_reply
-  [[ "$_jira_reply" == [nN]* ]] && return
-
-  local vault item field
-  vault=$(op vault list --format=json 2>/dev/null | jq -r '.[].name' \
-    | fzf --prompt="Vault: " --layout=reverse --height=10) || return
-  [[ -z "$vault" ]] && echo "  Skipped." && return
-
-  item=$(op item list --vault "$vault" --format=json 2>/dev/null | jq -r '.[].title' \
-    | fzf --prompt="Item: " --layout=reverse --height=10) || return
-  [[ -z "$item" ]] && echo "  Skipped." && return
-
-  field=$(op item get "$item" --vault "$vault" --format=json 2>/dev/null \
-    | jq -r '.fields[] | select(.value != null) | .label' \
-    | fzf --prompt="Field: " --layout=reverse --height=10) || return
-  [[ -z "$field" ]] && echo "  Skipped." && return
-
-  local op_ref="op://$vault/$item/$field"
-  printf '\ncexport JIRA_API_TOKEN="%s"\n' "$op_ref" >> "$ctx_dir/tools/setup.sh"
-  echo "  JIRA_API_TOKEN → $op_ref"
-}
-
-_cman_jira_add_org() {
-  local tool_dir="$1"
-  local orgs_dir="$tool_dir/orgs"
-
-  echo -n "Org name (short identifier, e.g. 'work' or 'oldorg'): "
-  read -r _jira_org
-  [[ -z "$_jira_org" ]] && _jira_org="default"
-
-  local org_file="$orgs_dir/$_jira_org.yml"
-  cp "$_CONTEXT_TEMPLATE_DIR/tools/jira/config.yml" "$org_file"
-
-  echo -n "Jira server URL (e.g. https://yourorg.atlassian.net): "
-  read -r _jira_server
-  if [[ -n "$_jira_server" ]]; then
-    sed -i '' "s|^server:.*|server: $_jira_server|" "$org_file"
-  fi
-
-  echo -n "Jira login email: "
-  read -r _jira_login
-  if [[ -n "$_jira_login" ]]; then
-    sed -i '' "s|^login:.*|login: $_jira_login|" "$org_file"
-  fi
-
-  ln -sf "orgs/$_jira_org.yml" "$tool_dir/config.yml"
-  echo "  org '$_jira_org' → active"
 }
 
 # --- inspection -------------------------------------------------------------

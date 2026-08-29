@@ -86,7 +86,7 @@ _jira_org_add() {
     return 1
   fi
 
-  cp "$HOME/.config/dotfiles/templates/context/tools/jira/config.yml" "$org_file"
+  cp "$HOME/.config/dotfiles/templates/tools/jira/config.yml" "$org_file"
 
   echo -n "Jira server URL: "
   read -r _server

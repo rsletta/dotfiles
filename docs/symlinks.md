@@ -37,7 +37,10 @@ Loaded in-place from the repo by the shell — no symlink involved.
 
 ## Used in place (path reference)
 
-- `templates/` (`context/`, `writing/`) — read by `zshrc.d/65-writing.sh`, `73-context-manager.sh`, `77-jira.sh` via path. Not symlinked.
+- `templates/` — read by path, not symlinked:
+  - `context/` — skeleton copied by `cman new` (`73-context-manager.sh`)
+  - `tools/<tool>/` — per-tool seed copied by `cman add-tool`; deliberately outside `context/` so `cman new` does not pre-create every tool dir
+  - `writing/` — read by `65-writing.sh` and `scripts/til`
 
 ## In repo, NOT linked
 

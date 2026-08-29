@@ -87,20 +87,21 @@ Use `op://` references in `tools/setup.sh` for 1Password secrets. Resolve with `
 ### Jira setup
 
 ```sh
-# 1. Add the tool (creates tools/jira/config.yml, wires JIRA_CONFIG_FILE)
+# 1. Add the tool — creates tools/jira/, wires JIRA_CONFIG_FILE
 cman add-tool jira
 
-# 2. Edit tools/jira/config.yml — fill in server URL, login, project key
-
-# 3. Add token to tools/setup.sh
-export JIRA_API_TOKEN="op://<Vault>/<Item>/token"
-
-# 4. Activate context
+# 2. Activate the context, then add an org (server URL, login, active symlink)
 cch <context>
+lazyj org add
 
-# 5. Use — wrapper resolves token via op run
+# 3. Add the token to tools/setup.sh
+cexport JIRA_API_TOKEN="op://<Vault>/<Item>/token"
+
+# 4. Use — the wrapper resolves the token via op run
 lazyj issue list
 ```
+
+Org creation lives in `lazyj org add`, not in `cman`. `cman` wires the tool into the context; everything about *which* Jira you are talking to belongs to the Jira tool itself. Multiple orgs per context are supported — `lazyj org list` / `lazyj org use`.
 
 ### Skillshare setup
 
@@ -110,9 +111,11 @@ Prereqs: `skillshare` CLI (`brew install runkids/tap/skillshare`) and `jq`.
 
 ```sh
 # Per context
-cman add-tool skillshare [ctx]   # registers target, drops tools/skillshare/installed marker
+cman add-tool skillshare [ctx]   # registers target <ctx>-claude -> tools/claude/skills
 skillshare sync                  # populates symlinks; pre-existing local duplicates stay local (delete first if you want them linked)
 ```
+
+Skills land in `tools/claude/skills/` — the Claude config dir — not under `tools/skillshare/`, which holds only the `installed` marker that `cch` and `cman doctor` read.
 
 Drift detection runs on every `cch`. If source has skills the target doesn't, `cch` prints `⚠ skillshare: N skill(s) need sync — run: skillshare sync`. Silent when clean.
 
