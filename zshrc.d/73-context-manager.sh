@@ -282,6 +282,152 @@ _cman_jira_add_org() {
   echo "  org '$_jira_org' → active"
 }
 
+# --- inspection -------------------------------------------------------------
+#
+# The context system works by sourcing files you never see. That is the point,
+# and it is also the failure mode: things get set up, forgotten, and drift.
+# `cman show` and `cman doctor` exist so the state is always one command away
+# rather than something you have to remember to go looking for.
+
+# Describe a value WITHOUT ever printing a secret.
+_cman_describe_value() {
+  local name="$1" val="$2" dir="$3" shown
+
+  [[ -z "$val" ]] && { print -r -- "(empty)"; return }
+  [[ "$val" == op://* ]] && { print -r -- "1password ref"; return }
+
+  case "${name:u}" in
+    *TOKEN*|*SECRET*|*PASSWORD*|*CREDENTIAL*|*API_KEY*|*APIKEY*)
+      print -r -- "PLAINTEXT SECRET (${#val} chars)"; return ;;
+  esac
+
+  if [[ "$val" == /* ]]; then
+    if [[ -n "$dir" && "$val" == "$dir"/* ]]; then shown="${val#$dir/}"
+    else                                           shown="${val/#$HOME/~}"; fi
+    [[ -e "$val" ]] && print -r -- "-> $shown" || print -r -- "-> $shown  (MISSING)"
+    return
+  fi
+
+  print -r -- "$val"
+}
+
+# name=value for every var a context exports. Live shell if it is the active
+# context, otherwise a throwaway subshell so nothing leaks into this one.
+_cman_context_vars() {
+  local ctx="$1" dir="$_CONTEXT_ROOT/$1" v
+
+  if [[ "$ctx" == "$SHELL_CONTEXT" ]]; then
+    for v in ${(o)_CONTEXT_EXPORTED_VARS}; do print -r -- "$v=${(P)v}"; done
+    return
+  fi
+
+  CONTEXT_DIR="$dir" zsh -f -c '
+    typeset -ga _V=()
+    cexport() { local a; for a in "$@"; do _V+=("${a%%=*}"); done; export "$@" }
+    # read the cache rather than hitting the network for another context
+    _gh_user_cached() { [[ -f "$CONTEXT_DIR/.cache/gh_user" ]] && cat "$CONTEXT_DIR/.cache/gh_user" }
+    source "$1/config.sh"
+    [[ -f "$1/tools/setup.sh" ]] && source "$1/tools/setup.sh"
+    [[ -f "$1/tools/kube.sh" ]]  && source "$1/tools/kube.sh"
+    local v; for v in ${(o)_V}; do print -r -- "$v=${(P)v}"; done
+  ' zsh "$dir" 2>/dev/null
+}
+
+_cman_show() {
+  local ctx="${1:-$SHELL_CONTEXT}"
+  if [[ -z "$ctx" ]]; then
+    echo "No context active. Usage: cman show [name]" >&2
+    return 1
+  fi
+
+  local dir="$_CONTEXT_ROOT/$ctx"
+  [[ -d "$dir" ]] || { echo "Context '$ctx' not found" >&2; return 1 }
+
+  local live="" ; [[ "$ctx" == "$SHELL_CONTEXT" ]] && live="  (active in this shell)"
+  print -r -- "context: $ctx$live"
+  print -r -- "  dir:   ${dir/#$HOME/~}"
+
+  print -r -- ""
+  print -r -- "  sourced on cch:"
+  local f n
+  for f in config.sh tools/setup.sh tools/kube.sh; do
+    [[ -f "$dir/$f" ]] || continue
+    n=$(grep -cE '^[[:space:]]*cexport ' "$dir/$f" 2>/dev/null)
+    print -r -- "    $f ($n exports)"
+  done
+
+  print -r -- ""
+  local -a lines; lines=(${(f)"$(_cman_context_vars "$ctx")"})
+  print -r -- "  exports (${#lines}):"
+  local l name val
+  for l in $lines; do
+    name="${l%%=*}"; val="${l#*=}"
+    printf '    %-42s %s\n' "$name" "$(_cman_describe_value "$name" "$val" "$dir")"
+  done
+
+  print -r -- ""
+  print -r -- "  tool dirs:"
+  local t cnt
+  for t in "$dir"/tools/*(N/); do
+    cnt=$(ls -A "$t" 2>/dev/null | wc -l | tr -d ' ')
+    printf '    %-14s %s\n' "${t:t}" "$cnt entries$( (( cnt == 0 )) && print -n '   <- empty')"
+  done
+}
+
+_cman_doctor() {
+  local -a contexts; contexts=("$_CONTEXT_ROOT"/*(N:t)); contexts=(${contexts:#_*})
+  # All locals declared ONCE: re-running `local x` in the same scope makes zsh
+  # print x's current value, which would spray the report with debug lines.
+  local issues=0 ctx dir l name val t marker ss_target ss_dir
+  local -a found
+
+  for ctx in $contexts; do
+    dir="$_CONTEXT_ROOT/$ctx"
+    found=()
+
+    while IFS= read -r l; do
+      [[ -n "$l" ]] || continue
+      name="${l%%=*}"; val="${l#*=}"
+      case "${name:u}" in
+        *TOKEN*|*SECRET*|*PASSWORD*|*CREDENTIAL*|*API_KEY*|*APIKEY*)
+          [[ "$val" == op://* || -z "$val" ]] || found+=("plaintext secret: $name (use an op:// ref)") ;;
+      esac
+      [[ "$val" == /* && ! -e "$val" ]] && found+=("$name points at a missing path")
+    done < <(_cman_context_vars "$ctx")
+
+    for t in "$dir"/tools/*(N/); do
+      [[ -z "$(ls -A "$t" 2>/dev/null)" ]] && found+=("tools/${t:t}/ is empty")
+    done
+
+    [[ -f "$dir/tools/kube.sh" ]] && ! grep -qE '^[[:space:]]*CONTEXT_KUBE_CONFIGS=\([^)]' "$dir/tools/kube.sh" \
+      && found+=("kube.sh declares no kubeconfigs — ku completion is unscoped here")
+
+    marker="$dir/tools/skillshare/installed"
+    if [[ -f "$marker" ]] && command -v skillshare &>/dev/null; then
+      # NB: never `local path` in zsh — it is tied to $PATH and clobbers it.
+      ss_target=$(awk -F': ' '/^target:/ {print $2}' "$marker")
+      ss_dir=$(awk -F': ' '/^skills:/ {print $2}' "$marker")
+      if [[ -n "$ss_target" ]]; then
+        skillshare target list 2>/dev/null | grep -qF -- "$ss_target" \
+          || found+=("skillshare target '$ss_target' is in the marker but not registered")
+      fi
+      [[ -n "$ss_dir" && ! -d "$ss_dir" ]] && found+=("skillshare skills dir missing: ${ss_dir/#$HOME/~}")
+    fi
+
+    if (( ${#found} )); then
+      issues=1
+      print -r -- "$ctx:"
+      printf '  - %s\n' $found
+    else
+      print -r -- "$ctx: ok"
+    fi
+  done
+
+  print -r -- ""
+  (( issues )) && print -r -- "issues found" || print -r -- "all contexts healthy"
+  return $issues
+}
+
 cman() {
   local subcmd="$1"
   shift 2>/dev/null
@@ -291,12 +437,16 @@ cman() {
     ls)       _cman_ls "$@" ;;
     edit)     _cman_edit "$@" ;;
     add-tool) _cman_add_tool "$@" ;;
+    show)     _cman_show "$@" ;;
+    doctor)   _cman_doctor "$@" ;;
     *)
-      echo "Usage: cman <new|ls|edit|add-tool>" >&2
+      echo "Usage: cman <new|ls|edit|add-tool|show|doctor>" >&2
       echo "  new <name>             Create context from template"
       echo "  ls                     List contexts (* = active)"
       echo "  edit [name]            Open context in \$EDITOR"
       echo "  add-tool <tool> [ctx]  Add tool to context (default: active)"
+      echo "  show [name]            What a context sets (default: active)"
+      echo "  doctor                 Health-check every context"
       return 1
       ;;
   esac
@@ -310,6 +460,8 @@ _cman() {
     'ls:List contexts'
     'edit:Open context in editor'
     'add-tool:Add tool to context'
+    'show:Show what a context sets'
+    'doctor:Health-check every context'
   )
 
   if (( CURRENT == 2 )); then
@@ -318,7 +470,7 @@ _cman() {
   fi
 
   case "${words[2]}" in
-    edit)
+    show|edit)
       local -a contexts
       local dir="$_CONTEXT_ROOT"
       [[ -d $dir ]] || return 0

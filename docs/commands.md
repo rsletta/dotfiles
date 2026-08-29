@@ -10,7 +10,9 @@ See [contexts.md](contexts.md) for details.
 |---------|-------------|
 | `cch <name>` | Switch context |
 | `ccd` | cd to CONTEXT_HOME |
-| `cman <sub>` | Context management (new/ls/edit/add-tool) |
+| `cman <sub>` | Context management (new/ls/edit/add-tool/show/doctor) |
+| `cman show [name]` | What a context sets — exports, paths, secrets, tool dirs |
+| `cman doctor` | Health-check every context; non-zero exit if issues |
 
 ## Writing and workspaces
 

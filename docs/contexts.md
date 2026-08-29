@@ -12,6 +12,16 @@ Switch between work contexts (clients, personal) on the same machine. Each conte
 | `cman ls` | List contexts (* = active) |
 | `cman edit [name]` | Open context in $EDITOR |
 | `cman add-tool <tool> [ctx]` | Add tool config to context |
+| `cman show [name]` | What a context sets: files sourced, every export, tool dirs |
+| `cman doctor` | Health-check every context |
+
+## Seeing what a context does
+
+`cch` works by sourcing files you never see. That is the point, and it is also the failure mode — things get set up, forgotten, and drift apart. Two commands exist so the state is always one command away instead of something you have to remember to go looking for.
+
+`cman show` lists every variable the context set, what each one points at, and which tool directories exist. Values are classified rather than dumped: a `op://` reference is labelled as such, a path is shown relative to the context (and marked `MISSING` if it does not exist), and anything whose name looks like a credential is reported as `PLAINTEXT SECRET (N chars)` — never printed. Run against a context you are not currently in, it sources that context in a throwaway subshell, so nothing leaks into your shell.
+
+`cman doctor` runs the same inspection across every context and reports only problems: plaintext secrets that should be `op://` references, exports pointing at missing paths, empty tool directories, `kube.sh` declaring no kubeconfigs (which silently leaves `ku` completion unscoped), and skillshare markers that disagree with `skillshare target list`. Exits non-zero when anything is found.
 
 ## Context directory layout
 
