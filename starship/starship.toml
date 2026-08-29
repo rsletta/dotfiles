@@ -115,7 +115,7 @@ detect_extensions = ["py"]
 version_format = "v${raw}"
 
 [custom.context]
-command = 'echo "${SHELL_CONTEXT}${CONTEXT_ENV:+:$CONTEXT_ENV}"'
+command = 'echo "$SHELL_CONTEXT"'
 when = '[ -n "$SHELL_CONTEXT" ]'
 format = '[\[ctx:$output\]]($style)  '
 style = 'bold yellow'

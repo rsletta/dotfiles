@@ -83,19 +83,19 @@ _cman_edit() {
   ${EDITOR:-vim} "$target"
 }
 
-# Known tools and their setup.sh export lines
-# Key = tool name, Value = export line template ($CONTEXT_DIR is available at runtime)
+# Known tools and their setup.sh cexport lines
+# Key = tool name, Value = cexport line template ($CONTEXT_DIR is available at runtime)
 typeset -A _CONTEXT_KNOWN_TOOLS
 _CONTEXT_KNOWN_TOOLS=(
-  gh      'export GH_CONFIG_DIR="$CONTEXT_DIR/tools/gh"'
-  aws     'export AWS_CONFIG_FILE="$CONTEXT_DIR/tools/aws/config"\nexport AWS_SHARED_CREDENTIALS_FILE="$CONTEXT_DIR/tools/aws/credentials"'
-  docker  'export DOCKER_CONFIG="$CONTEXT_DIR/tools/docker"'
-  azure   'export AZURE_CONFIG_DIR="$CONTEXT_DIR/tools/azure"'
-  gcloud  'export CLOUDSDK_CONFIG="$CONTEXT_DIR/tools/gcloud"'
-  helm    'export HELM_CONFIG_HOME="$CONTEXT_DIR/tools/helm"'
-  terraform 'export TF_CLI_CONFIG_FILE="$CONTEXT_DIR/tools/terraform/terraformrc"'
-  jira    'export JIRA_CONFIG_FILE="$CONTEXT_DIR/tools/jira/config.yml"'
-  codex   'export CODEX_HOME="$CONTEXT_DIR/tools/codex"'
+  gh      'cexport GH_CONFIG_DIR="$CONTEXT_DIR/tools/gh"'
+  aws     'cexport AWS_CONFIG_FILE="$CONTEXT_DIR/tools/aws/config"\ncexport AWS_SHARED_CREDENTIALS_FILE="$CONTEXT_DIR/tools/aws/credentials"'
+  docker  'cexport DOCKER_CONFIG="$CONTEXT_DIR/tools/docker"'
+  azure   'cexport AZURE_CONFIG_DIR="$CONTEXT_DIR/tools/azure"'
+  gcloud  'cexport CLOUDSDK_CONFIG="$CONTEXT_DIR/tools/gcloud"'
+  helm    'cexport HELM_CONFIG_HOME="$CONTEXT_DIR/tools/helm"'
+  terraform 'cexport TF_CLI_CONFIG_FILE="$CONTEXT_DIR/tools/terraform/terraformrc"'
+  jira    'cexport JIRA_CONFIG_FILE="$CONTEXT_DIR/tools/jira/config.yml"'
+  codex   'cexport CODEX_HOME="$CONTEXT_DIR/tools/codex"'
   writing '__WRITING__'
   skillshare '__SKILLSHARE__'
 )
@@ -135,7 +135,7 @@ _cman_add_tool() {
   local setup_file="$ctx_dir/tools/setup.sh"
   if [[ "$tool" == "writing" ]]; then
     local vault_path="$HOME/ws/$name/notes/$name"
-    local writing_exports="export CONTEXT_VAULT_PATH=\"$vault_path\"\nexport CONTEXT_TIL_PATH=\"$vault_path/TIL\"\nexport CONTEXT_TIL_TEMPLATE=\"\$HOME/.config/dotfiles/templates/writing/til.md\"\nexport CONTEXT_POST_PATH=\"$vault_path/posts\"\nexport CONTEXT_POST_TEMPLATE=\"\$HOME/.config/dotfiles/templates/writing/post.md\""
+    local writing_exports="cexport CONTEXT_VAULT_PATH=\"$vault_path\"\ncexport CONTEXT_TIL_PATH=\"$vault_path/TIL\"\ncexport CONTEXT_TIL_TEMPLATE=\"\$HOME/.config/dotfiles/templates/writing/til.md\"\ncexport CONTEXT_POST_PATH=\"$vault_path/posts\"\ncexport CONTEXT_POST_TEMPLATE=\"\$HOME/.config/dotfiles/templates/writing/post.md\""
     echo "" >> "$setup_file"
     echo -e "$writing_exports" >> "$setup_file"
 
@@ -227,8 +227,8 @@ _cman_jira_setup() {
 
   # 1Password token (shared across orgs — same Atlassian account)
   if ! command -v op &>/dev/null; then
-    echo "  Tip: add JIRA_API_TOKEN to env/shared/variables.sh:"
-    echo "    export JIRA_API_TOKEN=\"op://<Vault>/<Item>/<field>\""
+    echo "  Tip: add JIRA_API_TOKEN to tools/setup.sh:"
+    echo "    cexport JIRA_API_TOKEN=\"op://<Vault>/<Item>/<field>\""
     return
   fi
 
@@ -251,7 +251,7 @@ _cman_jira_setup() {
   [[ -z "$field" ]] && echo "  Skipped." && return
 
   local op_ref="op://$vault/$item/$field"
-  printf '\nexport JIRA_API_TOKEN="%s"\n' "$op_ref" >> "$ctx_dir/env/shared/variables.sh"
+  printf '\ncexport JIRA_API_TOKEN="%s"\n' "$op_ref" >> "$ctx_dir/tools/setup.sh"
   echo "  JIRA_API_TOKEN → $op_ref"
 }
 
@@ -282,56 +282,6 @@ _cman_jira_add_org() {
   echo "  org '$_jira_org' → active"
 }
 
-_cman_rename() {
-  local old="$1"
-  local new="$2"
-
-  if [[ -z "$old" || -z "$new" ]]; then
-    echo "Usage: cman rename <old> <new>" >&2
-    return 1
-  fi
-
-  local old_ctx="$_CONTEXT_ROOT/$old"
-  local new_ctx="$_CONTEXT_ROOT/$new"
-
-  if [[ ! -d "$old_ctx" ]]; then
-    echo "Context '$old' not found" >&2
-    return 1
-  fi
-
-  if [[ -d "$new_ctx" ]]; then
-    echo "Context '$new' already exists" >&2
-    return 1
-  fi
-
-  if [[ "$SHELL_CONTEXT" == "$old" ]]; then
-    echo "Context '$old' is currently active — run 'cch' to clear it first" >&2
-    return 1
-  fi
-
-  if [[ -L "$old_ctx" ]]; then
-    echo "Context dir is a symlink — aborting" >&2
-    return 1
-  fi
-
-  mv "$old_ctx" "$new_ctx"
-  echo "Renamed: contexts/$old → contexts/$new"
-
-  local file updated=0
-  while IFS= read -r -d $'\0' file; do
-    if grep -q "/ws/$old\|CONTEXT_LABEL=\"$old\"\|Context: $old\|paths for $old" "$file" 2>/dev/null; then
-      sed -i '' "s|/ws/$old|/ws/$new|g" "$file"
-      sed -i '' "s|CONTEXT_LABEL=\"$old\"|CONTEXT_LABEL=\"$new\"|g" "$file"
-      sed -i '' "s|# Context: $old|# Context: $new|g" "$file"
-      sed -i '' "s|paths for $old context|paths for $new context|g" "$file"
-      echo "  Updated: ${file#$new_ctx/}"
-      (( updated++ ))
-    fi
-  done < <(find "$new_ctx" -name '*.sh' -type f -print0)
-
-  [[ "$updated" -eq 0 ]] && echo "  (no file content needed updating)"
-}
-
 cman() {
   local subcmd="$1"
   shift 2>/dev/null
@@ -341,14 +291,12 @@ cman() {
     ls)       _cman_ls "$@" ;;
     edit)     _cman_edit "$@" ;;
     add-tool) _cman_add_tool "$@" ;;
-    rename)   _cman_rename "$@" ;;
     *)
-      echo "Usage: cman <new|ls|edit|add-tool|rename>" >&2
+      echo "Usage: cman <new|ls|edit|add-tool>" >&2
       echo "  new <name>             Create context from template"
       echo "  ls                     List contexts (* = active)"
       echo "  edit [name]            Open context in \$EDITOR"
       echo "  add-tool <tool> [ctx]  Add tool to context (default: active)"
-      echo "  rename <old> <new>     Rename a context"
       return 1
       ;;
   esac
@@ -362,7 +310,6 @@ _cman() {
     'ls:List contexts'
     'edit:Open context in editor'
     'add-tool:Add tool to context'
-    'rename:Rename a context'
   )
 
   if (( CURRENT == 2 )); then
@@ -395,14 +342,6 @@ _cman() {
       ;;
     new)
       # No completion for new context name
-      ;;
-    rename)
-      local -a contexts
-      local dir="$_CONTEXT_ROOT"
-      [[ -d $dir ]] || return 0
-      contexts=("$dir"/*(N:t))
-      contexts=(${contexts:#_*})
-      _describe -t contexts 'context' contexts
       ;;
   esac
 }

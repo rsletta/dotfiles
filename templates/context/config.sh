@@ -1,5 +1,4 @@
 # Context: __NAME__
 # Created: __DATE__
 
-export CONTEXT_HOME="__HOME__"
-export CONTEXT_LABEL="__NAME__"
+cexport CONTEXT_HOME="__HOME__"
