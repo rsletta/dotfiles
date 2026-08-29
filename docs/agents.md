@@ -12,6 +12,7 @@ This also keeps it agent-agnostic. Claude Code, Codex and Pi each report through
 
 ```sh
 tmux-agent-status working|blocked|done|idle|clear [pane]
+tmux-agent-status rollup [window]      # recompute a window badge, touching no pane
 ```
 
 Sets `@agent_status` on the pane (defaults to `$TMUX_PANE`), then rolls the window up to the most urgent state among its panes as `@agent_win`.
@@ -37,6 +38,8 @@ For the same reason the roll-up reads each pane with `show-options -pv` rather t
 | unset | — | nothing running |
 
 Window badges come from `@agent_win` (the roll-up), pane-border badges from `@agent_status`. Urgency order is blocked > done > working, so a blocked agent is never masked by a busy sibling in the same window.
+
+A pane dying takes its own state with it, but the window roll-up would keep showing it. `set-hook -g pane-exited` calls `tmux-agent-status rollup #{window_id}` so the badge is recomputed from the panes that remain.
 
 `done` clears itself when you focus the pane (`pane-focus-in` hook in `tmux.conf`), which is what makes it mean "finished but unseen" rather than just "finished".
 

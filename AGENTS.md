@@ -20,8 +20,7 @@ zshrc.d/              # Zsh config, sourced in numeric order
 zprofile.d/           # Zsh profile (PATH, env), sourced in numeric order
 scripts/              # Utility scripts — symlink to ~/.local/bin to expose
 scripts/lib/          # Shared shell libs
-scripts/templates/    # File templates with __PLACEHOLDER__ vars
-templates/            # Bootstrap templates
+templates/            # Bootstrap templates (context/, writing/)
 completions/          # Zsh completions
 docs/                 # Developer docs
 tmux/                 # tmux config
@@ -45,7 +44,8 @@ applications.md       # App inventory — update manually when things change
 ### Context system (`zshrc.d/71–73`)
 
 Multi-client context switching via `cch <context>`. Contexts live in `~/.config/contexts/<name>/`.
-Each context has `config.sh`, `env/`, `tools/`, `hooks/`. Managed with `cman`.
+Each context has `config.sh` and `tools/` — `tools/setup.sh` is the payload, a list of `cexport` lines.
+Managed with `cman`; `cman show` prints what a context sets, `cman doctor` health-checks them all.
 See `docs/contexts.md`.
 
 ### Writing system (`zshrc.d/65-writing.sh`)
@@ -75,3 +75,5 @@ See `docs/workspaces.md`.
 | `docs/commands.md` | Key commands reference |
 | `docs/terminal.md` | Terminal and prompt setup |
 | `docs/neovim.md` | Neovim config notes |
+| `docs/worktrees.md` | `wt` / `tmux-wt` git worktree helpers |
+| `docs/agents.md` | Agent status badges in tmux |
