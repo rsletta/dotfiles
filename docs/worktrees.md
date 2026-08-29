@@ -61,6 +61,8 @@ git config wt.layout nested   # or flat
 
 `prefix + G` opens a popup with fzf over the repo's worktrees. Pick one to jump to its window; type a name that matches nothing to create that worktree *and* its window. `prefix + D` removes one.
 
+Removal asks twice: once to confirm the removal, then whether to close that worktree's tmux window. If the window is the **last one in the session** it is never closed and the question is not asked — killing it would destroy the session, and with no other sessions tmux exits and takes every pane down with it.
+
 Window names come from `wt label`, so naming logic lives in one place: `ivit-monorepo/green-stone-6806` when nested, `terrarium-pr-feat-mcp-git-ops` when flat.
 
 Opening is idempotent at the window level too — if a window is already sitting in that path, it switches instead of creating a duplicate.

@@ -103,8 +103,32 @@ cmd_rm() {
   local win=""
   in_tmux && win="$(window_for_path "$path" || true)"
   "$WT" rm "$branch" || die "wt rm failed (use a shell for --force)"
-  [[ -n "$win" ]] && tmux kill-window -t "$win" 2>/dev/null || true
+
+  # Closing the worktree's window is a convenience, never worth losing the
+  # session over: killing the LAST window destroys the session, and with no
+  # other sessions tmux exits and takes every pane with it. So ask, and do not
+  # even offer when it is the last one.
+  [[ -n "$win" ]] || return 0
+
+  local nwin
+  nwin="$(tmux display-message -p -t "$win" '#{session_windows}' 2>/dev/null || echo 0)"
+
+  if [[ "${nwin:-0}" -le 1 ]]; then
+    printf 'note: its window is the last one in this session, so it was left open.\n' >&2
+    printf '      closing it would end the session. cd out of the deleted directory.\n' >&2
+    return 0
+  fi
+
+  local wname
+  wname="$(tmux display-message -p -t "$win" '#{window_name}' 2>/dev/null || echo "$win")"
+  printf 'close its window (%s)? [Y/n] ' "$wname" >&2
+  IFS= read -r close
+  case "$close" in
+    n|N|no|NO) printf 'window kept\n' >&2 ;;
+    *) tmux kill-window -t "$win" 2>/dev/null || true ;;
+  esac
 }
+
 
 case "${1:-open}" in
   open) shift || true; cmd_open "${1:-}" ;;
