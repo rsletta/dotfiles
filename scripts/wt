@@ -24,7 +24,9 @@ usage: wt <command> [args]
         Remove a linked checkout, keep the branch. Refuses the main checkout,
         and refuses dirty or unpushed work unless --force.
 
-  list [--json]     branch, path, dirty, ahead/behind
+  list [--porcelain]
+        Human table, or tab-separated branch/path/dirty/ahead-behind for
+        scripts (--porcelain). Paths may contain spaces; only tabs separate.
   path <branch>     print the worktree path for a branch, or exit 1
   label [path]      window/display name for a checkout (default: cwd)
   layout            print detected layout and main checkout (debug)
@@ -275,12 +277,11 @@ cmd_rm() {
 }
 
 cmd_list() {
-  local json=0
-  [[ "${1:-}" == "--json" ]] && json=1
-  repo_root="$(repo_root)"; resolve_layout
+  local porcelain=0
+  [[ "${1:-}" == "--porcelain" ]] && porcelain=1
+  repo_root="$(repo_root)"
 
-  local path="" br="" first=1
-  (( json )) && printf '['
+  local path="" br=""
   while IFS= read -r line || [[ -n "$line" ]]; do
     case "$line" in
       worktree\ *) path="${line#worktree }" ;;
@@ -293,24 +294,20 @@ cmd_list() {
         local c; if c="$(git -C "$path" rev-list --count --left-right '@{upstream}...HEAD' 2>/dev/null)"; then
           ab="-$(printf '%s' "$c" | cut -f1)/+$(printf '%s' "$c" | cut -f2)"
         fi
-        if (( json )); then
-          (( first )) || printf ','
-          printf '{"branch":"%s","path":"%s","dirty":%s,"aheadbehind":"%s"}' \
-            "$br" "$path" "$([[ $dirty == dirty ]] && echo true || echo false)" "$ab"
-          first=0
+        if (( porcelain )); then
+          printf '%s\t%s\t%s\t%s\n' "${br:-?}" "$path" "$dirty" "$ab"
         else
           printf '%-46s %-6s %-9s %s\n' "${br:-?}" "$dirty" "$ab" "$path"
         fi
         path=""; br="" ;;
     esac
   done < <(git -C "$repo_root" worktree list --porcelain 2>/dev/null; echo)
-  (( json )) && printf ']\n'
   return 0
 }
 
 cmd_path() {
   [[ $# -ge 1 ]] || die "usage: wt path <branch>"
-  repo_root="$(repo_root)"; resolve_layout
+  repo_root="$(repo_root)"
   worktree_path_for_branch "$1" || exit 1
 }
 

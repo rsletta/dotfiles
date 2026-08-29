@@ -125,10 +125,8 @@ _ws() {
     case "${words[2]}" in
       cd|init|new|rename)
         local -a workspaces
-        if [[ -d "$HOME/ws" ]]; then
-          workspaces=($(ls -d "$HOME/ws"/*/ 2>/dev/null | xargs -I {} basename {}))
-          compadd -- "$workspaces"
-        fi
+        workspaces=("$HOME"/ws/*(N/:t))
+        (( ${#workspaces} )) && compadd -- $workspaces
         ;;
     esac
   fi

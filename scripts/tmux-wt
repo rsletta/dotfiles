@@ -51,9 +51,13 @@ open_window() {
   tmux display-message "opened $name"
 }
 
-# branch<TAB>path for every checkout in this repo
+# branch<TAB>path for every checkout in this repo.
+#
+# `wt list --porcelain` is tab-separated on purpose: the human table was being
+# re-parsed with awk $1/$NF, which mangles any path containing a space. Detached
+# checkouts have no branch to act on, so they are dropped rather than offered.
 worktree_rows() {
-  "$WT" list 2>/dev/null | awk '{ b=$1; p=$NF; printf "%s\t%s\n", b, p }'
+  "$WT" list --porcelain 2>/dev/null | awk -F'\t' '$1 != "(detached)" && $1 != "?" { printf "%s\t%s\n", $1, $2 }'
 }
 
 pick() {

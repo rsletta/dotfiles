@@ -23,7 +23,7 @@ _writing_date() { date +%Y-%m-%d; }
 
 _writing_slugify() {
   local str="${1//[![:alnum:] ]/}"
-  str="${str,,}"
+  str="${(L)str}"
   str="${str% }"
   str="${str// /-}"
   echo "${str:?Cannot generate slug}"
