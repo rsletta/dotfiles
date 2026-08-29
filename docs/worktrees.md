@@ -12,7 +12,7 @@ If the multiplexer ever changes again, only the adapter is rewritten.
 ```
 wt open [branch] [--base REF] [--path P] [--fetch] [--strict]
 wt rm [branch] [--here] [--force]
-wt list [--json]
+wt list [--porcelain]
 wt path <branch>
 wt label [path]
 wt layout

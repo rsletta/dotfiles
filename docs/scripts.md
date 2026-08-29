@@ -9,7 +9,6 @@ the authoritative list is in [symlinks.md](symlinks.md).
 |--------|-------------|-------------|
 | `create-script` | `create-script <path>` | Scaffold a Python CLI using uv and Click |
 | `ffmpeg/extract_clip` | `extract_clip` | Interactively extract a video segment |
-| `newTmuxSession` | `newTmuxSession <name>` / `tns <name>` | Create or attach to a tmux session |
 | `wt` | `wt open\|rm\|list\|path\|layout` | Git worktree helper. Pure git/shell — no multiplexer, no context knowledge |
 | `tmux-wt` | tmux key binding (`prefix+G` / `prefix+D`) | Open or remove a worktree as a tmux window, via fzf popup |
 | `tmux-agent-status` | agent lifecycle hooks | Record agent state on its pane; roll up to the window |

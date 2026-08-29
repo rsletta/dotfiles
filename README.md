@@ -13,7 +13,7 @@ The repository is applied manually rather than through GNU Stow:
 
 ## Main systems
 
-- Contexts (`cch`, `cenv`, `cman`) isolate client-specific tool configuration.
+- Contexts (`cch`, `cman`) isolate client-specific tool configuration.
 - Workspaces (`ws`) organize projects under `~/ws/<name>/`.
 - Writing commands (`notes`, `til`) use paths supplied by the active context.
 - tmux carries active context state into new shells.

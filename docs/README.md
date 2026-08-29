@@ -7,14 +7,13 @@ macOS-focused shell environment. Ghostty + tmux + zsh + neovim.
 New terminal session flow:
 1. Shell loads zprofile.d/ (PATH, env) then zshrc.d/ (shell config, aliases, functions)
 2. Run `cch <context>` to set your work context
-3. Run `cenv <env>` if needed (dev/test/prod)
-4. Run `ku`/`awsp` to explicitly activate cluster/cloud profile
+3. Run `ku`/`awsp` to explicitly activate cluster/cloud profile
 
 ## Docs
 
 | File | What it covers |
 |------|---------------|
-| [contexts.md](contexts.md) | Context system (cch, cenv, ccd, cman) |
+| [contexts.md](contexts.md) | Context system (cch, ccd, cman) |
 | [workspaces.md](workspaces.md) | Workspace organization (ws command) |
 | [commands.md](commands.md) | All custom commands, functions, aliases |
 | [shell-loading.md](shell-loading.md) | How config files load and what each does |

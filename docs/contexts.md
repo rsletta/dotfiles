@@ -6,8 +6,7 @@ Switch between work contexts (clients, personal) on the same machine. Each conte
 
 | Command | Description |
 |---------|-------------|
-| `cch <name>` | Switch context |
-| `cenv [env]` | Set env within context (dev/test/prod). No arg = unset |
+| `cch <name>` | Switch context. No arg = clear |
 | `ccd` | cd to CONTEXT_HOME |
 | `cman new <name>` | Create context from template |
 | `cman ls` | List contexts (* = active) |
@@ -19,17 +18,11 @@ Switch between work contexts (clients, personal) on the same machine. Each conte
 Each context lives in `~/.config/contexts/<name>/`:
 
 ```
-config.sh             # Required: CONTEXT_HOME, CONTEXT_LABEL
-env/
-  shared/             # Sourced on cch (always)
-  dev/ test/ prod/    # Sourced on cenv <env>
+config.sh             # Required: CONTEXT_HOME
 tools/
-  setup.sh            # Exports tool config env vars
+  setup.sh            # Exports tool config env vars — the whole payload
   kube.sh             # Lists kubeconfig names for scoped completions
   gh/  aws/  ...      # Tool-specific config directories
-hooks/
-  on-enter.sh         # Runs after entering context
-  on-leave.sh         # Runs before leaving context
 ```
 
 Template for new contexts: `dotfiles/templates/context/`.
@@ -40,6 +33,7 @@ Context activation is always conscious in plain shells. Multiplexer-created shel
 
 - tmux windows and panes inherit the session environment, which `cch` sets.
 - `cch` in one pane changes that pane only; the session default is untouched, so a pane can run a different context from the rest of the session.
+- `SHELL_CONTEXT` is deliberately **not** in tmux's `update-environment`: that list is re-applied from the client on every attach, and attaching from a context-less shell would wipe the session's context. The `t` function passes `-e` instead, so new sessions inherit without the attach hazard.
 
 Set the context once when the session starts and everything opened afterwards inherits it.
 
@@ -53,13 +47,11 @@ Completions for both are scoped to the active context.
 
 ## What `cch` does
 
-1. Runs `hooks/on-leave.sh` from old context (if any)
-2. Cleans up all tool env vars from old context
-3. Sources `config.sh` (CONTEXT_HOME, CONTEXT_LABEL)
-4. Sources `env/shared/*.sh`
-5. Sources `tools/setup.sh` and `tools/kube.sh`
-6. Runs `hooks/on-enter.sh`
-7. Runs skillshare drift check (only if skillshare was added to this context)
+1. Cleans up all tool env vars from old context
+2. Sources `config.sh` (CONTEXT_HOME)
+3. Sources `tools/setup.sh` and `tools/kube.sh`
+4. Runs skillshare drift check (only if skillshare was added to this context)
+5. Writes `SHELL_CONTEXT` into the tmux session environment
 
 ## Known tools for `cman add-tool`
 
@@ -80,7 +72,7 @@ Completions for both are scoped to the active context.
 
 ## Secrets
 
-Use `op://` references in env files for 1Password secrets. Resolve with `op run --no-masking -- <command>`.
+Use `op://` references in `tools/setup.sh` for 1Password secrets. Resolve with `op run --no-masking -- <command>`. A plaintext token in `setup.sh` is exported into every shell in the context — prefer a reference.
 
 ### Jira setup
 
@@ -90,14 +82,14 @@ cman add-tool jira
 
 # 2. Edit tools/jira/config.yml — fill in server URL, login, project key
 
-# 3. Add token to env/shared/variables.sh
+# 3. Add token to tools/setup.sh
 export JIRA_API_TOKEN="op://<Vault>/<Item>/token"
 
 # 4. Activate context
 cch <context>
 
 # 5. Use — wrapper resolves token via op run
-jira issue list
+lazyj issue list
 ```
 
 ### Skillshare setup
@@ -118,11 +110,11 @@ Project-mode skills (`.skillshare/` committed in a repo) work independently of c
 
 ## Prompt
 
-Starship shows the active context and env (e.g. `alv` or `alv:dev`). GH identity shows when `GH_CONFIG_DIR` is set.
+Starship shows the active context (e.g. `alv`). GH identity shows when `GH_CONFIG_DIR` is set.
 
 ## Implementation files
 
-- `zshrc.d/71-contexts.sh` — core engine (cch, cenv, ccd)
+- `zshrc.d/71-contexts.sh` — core engine (cch, ccd)
 - `zshrc.d/72-context-tools.sh` — ku, awsp with scoped completions
 - `zshrc.d/73-context-manager.sh` — cman command
 - `completions/_ku` — context-aware kubeconfig completion

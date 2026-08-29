@@ -9,9 +9,8 @@ See [contexts.md](contexts.md) for details.
 | Command | Description |
 |---------|-------------|
 | `cch <name>` | Switch context |
-| `cenv [env]` | Set env within context |
 | `ccd` | cd to CONTEXT_HOME |
-| `cman <sub>` | Context management (new/ls/edit/add-tool/rename) |
+| `cman <sub>` | Context management (new/ls/edit/add-tool) |
 
 ## Writing and workspaces
 
@@ -31,17 +30,18 @@ See [contexts.md](contexts.md) for details.
 | `ku [name]` | Set KUBECONFIG from `~/.kube/config.d/`. No arg = unset |
 | `awsp [name]` | Set AWS_PROFILE. No arg = unset |
 | `awsso` | `aws sso login` |
-| `jira` | Context-aware Jira CLI wrapper |
-| `lazyj` | Open Jira TUI for the selected project |
+| `lazyj <sub>` | Context-aware Jira CLI wrapper (org/project/issue/board/sprint) |
 | `wtf [engine] <query>` | Search with ddgr and w3m/browser |
-| `browse [url]` | Open w3m directly or through ddgr |
+| `browse <url>` | Open a URL in the default GUI browser |
 
 ## Functions
 
 | Command | Description |
 |---------|-------------|
-| `tla` | Tmux: list sessions, pick with fzf, attach |
-| `tns <name>` | Tmux: create or attach to named session |
+| `t [name]` | Tmux: go to a session, creating it at `$PWD`. No arg = fzf pick. Works inside and outside tmux |
+| `ghd` / `gh-dash` | gh-dash with GH_TOKEN pinned to the context's user |
+| `wt <sub>` | Git worktrees (open/rm/list/path/label/layout) |
+| `tmux-wt [open\|rm]` | tmux adapter for `wt` — also on prefix+G / prefix+D |
 | `aali <alias> '<cmd>'` | Add alias to alias file and reload |
 | `oc` | Launch opencode with 1Password secrets |
 

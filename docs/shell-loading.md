@@ -27,7 +27,7 @@ How config files are loaded and what each one does.
   zshrc.d/60-aliases.sh           All aliases
   zshrc.d/65-writing.sh           notes and til writing commands
   zshrc.d/70-functions.sh         General functions
-  zshrc.d/71-contexts.sh          Context system core (cch, cenv, ccd)
+  zshrc.d/71-contexts.sh          Context system core (cch, ccd)
   zshrc.d/72-context-tools.sh     ku, awsp with scoped completions
   zshrc.d/73-context-manager.sh   cman command
   zshrc.d/75-workspace.sh         ws workspace management

@@ -66,7 +66,7 @@ Format: `context directory gh_account alvtime_profile git_branch git_status aws 
 
 | Segment | Shows | When |
 |---------|-------|------|
-| `context` | SHELL_CONTEXT:CONTEXT_ENV | Context is active |
+| `context` | SHELL_CONTEXT | Context is active |
 | `gh_account` | GitHub login | GH_CONFIG_DIR is set |
 | `alvtime_profile` | Alvtime profile name | Alvtime config exists |
 

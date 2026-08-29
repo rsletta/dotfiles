@@ -23,7 +23,6 @@ Select scripts are individually symlinked onto `PATH` at `~/.local/bin/` (link n
 |-----------|----------------------------|
 | `scripts/create-script` | `create-script` |
 | `scripts/ffmpeg/extract_clip` | `extract_clip` |
-| `scripts/newTmuxSession` | `newTmuxSession` |
 | `scripts/kubernetes-helpers/tail-logs` | `tail-logs` |
 | `scripts/wt` | `wt` (git worktree helper; multiplexer-agnostic) |
 | `scripts/tmux-wt` | `tmux-wt` (tmux adapter: `wt` path -> tmux window) |
