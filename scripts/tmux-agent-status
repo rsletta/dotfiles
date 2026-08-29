@@ -8,6 +8,7 @@
 #
 #   tmux-agent-status working|blocked|done|idle [pane]
 #   tmux-agent-status clear [pane]
+#   tmux-agent-status rollup [window]     recompute a window's badge only
 #
 # Sets @agent_status on the pane, then rolls the window up to the most urgent
 # state among its panes, so one window badge speaks for every agent inside it.
@@ -17,24 +18,10 @@ set -euo pipefail
 command -v tmux >/dev/null 2>&1 || exit 0
 
 state="${1:-}"
-pane="${2:-${TMUX_PANE:-}}"
-[[ -n "$pane" ]] || exit 0
 
-case "$state" in
-  working|blocked|done|idle) ;;
-  clear) state="" ;;
-  *) echo "usage: tmux-agent-status working|blocked|done|idle|clear [pane]" >&2; exit 2 ;;
-esac
-
-if [[ -z "$state" ]]; then
-  tmux set -up -t "$pane" @agent_status 2>/dev/null || true
-else
-  tmux set -p -t "$pane" @agent_status "$state" 2>/dev/null || true
-fi
-
-# Roll up to the window, under a DIFFERENT option name.
+# Roll the window up to the most urgent state among its panes.
 #
-# This must be @agent_win, not @agent_status: tmux resolves #{@foo} by walking
+# Under a DIFFERENT option name than the pane's. tmux resolves #{@foo} by walking
 # pane -> window -> session, so if both scopes used one name then (a) the window
 # badge would render whichever pane happens to be active rather than the roll-up,
 # and (b) a pane with its own value cleared would inherit the window's, making the
@@ -44,19 +31,46 @@ fi
 # instead of `list-panes -F '#{@agent_status}'`, which would inherit.
 #
 # Urgency: blocked (wants you) > done (finished, unseen) > working > nothing.
-win="$(tmux display-message -p -t "$pane" '#{window_id}' 2>/dev/null)" || exit 0
-best=""
-while read -r p; do
-  s="$(tmux show-options -pv -t "$p" @agent_status 2>/dev/null || true)"
-  case "$s" in
-    blocked) best="blocked"; break ;;
-    done)    [[ "$best" != "blocked" ]] && best="done" ;;
-    working) [[ -z "$best" ]] && best="working" ;;
-  esac
-done < <(tmux list-panes -t "$win" -F '#{pane_id}' 2>/dev/null)
+roll_up_window() {
+  local win="$1" best="" p s
+  [[ -n "$win" ]] || return 0
+  while read -r p; do
+    s="$(tmux show-options -pv -t "$p" @agent_status 2>/dev/null || true)"
+    case "$s" in
+      blocked) best="blocked"; break ;;
+      done)    [[ "$best" != "blocked" ]] && best="done" ;;
+      working) [[ -z "$best" ]] && best="working" ;;
+    esac
+  done < <(tmux list-panes -t "$win" -F '#{pane_id}' 2>/dev/null)
 
-if [[ -z "$best" ]]; then
-  tmux set -uw -t "$win" @agent_win 2>/dev/null || true
-else
-  tmux set -w -t "$win" @agent_win "$best" 2>/dev/null || true
+  if [[ -z "$best" ]]; then
+    tmux set -uw -t "$win" @agent_win 2>/dev/null || true
+  else
+    tmux set -w -t "$win" @agent_win "$best" 2>/dev/null || true
+  fi
+}
+
+# `rollup` recomputes a window without touching any pane. Bound to pane-exited,
+# so a window whose only `working` pane dies does not keep wearing its badge.
+if [[ "$state" == "rollup" ]]; then
+  roll_up_window "${2:-$(tmux display-message -p '#{window_id}' 2>/dev/null)}"
+  exit 0
 fi
+
+pane="${2:-${TMUX_PANE:-}}"
+[[ -n "$pane" ]] || exit 0
+
+case "$state" in
+  working|blocked|done|idle) ;;
+  clear) state="" ;;
+  *) echo "usage: tmux-agent-status working|blocked|done|idle|clear|rollup [pane|window]" >&2; exit 2 ;;
+esac
+
+if [[ -z "$state" ]]; then
+  tmux set -up -t "$pane" @agent_status 2>/dev/null || true
+else
+  tmux set -p -t "$pane" @agent_status "$state" 2>/dev/null || true
+fi
+
+win="$(tmux display-message -p -t "$pane" '#{window_id}' 2>/dev/null)" || exit 0
+roll_up_window "$win"
